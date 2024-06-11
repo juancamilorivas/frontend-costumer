@@ -311,7 +311,7 @@ const CreateGuideScreen = ({ navigation }) => {
                   borderWidth: 0,
                   padding: 0,
                   marginRight: 5,
-                }} // Estilos del contenedor
+                }} 
               />
               <Text style={styles.checkboxText}>Celular</Text>
             </View>
@@ -528,8 +528,8 @@ const styles = StyleSheet.create({
     width: "98%",
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "center", // Agrega esta línea para centrar el botón
-    marginTop: 20, // Añade un margen superior opcional para separar el botón del contenido superior
+    alignSelf: "center", 
+    marginTop: 20, 
     marginBottom: 18,
   },
   textButtonStyles: {
