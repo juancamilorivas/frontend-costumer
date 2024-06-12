@@ -11,9 +11,11 @@ import {
 } from "react-native";
 
 import {
+  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
+import { initialAuth } from "../firebase";
 import { getAuth } from "firebase/auth";
 
 import { useDispatch } from "react-redux";
@@ -35,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
 
   //CONSTS
   const dispatch = useDispatch();
+  const lowerCaseEmail = email.toLowerCase(); // Convertir el email a minúsculas
 
 
 //VERIFY EMAIL
@@ -63,11 +66,8 @@ const storeData = async (id) => {
 
 
 
-
-
-  //SIGN IN
-  const handleSignIn = () => {
-
+  //CREATE ACCOUNT
+  const handleCreateAccount = () => {
     if(email == "") {
       Alert.alert("Escribe un correo electronico");
       return;
@@ -80,9 +80,12 @@ const storeData = async (id) => {
       Alert.alert("El correo electrónico proposionado no es valido.");
       return;
     }
-   
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
+    if (email !== lowerCaseEmail) {
+      Alert.alert("El correo electrónico contiene mayusculas");
+      return;
+    }
+
+    createUserWithEmailAndPassword(initialAuth, email, password)
       .then((userCredential) => {
         dispatch(
           setUser({
@@ -92,14 +95,17 @@ const storeData = async (id) => {
             uid: userCredential.user.uid,
           })
         );
-        console.log("Signed In!!");
+
+        console.log("Account created");
         storeData(userCredential.user.uid)
         navigation.navigate("TabsNavigation");
       })
       .catch((error) => {
-        Alert.alert("El correo no existe en la base de datos o es inválido.");
+        Alert.alert("El correo electrónico ya existe o es inválido.");
       });
   };
+
+
 
 
 
@@ -133,7 +139,7 @@ const storeData = async (id) => {
                 marginBottom: 20,
               }}
             >
-              INICIAR SESION
+              CREAR CUENTA
             </Text>
           </View>
           <View>
@@ -160,20 +166,19 @@ const storeData = async (id) => {
             />
           </View>
           <TouchableOpacity
-            onPress={handleSignIn}
-            style={[styles.button, { backgroundColor: "#00cfeb90" }]}
+            onPress={handleCreateAccount}
+            style={[styles.button, { backgroundColor: "#ee6b6e" }]}
           >
-            <Text style={{ fontSize: 17, fontWeight: "400", color: "white" }}>
-              Iniciar sesion
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "black" }}>
+            Crear cuenta
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate("CreateAccountScreen")}
+            onPress={() => navigation.navigate("LoginCreate")}
 
-        
           >
             <Text style={{ fontSize: 17, fontWeight: "400", color: "white", paddingTop: 30 }}>
-              Crear cuenta
+              Iniciar sesion
             </Text>
           </TouchableOpacity>
         </View>
