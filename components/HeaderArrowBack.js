@@ -4,17 +4,19 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 
 
-
-const HeaderArrowBack = ({text, navigation}) => {
+//la felcha ebe ser un opcional, se debe poder mostrar sin flecha
+const HeaderArrowBack = ({text, navigation, arrow = true}) => {
   return (
-    <SafeAreaView>
+    <SafeAreaView >
+        {arrow && (
         <TouchableOpacity onPress={() => navigation.goBack()}>
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          size={30}
-          style={styles.iconArrowLeft}
-        />
+          <FontAwesomeIcon
+            icon={faArrowLeft}
+            size={30}
+            style={styles.iconArrowLeft}
+          />
         </TouchableOpacity>
+      )}
       <Text style={styles.title}>{text}</Text>
     </SafeAreaView>
   )
@@ -37,4 +39,5 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         marginTop: 30,
       },
+   
 })

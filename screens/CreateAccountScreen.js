@@ -12,7 +12,6 @@ import {
 
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
 } from "firebase/auth";
 
 import { initialAuth } from "../firebase";

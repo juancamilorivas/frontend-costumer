@@ -1,14 +1,15 @@
 import React from "react";
-import CreateGuideScreen from "../screens/CreateGuideScreen";
+import WarehouseScreen from "../screens/WarehouseScreen";
 import ServicesScreen from "../screens/ServicesScreen";
 import EnterGuideScreen from "../screens/EnterGuideScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faSquarePlus } from "@fortawesome/free-solid-svg-icons/faSquarePlus";
+import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faBars } from "@fortawesome/free-solid-svg-icons/faBars";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons/faCirclePlus";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
 import ProfileNavigation from "./ProfileNavigation";
+import ServicesNavigation from "./ServicesNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,17 +24,20 @@ const TabNavigation = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Create") {
+          if (route.name === "Bodega") {
             icon = (
-              <FontAwesomeIcon icon={faSquarePlus} size={size} color={color} />
+              <FontAwesomeIcon icon={faWarehouse} size={size} color={color} />
             );
-          } else if (route.name === "Services") {
-            icon = <FontAwesomeIcon icon={faBolt} size={size} color={color} />;
-          } else if (route.name === "Enter") {
+          } 
+          else if (route.name === "Services") {
+            icon = <FontAwesomeIcon icon={faLocationDot} size={size} color={color} />;
+          } 
+          else if (route.name === "Enter") {
             icon = (
-              <FontAwesomeIcon icon={faCirclePlus} size={size} color={color} />
+              <FontAwesomeIcon icon={faBolt} size={size} color={color} />
             );
-          } else if (route.name === "Options") {
+          } 
+          else if (route.name === "Options") {
             icon = <FontAwesomeIcon icon={faBars} size={size} color={color} />;
           }
 
@@ -44,12 +48,19 @@ const TabNavigation = () => {
       })}
     >
       <Tab.Screen
-        name="Create"
-        component={CreateGuideScreen}
+        name="Bodega"
+        component={ServicesNavigation}
         options={{
-          headerShown: false,
-          tabBarLabel: "Crear",
+          headerShown: true,
+          tabBarLabel: "Bodega",
           tabBarHideOnKeyboard: "true",
+          headerStyle: {
+            backgroundColor: '#000000',
+          },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
         }}
       />
 
@@ -58,7 +69,7 @@ const TabNavigation = () => {
         component={EnterGuideScreen}
         options={{
           headerShown: false,
-          tabBarLabel: "Ingresar",
+          tabBarLabel: "Servicios",
         }}
       />
 
@@ -67,7 +78,7 @@ const TabNavigation = () => {
         component={ServicesScreen}
         options={{
           headerShown: false,
-          tabBarLabel: "Servicios",
+          tabBarLabel: "Direccion",
         }}
       />
 
