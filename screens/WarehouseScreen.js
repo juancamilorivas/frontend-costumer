@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StyleSheet,
+  RefreshControl,
 } from "react-native";
 import React, { useCallback, useMemo } from "react";
 import BottomSheet, {
@@ -24,6 +25,7 @@ const WarehouseScreen = ({ navigation }) => {
   const [postsPerLoad] = React.useState(5);
   const [lastPost, setLastPost] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   //modal breakpoints
   const snapPoints = React.useMemo(() => ["53%", "70%"], []);
@@ -126,12 +128,13 @@ const WarehouseScreen = ({ navigation }) => {
         (data) => {
           setIsLoading(false);
           if (data.posts.length == 0) {
-            return () => {
-              null;
-            };
+            setLastPost(true);
+
           }
           setPosts([...data.posts]);
           setStartAfter(data.lastVisible);
+          setIsRefreshing(false); // Importante para detener el RefreshControl
+          setLastPost(false);
         },
 
         (error) => {
@@ -143,40 +146,127 @@ const WarehouseScreen = ({ navigation }) => {
       console.error(e);
       unsubscribee();
     }
-  }, []);
+  // }, []);
+    }, [isRefreshing]);
 
+  const onRefresh = () => {
+    setIsRefreshing(true); // Activa el estado de refresco
+  };
+
+
+
+
+
+
+
+  // const getMorePosts = () => {
+  //   try {
+  //     if (!lastPost) {
+  //       setIsLoading(true);
+
+  //       const unsubscribee = fetchMorePostsOnSnapshot(
+  //         postsPerLoad,
+  //         startAfter,
+  //         (dataa) => {
+  //           console.log("pase por aqui")
+  //           setIsLoading(false);
+  //           if (dataa.posts.length == 0) {
+  //             return () => {
+  //               setLastPost(false);
+  //             };
+  //           }
+  //           setIsLoading(false);
+
+  //           setPosts([...posts, ...dataa.posts]);
+  //           setStartAfter(dataa.lastVisible);
+  //         },
+  //         (error) => {
+  //           return () => {
+  //             console.error("Error fetching posts:", error);
+  //             unsubscribee();
+  //             setIsLoading(false);
+
+  //           };
+  //         }
+  //       );
+  //     } else {
+  //       console.log("No hay mas Posts");
+  //       setIsLoading(false);
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //     setIsLoading(false);
+  //     unsubscribee();
+  //   }
+  // };
+
+
+
+
+
+
+
+
+  // const getMorePosts = () => {
+  //   setIsLoading(true);
+  //   try {
+  //       fetchMorePostsOnSnapshot(
+  //         postsPerLoad,
+  //         startAfter,
+  //         (dataa) => {
+  //           console.log("pase por aqui")
+  //           if (dataa.posts.length == 0) {
+  //             setIsLoading(false);
+  //           }
+  //           setPosts([...posts, ...dataa.posts]);
+  //           setStartAfter(dataa.lastVisible);
+  //         },
+  //         (error) => {
+  //           return () => {
+  //             console.error("Error fetching posts:", error);
+  //             setIsLoading(false);
+  //           };
+  //         }
+  //       );
+  //       setIsLoading(false);
+  //   } catch (e) {
+  //     console.error(e);
+  //     setIsLoading(false);
+  //   }
+  // };
+
+
+
+
+ 
   const getMorePosts = () => {
-    setIsLoading(true);
-    try {
-      if (!lastPost) {
-        const unsubscribee = fetchMorePostsOnSnapshot(
-          postsPerLoad,
-          startAfter,
-          (dataa) => {
-            setIsLoading(false);
-            if (dataa.posts.length == 0) {
-              return () => {
-                setLastPost(true);
-              };
-            }
-            setPosts([...posts, ...dataa.posts]);
-            setStartAfter(dataa.lastVisible);
-          },
-          (error) => {
-            return () => {
-              console.error("Error fetching posts:", error);
-              unsubscribee();
-            };
+    if (!lastPost && startAfter) {
+      setIsLoading(true);
+      fetchMorePostsOnSnapshot(
+        postsPerLoad,
+        startAfter,
+        (dataa) => {
+          setIsLoading(false);
+          if (dataa.posts.length === 0) {
+            setLastPost(true);
+            return;
           }
-        );
-      } else {
-        console.log("No hay mas Posts");
-      }
-    } catch (e) {
-      console.error(e);
-      unsubscribee();
+          setPosts([...posts, ...dataa.posts]);
+          setStartAfter(dataa.lastVisible);
+        },
+        (error) => {
+          console.error("Error fetching more posts:", error);
+          setIsLoading(false);
+        }
+      );
+    } else {
+      setIsLoading(false);
     }
   };
+
+
+
+  
 
   function renderPosts({ item }) {
     return (
@@ -185,6 +275,9 @@ const WarehouseScreen = ({ navigation }) => {
           <ListItem.Title style={styles.titlee}>
             {item.postTitle}
           </ListItem.Title>
+          <ListItem.Subtitle>
+          ID: {item.postId}
+        </ListItem.Subtitle>
         </ListItem.Content>
       </ListItem>
     );
@@ -205,13 +298,21 @@ const WarehouseScreen = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={posts}
-          renderItem={renderPosts}
+          renderItem={ renderPosts}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           onEndReached={getMorePosts}
           onEndReachedThreshold={0.01}
           scrollEventThrottle={150}
-          ListFooterComponent={isLoading && renderLoader()}
+          ListFooterComponent={ renderLoader}
+          refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={["#aaa"]}
+            tintColor={"#aaa"}
+          />
+        }
         />
       </SafeAreaView>
 

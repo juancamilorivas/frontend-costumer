@@ -1,5 +1,4 @@
 import React from "react";
-import WarehouseScreen from "../screens/WarehouseScreen";
 import ServicesScreen from "../screens/ServicesScreen";
 import EnterGuideScreen from "../screens/EnterGuideScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -95,3 +94,4 @@ const TabNavigation = () => {
 };
 
 export default TabNavigation;
+
