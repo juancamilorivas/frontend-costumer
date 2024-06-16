@@ -18,14 +18,19 @@ import BottomSheet, {
 import { ListItem } from "@rneui/themed";
 import { fetchMorePostsOnSnapshot } from "../apiServices";
 import { fetchPostsOnSnapshot } from "../apiServices";
+// import { useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const WarehouseScreen = ({ navigation }) => {
+
+const WarehouseScreen = ({ navigation}) => {
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
   const [lastPost, setLastPost] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [uid, setUid] = React.useState(null);
+
 
   //modal breakpoints
   const snapPoints = React.useMemo(() => ["53%", "70%"], []);
@@ -47,6 +52,8 @@ const WarehouseScreen = ({ navigation }) => {
     ),
     []
   );
+
+  
 
   const data = useMemo(
     () => [
@@ -103,6 +110,25 @@ const WarehouseScreen = ({ navigation }) => {
     []
   );
 
+
+
+  React.useEffect(() => {
+    const getMyStringValue = async () => {
+      try {
+        const value = await AsyncStorage.getItem('key');
+        console.log('userId stored in storage:', value);
+        setUid(value);
+        if (value) {
+          console.log("esta es el uid", value)
+        } 
+      } catch (e) {
+        console.log('Something went wrong identifying user storage', e);
+      }
+    };
+    getMyStringValue()
+  }, []);
+
+
   //modal content
   const renderItem = useCallback(
     ({ item }) => (
@@ -140,100 +166,20 @@ const WarehouseScreen = ({ navigation }) => {
         (error) => {
           console.error("Error fetching posts:", error);
           unsubscribe();
-        }
+        },
+        console.log("aqui estoy como uid -------", uid),
+        uid
       );
     } catch (error) {
-      console.error(e);
-      unsubscribee();
+      console.error(error);
     }
   // }, []);
-    }, [isRefreshing]);
+    }, [isRefreshing, uid]);
 
   const onRefresh = () => {
     setIsRefreshing(true); // Activa el estado de refresco
   };
 
-
-
-
-
-
-
-  // const getMorePosts = () => {
-  //   try {
-  //     if (!lastPost) {
-  //       setIsLoading(true);
-
-  //       const unsubscribee = fetchMorePostsOnSnapshot(
-  //         postsPerLoad,
-  //         startAfter,
-  //         (dataa) => {
-  //           console.log("pase por aqui")
-  //           setIsLoading(false);
-  //           if (dataa.posts.length == 0) {
-  //             return () => {
-  //               setLastPost(false);
-  //             };
-  //           }
-  //           setIsLoading(false);
-
-  //           setPosts([...posts, ...dataa.posts]);
-  //           setStartAfter(dataa.lastVisible);
-  //         },
-  //         (error) => {
-  //           return () => {
-  //             console.error("Error fetching posts:", error);
-  //             unsubscribee();
-  //             setIsLoading(false);
-
-  //           };
-  //         }
-  //       );
-  //     } else {
-  //       console.log("No hay mas Posts");
-  //       setIsLoading(false);
-  //     }
-  //   } catch (e) {
-  //     console.error(e);
-  //     setIsLoading(false);
-  //     unsubscribee();
-  //   }
-  // };
-
-
-
-
-
-
-
-
-  // const getMorePosts = () => {
-  //   setIsLoading(true);
-  //   try {
-  //       fetchMorePostsOnSnapshot(
-  //         postsPerLoad,
-  //         startAfter,
-  //         (dataa) => {
-  //           console.log("pase por aqui")
-  //           if (dataa.posts.length == 0) {
-  //             setIsLoading(false);
-  //           }
-  //           setPosts([...posts, ...dataa.posts]);
-  //           setStartAfter(dataa.lastVisible);
-  //         },
-  //         (error) => {
-  //           return () => {
-  //             console.error("Error fetching posts:", error);
-  //             setIsLoading(false);
-  //           };
-  //         }
-  //       );
-  //       setIsLoading(false);
-  //   } catch (e) {
-  //     console.error(e);
-  //     setIsLoading(false);
-  //   }
-  // };
 
 
 
@@ -257,7 +203,8 @@ const WarehouseScreen = ({ navigation }) => {
         (error) => {
           console.error("Error fetching more posts:", error);
           setIsLoading(false);
-        }
+        },
+        uid
       );
     } else {
       setIsLoading(false);

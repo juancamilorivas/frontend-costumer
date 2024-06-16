@@ -92,7 +92,7 @@ const storeData = async (id) => {
             uid: userCredential.user.uid,
           })
         );
-        console.log("Signed In!!");
+        console.log("Signed In!!", userCredential.user.uid);
         storeData(userCredential.user.uid)
         navigation.navigate("TabsNavigation");
       })
