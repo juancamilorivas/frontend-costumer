@@ -1,6 +1,7 @@
 import {
   FlatList,
   Button,
+  Pressable,
   View,
   Image,
   Text,
@@ -18,11 +19,9 @@ import BottomSheet, {
 import { ListItem } from "@rneui/themed";
 import { fetchMorePostsOnSnapshot } from "../apiServices";
 import { fetchPostsOnSnapshot } from "../apiServices";
-// import { useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
-const WarehouseScreen = ({ navigation}) => {
+const WarehouseScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
@@ -31,15 +30,15 @@ const WarehouseScreen = ({ navigation}) => {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
 
-
   //modal breakpoints
-  const snapPoints = React.useMemo(() => ["53%", "70%"], []);
+  const snapPoints = React.useMemo(() => ["50%", "70%"], []);
 
   //modal state with ref
   const bottomSheetRef = React.useRef(null);
 
   //modal function
   const snapeToIndex = (index) => bottomSheetRef.current.snapToIndex(index);
+  const handleClosePress = () => bottomSheetRef.current.close();
 
   //modal shade that appears when the modal is open
   const renderBackdrop = React.useCallback(
@@ -52,8 +51,6 @@ const WarehouseScreen = ({ navigation}) => {
     ),
     []
   );
-
-  
 
   const data = useMemo(
     () => [
@@ -76,7 +73,7 @@ const WarehouseScreen = ({ navigation}) => {
         titulo: "Pagar",
         descripcion: "Realizar un pago por bienes o servicios.",
         imagen: require("../assets/payment.png"),
-        navigationPath: "PayTransport",
+        navigationPath: "StartTransport",
       },
       {
         id: 4,
@@ -110,31 +107,29 @@ const WarehouseScreen = ({ navigation}) => {
     []
   );
 
-
-
   React.useEffect(() => {
     const getMyStringValue = async () => {
       try {
-        const value = await AsyncStorage.getItem('key');
-        console.log('userId stored in storage:', value);
-        setUid(value);
+        const value = await AsyncStorage.getItem("key");
         if (value) {
-          console.log("esta es el uid", value)
-        } 
+          setUid(value);
+        }
       } catch (e) {
-        console.log('Something went wrong identifying user storage', e);
+        console.log("Something went wrong identifying user storage", e);
       }
     };
-    getMyStringValue()
+    getMyStringValue();
   }, []);
 
-
-  //modal content
+  //MODAL CONTENT
   const renderItem = useCallback(
     ({ item }) => (
       <TouchableOpacity
         style={styles.itemContainer}
-        onPress={() => navigation.navigate(item.navigationPath)}
+        onPress={async () => {
+          await handleClosePress();
+          navigation.navigate(item.navigationPath, { uid: uid });
+        }}
       >
         <Image source={item.imagen} style={styles.itemImage} />
         <View style={styles.itemContainerIntern}>
@@ -155,36 +150,28 @@ const WarehouseScreen = ({ navigation}) => {
           setIsLoading(false);
           if (data.posts.length == 0) {
             setLastPost(true);
-
           }
           setPosts([...data.posts]);
           setStartAfter(data.lastVisible);
           setIsRefreshing(false); // Importante para detener el RefreshControl
           setLastPost(false);
         },
-
         (error) => {
-          console.error("Error fetching posts:", error);
           unsubscribe();
         },
-        console.log("aqui estoy como uid -------", uid),
         uid
       );
     } catch (error) {
       console.error(error);
     }
-  // }, []);
-    }, [isRefreshing, uid]);
+    // }, []);
+  }, [isRefreshing, uid]);
 
   const onRefresh = () => {
     setIsRefreshing(true); // Activa el estado de refresco
   };
 
-
-
-
-
- 
+  //GET MORE POSTS
   const getMorePosts = () => {
     if (!lastPost && startAfter) {
       setIsLoading(true);
@@ -211,22 +198,26 @@ const WarehouseScreen = ({ navigation}) => {
     }
   };
 
-
-
-  
-
+  // SCREEN CONTENT
   function renderPosts({ item }) {
+    const createdAtDate = new Date(item.createdAt.seconds * 1000);
+    const formattedDate = createdAtDate.toLocaleString("es-ES"); 
+    const descriptionInUpperCase = item.description.toUpperCase(); 
+
     return (
-      <ListItem key={item.postId}>
+      <TouchableOpacity onPress={() => snapeToIndex(0)}>
+      <ListItem key={item.postId} >
         <ListItem.Content style={styles.itemContent}>
-          <ListItem.Title style={styles.titlee}>
-            {item.postTitle}
-          </ListItem.Title>
-          <ListItem.Subtitle>
-          ID: {item.postId}
-        </ListItem.Subtitle>
+          <ListItem.Title style={styles.shippingNumber}>{item.postId}</ListItem.Title>
+          <ListItem.Subtitle style={styles.dateText}>{formattedDate}</ListItem.Subtitle>
+            <View style={styles.descriptionAndWeight}>
+              <Text style={styles.descriptionText}>{descriptionInUpperCase}</Text>
+              <Text style={styles.weightText}>{item.weight} LB</Text>
+            </View>
         </ListItem.Content>
       </ListItem>
+      </TouchableOpacity>
+
     );
   }
 
@@ -240,26 +231,26 @@ const WarehouseScreen = ({ navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Button title="snap to 0" onPress={() => snapeToIndex(0)} />
+      {/* <Button title="snap to 0" onPress={() => snapeToIndex(0)} /> */}
 
       <SafeAreaView style={styles.container}>
         <FlatList
           data={posts}
-          renderItem={ renderPosts}
+          renderItem={renderPosts}
           keyExtractor={(item, index) => index.toString()}
           showsVerticalScrollIndicator={false}
           onEndReached={getMorePosts}
           onEndReachedThreshold={0.01}
           scrollEventThrottle={150}
-          ListFooterComponent={ renderLoader}
+          ListFooterComponent={renderLoader}
           refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-            colors={["#aaa"]}
-            tintColor={"#aaa"}
-          />
-        }
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={["#aaa"]}
+              tintColor={"#aaa"}
+            />
+          }
         />
       </SafeAreaView>
 
@@ -285,18 +276,23 @@ const WarehouseScreen = ({ navigation}) => {
 export default WarehouseScreen;
 
 const styles = StyleSheet.create({
-  titlee: {
-    color: "red",
+  shippingNumber: {
+    fontWeight: "bold",
+    fontSize: 18,
   },
   container: {
     backgroundColor: "white",
     flex: 1,
   },
   itemContent: {
-    backgroundColor: "gray",
+    backgroundColor: "white",
     height: 100,
     padding: 10,
+    width: "100%",
     justifyContent: "flex-start",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+    gap: 8,
   },
   title: {
     fontSize: 40,
@@ -308,8 +304,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     alignItems: "start",
-    paddingRight: 10,
-    paddingLeft: 10,
+    marginRight: 10,
+    marginLeft: 10,
+    alignItems: "center"
   },
   itemContainer: {
     margin: 6,
@@ -332,4 +329,29 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
   },
+  itemImage: {
+    height: 45,
+    width: 45,
+  },
+  descriptionAndWeight: {
+    width: "100%",
+    flexDirection: 'row',
+    justifyContent: "space-between",
+  },
+  descriptionText: {
+    fontWeight: "bold",
+    fontSize: 13, 
+  },
+  weightText: {
+    fontWeight: "bold",
+  },
+  weightText: {
+    fontWeight: "bold",
+    color: "#5E17EB",
+    paddingRight: 20,
+    fontSize: 18,
+  },
+  dateText: {
+    fontStyle: "italic"
+  }
 });

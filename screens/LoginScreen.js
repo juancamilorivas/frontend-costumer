@@ -94,6 +94,14 @@ const storeData = async (id) => {
         );
         console.log("Signed In!!", userCredential.user.uid);
         storeData(userCredential.user.uid)
+        dispatch(
+          setUser({
+            authentication: true,
+            email: userCredential.user.email,
+            accessToken: userCredential.user.accessToken,
+            uid: userCredential.user.uid,
+          })
+        );
         navigation.navigate("TabsNavigation");
       })
       .catch((error) => {

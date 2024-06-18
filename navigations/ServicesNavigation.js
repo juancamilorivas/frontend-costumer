@@ -8,6 +8,8 @@ import RepackScreen from "../screens/RepackScreen";
 import DeleteTrackingScreen from "../screens/DeleteTrackingScreen";
 import ViewDetailsScreen from "../screens/ViewDetailsScreen";
 import InAndOutScreen from "../screens/InAndOutScreen";
+import StartTransportNavigation from "./StartTransportNavigation";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -31,11 +33,9 @@ const ServicesNavigation = () => {
         options={{ headerShown: false }}
       />
 
-   
-
       <Stack.Screen
-        name="PayTransport"
-        component={PayTransportScreen}
+        name="StartTransport"
+        component={StartTransportNavigation}
         options={{ headerShown: false }}
       />
 

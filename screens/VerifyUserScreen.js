@@ -1,16 +1,13 @@
 import React, { useEffect } from "react";
 import { StyleSheet, SafeAreaView, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import WarehouseScreen from "./WarehouseScreen";
 
 const VerifyUserScreen = ({ navigation }) => {
-  // const [uid, setUid] = React.useState(null);
   useEffect(() => {
     const getMyStringValue = async () => {
       try {
         const value = await AsyncStorage.getItem('key');
-        console.log('este es el uid desde warehouse:', value);
-        setUid(value); 
+        console.log('UID desde verifing user:', value);
         if (value) {
           navigation.navigate("TabsNavigation");
         } else {
@@ -27,7 +24,6 @@ const VerifyUserScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-        {/* <WarehouseScreen uid={uid}/> */}
         <ActivityIndicator size="large" color="#fff" />
     </SafeAreaView>
   );

@@ -143,7 +143,7 @@ const CreateScreen = ({ navigation }) => {
         cedula: cedula,
       };
       const uid = userCredential.user.uid;
-      console.log("casillero guardadooo", locker);
+      console.log("casillero guardao", locker);
       storeData(uid);
       try {
         const userDocRef = doc(db, "users", uid);

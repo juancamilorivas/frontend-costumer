@@ -77,11 +77,10 @@ export const fetchMorePosts = async (startAfterr, postsPerLoad) => {
 
 // FETCH POSTS ON SNAPSHOT
 export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
-  console.log("soy el uidddddddd", uid)
+  // console.log("soy el uidddddddd", uid)
   const q = query(
-    // collection(db, "users/{uid}/shipments"),
-    // collection(db, `users/${uid}/shipments`),
-    collection(db, "blogPosts"),
+    // collection(db, "blogPosts"),
+        collection(db, `users/${uid}/shipments`),
     orderBy("createdAt", "asc"),
     limit(postsPerLoad)
   );
@@ -111,10 +110,10 @@ export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
 
 //// FETCH MORE POSTS ON SNAPSHOT
 export const fetchMorePostsOnSnapshot = (postsPerLoad, lastVisible, onData, onError, uid) => {
-  console.log("jajajajajajajaj", uid)
+  // console.log("jajajajajajajaj", uid)
   const q = query(
-    collection(db, "blogPosts"),
-    // collection(db, `users/${uid}/shipments`),
+    // collection(db, "blogPosts"),
+    collection(db, `users/${uid}/shipments`),
     orderBy("createdAt", "asc"),
     limit(postsPerLoad),
     startAfter(lastVisible) // Fetch posts after the last visible one

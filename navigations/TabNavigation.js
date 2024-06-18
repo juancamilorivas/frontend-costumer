@@ -1,12 +1,11 @@
 import React from "react";
-import ServicesScreen from "../screens/ServicesScreen";
+// import ServicesScreen from "../screens/ServicesScreen";
 import EnterGuideScreen from "../screens/EnterGuideScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { faBars } from "@fortawesome/free-solid-svg-icons/faBars";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
 import ProfileNavigation from "./ProfileNavigation";
 import ServicesNavigation from "./ServicesNavigation";
 
@@ -28,9 +27,6 @@ const TabNavigation = () => {
               <FontAwesomeIcon icon={faWarehouse} size={size} color={color} />
             );
           } 
-          else if (route.name === "Services") {
-            icon = <FontAwesomeIcon icon={faLocationDot} size={size} color={color} />;
-          } 
           else if (route.name === "Enter") {
             icon = (
               <FontAwesomeIcon icon={faBolt} size={size} color={color} />
@@ -50,7 +46,7 @@ const TabNavigation = () => {
         name="Bodega"
         component={ServicesNavigation}
         options={{
-          headerShown: true,
+          headerShown: false,
           tabBarLabel: "Bodega",
           tabBarHideOnKeyboard: "true",
           headerStyle: {
@@ -69,15 +65,6 @@ const TabNavigation = () => {
         options={{
           headerShown: false,
           tabBarLabel: "Servicios",
-        }}
-      />
-
-      <Tab.Screen
-        name="Services"
-        component={ServicesScreen}
-        options={{
-          headerShown: false,
-          tabBarLabel: "Direccion",
         }}
       />
 

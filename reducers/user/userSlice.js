@@ -17,6 +17,7 @@ export const userSlice = createSlice({
       state.email = action.payload.email
       state.accessToken = action.payload.accessToken
       state.uid = action.payload.uid
+      console.log("Hola, estoy en redux", {uid})
     },
     unsetUser: (state ) => {
         state.authentication = false;

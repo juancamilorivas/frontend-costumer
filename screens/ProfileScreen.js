@@ -15,6 +15,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signOut } from "firebase/auth";
 import { initialAuth } from "../firebase";
 import Header from '../components/Header'
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
+
 
 const ProfileScreen = ({ navigation }) => {
   const [storedValue, setStoredValue] = useState(null);
@@ -76,15 +78,16 @@ const ProfileScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.options}
-          onPress={() => navigation.navigate("HistoricalServices")}
+          onPress={() => navigation.navigate("Address")}
         >
           <FontAwesomeIcon
-            icon={faClockRotateLeft}
+            icon={faLocationDot}
             size={20}
             style={styles.icon}
           />
-          <Text style={styles.textOptions}>Historial de servicios</Text>
+          <Text style={styles.textOptions}>Direccion</Text>
         </TouchableOpacity>
+        
 
         <TouchableOpacity style={styles.options} onPress={handleSignOut}>
           <FontAwesomeIcon

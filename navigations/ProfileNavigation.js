@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ProfileScreen from "../screens/ProfileScreen";
 import PersonalDataScreen from "../screens/PersonalDataScreen";
 import SearchScreen from "../screens/SearchScreen";
-import ServiceHistory from "../screens/ServiceHistory";
+import AddressScreen from "../screens/AddressScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,8 +33,8 @@ const ProfileNavigation = () => {
       />
 
       <Stack.Screen
-        name="HistoricalServices"
-        component={ServiceHistory}
+        name="Address"
+        component={AddressScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
