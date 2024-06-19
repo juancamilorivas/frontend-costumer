@@ -39,17 +39,13 @@ const StartTransportNavigation = ({ navigation }) => {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            // <Button
-            //   onPress={() => alert("Botón presionado!")}
-            //   title="Botón"
-            //   color="#ffffff"
-            // />
-            <TouchableOpacity
-            onPress={() => alert("Botón presionado!")}
-          >
-            <FontAwesomeIcon icon={faCircleQuestion} size={25} color="#ffffff" />
-          </TouchableOpacity>
-
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
           ),
         }}
       />
@@ -61,23 +57,135 @@ const StartTransportNavigation = ({ navigation }) => {
       <Stack.Screen
         name="SendToAnotherPerson"
         component={SendToAnotherPersonScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Destinatario",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="DeclaredValue"
         component={DeclaredValueScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Valor declarado",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
 
       <Stack.Screen
         name="LocalCarrierInsurance"
         component={LocalCarrierInsuranceScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Seguro nacional",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="PaymentResume"
         component={PaymentResumeScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Resumen del servicio",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
     </Stack.Navigator>
   );

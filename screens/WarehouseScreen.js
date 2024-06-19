@@ -1,7 +1,5 @@
 import {
   FlatList,
-  Button,
-  Pressable,
   View,
   Image,
   Text,
