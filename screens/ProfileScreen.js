@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  View,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
@@ -14,7 +15,7 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyin
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signOut } from "firebase/auth";
 import { initialAuth } from "../firebase";
-import Header from '../components/Header'
+// import Header from '../components/Header'
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
 
 
@@ -53,36 +54,30 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
- 
-    <Header text="Opciones"/>
+     
+
+     <View style={styles.mainTitleContainer}>
+      <Text style={styles.mainTitle}>Opciones</Text>
+      </View>
+
+     
       <ScrollView style={styles.container}>
         <TouchableOpacity
           style={styles.options}
           onPress={() => navigation.navigate("PersonalData")}
         >
-          <FontAwesomeIcon icon={faUser} size={20} style={styles.icon} />
+          <FontAwesomeIcon icon={faUser} size={25} style={styles.icon} />
           <Text style={styles.textOptions}>Datos personales</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.options}
-          onPress={() => navigation.navigate("Search")}
-        >
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            size={20}
-            style={styles.icon}
-          />
-          <Text style={styles.textOptions}>Buscar guia</Text>
-        </TouchableOpacity>
-
+  
         <TouchableOpacity
           style={styles.options}
           onPress={() => navigation.navigate("Address")}
         >
           <FontAwesomeIcon
             icon={faLocationDot}
-            size={20}
+            size={25}
             style={styles.icon}
           />
           <Text style={styles.textOptions}>Direccion</Text>
@@ -92,7 +87,7 @@ const ProfileScreen = ({ navigation }) => {
         <TouchableOpacity style={styles.options} onPress={handleSignOut}>
           <FontAwesomeIcon
             icon={faArrowRightFromBracket}
-            size={20}
+            size={25}
             style={styles.icon}
           />
           <Text style={styles.textOptions}>Cerrar sesion</Text>
@@ -111,26 +106,36 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingHorizontal: 20
+
   },
   options: {
-    height: 50,
+    height: 55,
     width: "100%",
     backgroundColor: "white",
     justifyContent: "flex-start",
     alignItems: "center",
     flexDirection: "row",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "gray",
   },
   icon: {
     marginLeft: 30,
   },
-
   textOptions: {
     marginLeft: 30,
     fontSize: 15,
     color: "#232323",
   },
-
   headerText: {
     color: "white",
   },
+  mainTitle: {
+    fontSize: 45,
+  },
+  mainTitleContainer: {
+    paddingLeft: 10,
+    paddingTop: 60,
+    paddingBottom: 30,
+  }
 });

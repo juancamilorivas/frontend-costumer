@@ -20,7 +20,7 @@ const StartTransportNavigation = ({ navigation }) => {
         name="Recipient"
         component={RecipientScreen}
         options={{
-          title: "¿ Quien Recibe ?",
+          title: "Opciones de entrega",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#000000",

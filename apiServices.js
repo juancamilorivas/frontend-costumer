@@ -133,3 +133,168 @@ export const fetchMorePostsOnSnapshot = (postsPerLoad, lastVisible, onData, onEr
 
   return unsubscribe;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// FETCH FAVORITES ON SNAPSHOT
+export const fetchFavoritesOnSnapshot = (postsPerLoad, onData, onError, uid) => {
+  const q = query(
+        collection(db, `users/${uid}/favoriteAddresses`),
+    orderBy("createdAt", "asc"),
+    limit(postsPerLoad)
+  );
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      
+      let postData = doc.data();
+      postData.postId = doc.id;
+      posts.push(postData);
+    // console.log("FETCH POSTS ONSNAPSHOT");
+    });
+
+    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+    onData({ posts, lastVisible });
+  }, onError);
+
+  return unsubscribe;
+};
+
+
+
+
+
+
+
+
+//// FETCH MORE FAVORITES ON SNAPSHOT
+export const fetchMoreFavoritesOnSnapshot = (postsPerLoad, lastVisible, onData, onError, uid) => {
+  const q = query(
+    collection(db, `users/${uid}/favoriteAddresses`),
+    orderBy("createdAt", "asc"),
+    limit(postsPerLoad),
+    startAfter(lastVisible) // Fetch posts after the last visible one
+  );
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      let postData = doc.data();
+      postData.postId = doc.id;
+      posts.push(postData);
+    });
+
+    const newLastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+    onData({ posts, lastVisible: newLastVisible });
+  }, onError);
+
+  return unsubscribe;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// FETCH FAVORITES ON SNAPSHOT
+export const fetchServicesOnSnapshot = (postsPerLoad, onData, onError, uid) => {
+  const q = query(
+        collection(db, `users/${uid}/services`),
+    orderBy("createdAt", "desc"),
+    limit(postsPerLoad)
+  );
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      
+      let postData = doc.data();
+      postData.postId = doc.id;
+      posts.push(postData);
+    // console.log("FETCH POSTS ONSNAPSHOT");
+    });
+
+    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+    onData({ posts, lastVisible });
+  }, onError);
+
+  return unsubscribe;
+};
+
+
+
+
+
+
+
+
+//// FETCH MORE FAVORITES ON SNAPSHOT
+export const fetchMoreServicesOnSnapshot = (postsPerLoad, lastVisible, onData, onError, uid) => {
+  const q = query(
+    collection(db, `users/${uid}/services`),
+    orderBy("createdAt", "desc"),
+    limit(postsPerLoad),
+    startAfter(lastVisible) // Fetch posts after the last visible one
+  );
+
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const posts = [];
+    querySnapshot.forEach((doc) => {
+      let postData = doc.data();
+      postData.postId = doc.id;
+      posts.push(postData);
+    });
+
+    const newLastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
+    onData({ posts, lastVisible: newLastVisible });
+  }, onError);
+
+  return unsubscribe;
+};

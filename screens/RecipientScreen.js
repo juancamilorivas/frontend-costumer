@@ -10,12 +10,13 @@ import {
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
+import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import React from "react";
-import { ListItem } from "@rneui/themed";
-import { fetchMorePostsOnSnapshot } from "../apiServices";
-import { fetchPostsOnSnapshot } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchFavoritesOnSnapshot } from "../apiServices";
+import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
+
 
 const RecipientScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
@@ -44,10 +45,10 @@ const RecipientScreen = ({ navigation }) => {
 
 
 
-  //GET POSTS
+  //GET FAVORITES
   React.useEffect(() => {
     try {
-      const unsubscribe = fetchPostsOnSnapshot(
+      const unsubscribe = fetchFavoritesOnSnapshot(
         postsPerLoad,
         (data) => {
           setIsLoading(false);
@@ -74,11 +75,11 @@ const RecipientScreen = ({ navigation }) => {
     setIsRefreshing(true); // Activa el estado de refresco
   };
 
-  //GET MORE POSTS
+  //GET MORE FAVORITES
   const getMorePosts = () => {
     if (!lastPost && startAfter) {
       setIsLoading(true);
-      fetchMorePostsOnSnapshot(
+      fetchMoreFavoritesOnSnapshot(
         postsPerLoad,
         startAfter,
         (dataa) => {
@@ -101,11 +102,8 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-  // FVORITES CONTENT FROM FIREBASE
+  // FVORITES SCROLL SECTION 
   function renderPosts({ item }) {
-    const createdAtDate = new Date(item.createdAt.seconds * 1000);
-    const formattedDate = createdAtDate.toLocaleString("es-ES"); 
-    const descriptionInUpperCase = item.description.toUpperCase(); 
     return (
       <TouchableOpacity
         style={styles.defaultMainContainer}
@@ -116,11 +114,10 @@ const RecipientScreen = ({ navigation }) => {
         <View style={styles.containerIconTexts}>
           <View style={styles.containerDefaultTexts}>
             <Text style={styles.favoriteDefaultName}>
-            {item.description}
+            {item.name} {item.surname} 
             </Text>
             <Text numberOfLines={1} ellipsizeMode="tail">
-              Calle 24c # 84 - 84 Int 3 Apto 117 Lote 1 Calle 24c # 84 - 84 Int
-              3 Apto 117 Lote 1
+            {item.address}
             </Text>
           </View>
         </View>
@@ -141,34 +138,6 @@ const RecipientScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Button title="snap to 0" onPress={() => snapeToIndex(0)} /> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       <View>
       {/* enviar a otra persona */}
@@ -179,8 +148,23 @@ const RecipientScreen = ({ navigation }) => {
         }}
       >
         <View style={styles.itemContainerIntern}>
-          <FontAwesomeIcon icon={faUser} size={20} color="#000000" />
+          <FontAwesomeIcon icon={faUser} size={20} color="gray" />
           <Text style={styles.itemTitle}>Enviar a otra persona</Text>
+        </View>
+      </TouchableOpacity>
+
+
+
+        {/* recoger en bodega */}
+      <TouchableOpacity
+        style={styles.itemContainerRecogerEnBodega}
+        onPress={() => {
+          navigation.navigate("DeclaredValue");
+        }}
+      >
+        <View style={styles.itemContainerIntern}>
+          <FontAwesomeIcon icon={faWarehouse} size={20} color="gray" />
+          <Text style={styles.itemTitle}>Recoger en bodega Bogota</Text>
         </View>
       </TouchableOpacity>
 
@@ -214,29 +198,7 @@ const RecipientScreen = ({ navigation }) => {
     </View>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* flat list favorites */}
+      {/* flat list favorites section */}
       <SafeAreaView style={styles.container}>
         <FlatList
           data={posts}
@@ -315,6 +277,14 @@ const styles = StyleSheet.create({
     height: 62,
     width: "100%",
     justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
+  },
+  itemContainerRecogerEnBodega: {
+    height: 62,
+    width: "100%",
+    justifyContent: "center",
+
   },
   itemContainerIntern: {
     flexDirection: "row",

@@ -29,7 +29,7 @@ const WarehouseScreen = ({ navigation }) => {
   const [uid, setUid] = React.useState(null);
 
   //modal breakpoints
-  const snapPoints = React.useMemo(() => ["50%", "70%"], []);
+  const snapPoints = React.useMemo(() => ["50%", "65%"], []);
 
   //modal state with ref
   const bottomSheetRef = React.useRef(null);
@@ -73,27 +73,27 @@ const WarehouseScreen = ({ navigation }) => {
         imagen: require("../assets/payment.png"),
         navigationPath: "StartTransport",
       },
-      {
-        id: 4,
-        titulo: "Reempacar",
-        descripcion: "Empacar nuevamente productos o elementos.",
-        imagen: require("../assets/consolidar.png"),
-        navigationPath: "Repack",
-      },
-      {
-        id: 5,
-        titulo: "In and out",
-        descripcion: "Proceso de entrada y salida de elementos.",
-        imagen: require("../assets/consolidar.png"),
-        navigationPath: "InAndOut",
-      },
-      {
-        id: 6,
-        titulo: "Eliminar",
-        descripcion: "Remover o borrar un elemento.",
-        imagen: require("../assets/consolidar.png"),
-        navigationPath: "DeleteTracking",
-      },
+      // {
+      //   id: 4,
+      //   titulo: "Reempacar",
+      //   descripcion: "Empacar nuevamente productos o elementos.",
+      //   imagen: require("../assets/consolidar.png"),
+      //   navigationPath: "Repack",
+      // },
+      // {
+      //   id: 5,
+      //   titulo: "In and out",
+      //   descripcion: "Proceso de entrada y salida de elementos.",
+      //   imagen: require("../assets/consolidar.png"),
+      //   navigationPath: "InAndOut",
+      // },
+      // {
+      //   id: 6,
+      //   titulo: "Eliminar",
+      //   descripcion: "Remover o borrar un elemento.",
+      //   imagen: require("../assets/consolidar.png"),
+      //   navigationPath: "DeleteTracking",
+      // },
       {
         id: 7,
         titulo: "Ver guía",
@@ -199,23 +199,28 @@ const WarehouseScreen = ({ navigation }) => {
   // SCREEN CONTENT
   function renderPosts({ item }) {
     const createdAtDate = new Date(item.createdAt.seconds * 1000);
-    const formattedDate = createdAtDate.toLocaleString("es-ES"); 
-    const descriptionInUpperCase = item.description.toUpperCase(); 
+    const formattedDate = createdAtDate.toLocaleString("es-ES");
+    const descriptionInUpperCase = item.description.toUpperCase();
 
     return (
       <TouchableOpacity onPress={() => snapeToIndex(0)}>
-      <ListItem key={item.postId} >
-        <ListItem.Content style={styles.itemContent}>
-          <ListItem.Title style={styles.shippingNumber}>{item.postId}</ListItem.Title>
-          <ListItem.Subtitle style={styles.dateText}>{formattedDate}</ListItem.Subtitle>
+        <ListItem key={item.postId}>
+          <ListItem.Content style={styles.itemContent}>
+            <ListItem.Title style={styles.shippingNumber}>
+              {item.postId}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.dateText}>
+              {formattedDate}
+            </ListItem.Subtitle>
             <View style={styles.descriptionAndWeight}>
-              <Text style={styles.descriptionText}>{descriptionInUpperCase}</Text>
+              <Text style={styles.descriptionText}>
+                {descriptionInUpperCase}
+              </Text>
               <Text style={styles.weightText}>{item.weight} LB</Text>
             </View>
-        </ListItem.Content>
-      </ListItem>
+          </ListItem.Content>
+        </ListItem>
       </TouchableOpacity>
-
     );
   }
 
@@ -285,7 +290,7 @@ const styles = StyleSheet.create({
   itemContent: {
     backgroundColor: "white",
     height: 100,
-    padding: 10,
+    paddingHorizontal: 10,
     width: "100%",
     justifyContent: "flex-start",
     borderBottomWidth: 1,
@@ -304,14 +309,14 @@ const styles = StyleSheet.create({
     alignItems: "start",
     marginRight: 10,
     marginLeft: 10,
-    alignItems: "center"
+    alignItems: "center",
   },
   itemContainer: {
     margin: 6,
     flexDirection: "row",
-    gap: 10,
     alignItems: "center",
     height: 80,
+    gap: 15,
     borderBottomWidth: 1,
     borderBottomColor: "gray",
   },
@@ -319,6 +324,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "80%",
     gap: 5,
+
   },
   itemDescription: {
     fontSize: 15,
@@ -333,12 +339,12 @@ const styles = StyleSheet.create({
   },
   descriptionAndWeight: {
     width: "100%",
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   descriptionText: {
     fontWeight: "bold",
-    fontSize: 13, 
+    fontSize: 13,
   },
   weightText: {
     fontWeight: "bold",
@@ -350,6 +356,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   dateText: {
-    fontStyle: "italic"
-  }
+    fontStyle: "italic",
+  },
 });

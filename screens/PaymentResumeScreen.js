@@ -177,26 +177,15 @@ const PaymentResumeScreen = ({ navigation }) => {
         <View style={styles.totalContainerRow}>
           <View style={styles.lastColumStyle}>
             <Text
-              style={{
-                backgroundColor: "white",
-                textAlign: "left",
-                marginLeft: 10,
-                marginTop: 10
-              }}
+              style={styles.totalTitle}
             >
-              Total
+              Valor total
             </Text>
           </View>
 
           <View style={styles.lastColumStyle}>
             <Text
-              style={{
-                backgroundColor: "white",
-                textAlign: "right",
-                marginRight: 10,
-                marginTop: 10
-
-              }}
+              style={styles.totalValue}
             >
               $141.200
             </Text>
@@ -330,6 +319,21 @@ const styles = StyleSheet.create({
   safeArea: {
     backgroundColor: "#C4C4C4",
     flex: 1,
-
   },
+  totalTitle: {
+    backgroundColor: "white",
+    textAlign: "left",
+    marginLeft: 10,
+    marginTop: 10,
+    color: "#0038FF",
+    fontWeight: "bold",
+  },
+  totalValue: {
+    backgroundColor: "white",
+    color: "#0038FF",
+    fontWeight: "bold",
+    textAlign: "right",
+    marginRight: 10,
+    marginTop: 10,
+  }
 });

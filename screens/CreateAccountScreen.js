@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+// import { createUserWithEmailAndPassword, getAuth, getIdToken } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -29,7 +30,11 @@ import {
 
 const sfDocRef = doc(db, "guia", "config");
 
+
 const CreateScreen = ({ navigation }) => {
+
+  // const auth = getAuth();
+
   const MAX_RETRIES = 3;
   let retries = 0;
 
@@ -39,6 +44,7 @@ const CreateScreen = ({ navigation }) => {
   const [apellidos, setApellidos] = useState("");
   const [cedula, setCedula] = useState("");
   const [password, setPassword] = useState("");
+  
 
   //CONSTS
   const dispatch = useDispatch();
@@ -153,6 +159,14 @@ const CreateScreen = ({ navigation }) => {
         console.error("Error saving user data:", error);
       }
 
+
+      // const userToken = auth.currentUser;
+      // const idToken = await getIdToken(userToken);
+      // console.log('ID Token del usuario actual:', idToken);
+
+
+  
+
       navigation.navigate("TabsNavigation");
     } catch (error) {
       Alert.alert(
@@ -161,6 +175,57 @@ const CreateScreen = ({ navigation }) => {
       );
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    // const callAuthenticatedFunction = async () => {
+    //   try {
+    //     const response = await fetch('https://helloworld-zrcl5qd7da-uc.a.run.app', {
+    //       method: 'GET',
+    //       headers: {
+    //         // Authorization: `Bearer ${token}`,
+    //         'Content-Type': 'application/json',
+    //       },
+    //     });
+    
+    //     if (!response.ok) {
+    //       throw new Error('Error calling Cloud Function');
+    //     }
+    
+    //     const contentType = response.headers.get('content-type');
+    //     if (contentType && contentType.includes('application/json')) {
+    //       const data = await response.json();
+    //       console.log('Cloud Function response:', data);
+    //     } else {
+    //       const text = await response.text();
+    //       console.log('Unexpected response from Cloud Function:', text);
+    //     }
+    //   } catch (error) {
+    //     console.error('Error calling Cloud Function:', error);
+    //   }
+    // };
+    
+    // callAuthenticatedFunction();
+    
+
+
+
+
+
+
+
+
+
+    
 
 
 

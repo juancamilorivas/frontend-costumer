@@ -1,101 +1,159 @@
-import React from "react";
 import {
   FlatList,
   View,
+  Text,
   ActivityIndicator,
   SafeAreaView,
+  TouchableOpacity,
   StyleSheet,
-  // RefreshControl,
+  RefreshControl,
 } from "react-native";
+import React from "react";
 import { ListItem } from "@rneui/themed";
-import { fetchMorePostsOnSnapshot } from "../apiServices";
-import { fetchPostsOnSnapshot } from "../apiServices";
-import Header from "../components/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchServicesOnSnapshot } from "../apiServices";
+import { fetchMoreServicesOnSnapshot } from "../apiServices";
 
-const ServicesScreen = () => {
+const ServicesScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
   const [lastPost, setLastPost] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  // const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [uid, setUid] = React.useState(null);
 
-  //GET POSTS
+  React.useEffect(() => {
+    const getMyStringValue = async () => {
+      try {
+        const value = await AsyncStorage.getItem("key");
+        if (value) {
+          setUid(value);
+        }
+      } catch (e) {
+        console.log("Something went wrong identifying user storage", e);
+      }
+    };
+    getMyStringValue();
+  }, []);
+
+  //GET SERVICES
   React.useEffect(() => {
     try {
-      const unsubscribe = fetchPostsOnSnapshot(
+      const unsubscribe = fetchServicesOnSnapshot(
         postsPerLoad,
         (data) => {
           setIsLoading(false);
           if (data.posts.length == 0) {
-            return () => {
-              null;
-            };
+            setLastPost(true);
           }
           setPosts([...data.posts]);
-          setStartAfter(data.lastVisible); // Set last visible post
-          // setIsRefreshing(false); // Importante para detener el RefreshControl
+          setStartAfter(data.lastVisible);
+          setIsRefreshing(false); // Importante para detener el RefreshControl
+          setLastPost(false);
         },
-
         (error) => {
-          console.error("Error fetching posts:", error);
           unsubscribe();
-        }
+        },
+        uid
       );
     } catch (error) {
-      console.error(e);
-      unsubscribee();
+      console.error(error);
     }
-  }, []);
-  // }, [isRefreshing]);
+    // }, []);
+  }, [isRefreshing, uid]);
 
-  // const onRefresh = () => {
-  //   setIsRefreshing(true); // Activa el estado de refresco
-  // };
+  const onRefresh = () => {
+    setIsRefreshing(true); // Activa el estado de refresco
+  };
 
+  //GET MORE SERVICES
   const getMorePosts = () => {
-    setIsLoading(true);
-    try {
-      if (!lastPost) {
-        const unsubscribee = fetchMorePostsOnSnapshot(
-          postsPerLoad,
-          startAfter,
-          (dataa) => {
-            setIsLoading(false);
-            if (dataa.posts.length == 0) {
-              return () => {
-                setLastPost(true);
-              };
-            }
-            setPosts([...posts, ...dataa.posts]);
-            setStartAfter(dataa.lastVisible); // Set last visible post
-          },
-          (error) => {
-            return () => {
-              console.error("Error fetching posts:", error);
-              unsubscribee();
-            };
+    if (!lastPost && startAfter) {
+      setIsLoading(true);
+      fetchMoreServicesOnSnapshot(
+        postsPerLoad,
+        startAfter,
+        (dataa) => {
+          setIsLoading(false);
+          if (dataa.posts.length === 0) {
+            setLastPost(true);
+            return;
           }
-        );
-      } else {
-        console.log("No hay mas Posts");
-      }
-    } catch (e) {
-      console.error(e);
-      unsubscribee();
+          setPosts([...posts, ...dataa.posts]);
+          setStartAfter(dataa.lastVisible);
+        },
+        (error) => {
+          console.error("Error fetching more posts:", error);
+          setIsLoading(false);
+        },
+        uid
+      );
+    } else {
+      setIsLoading(false);
     }
   };
 
+  // Function to determine the background color based on currentState
+  const getCurrentStateStyle = (currentState) => {
+    switch (currentState) {
+      case "Pagado":
+        return { backgroundColor: "#18A0FB" };
+      case "En proceso":
+        return { backgroundColor: "#25BD50" };
+      case "Finalizado":
+        return { backgroundColor: "#000000" };
+      case "Cancelado":
+        return { backgroundColor: "#FF4949" };
+      case "Reajuste":
+        return { backgroundColor: "#F9B857" };
+      default:
+        return { backgroundColor: "gray" };
+    }
+  };
 
+  // SCREEN CONTENT
   function renderPosts({ item }) {
+    const createdAtDate = new Date(item.createdAt.seconds * 1000);
+    const formattedDate = createdAtDate.toLocaleString("es-ES");
     return (
-      <ListItem key={item.postId}>
-        <ListItem.Content style={styles.itemContent}>
-          <ListItem.Title style={styles.titlee}>
-            {item.postTitle}
-          </ListItem.Title>
-        </ListItem.Content>
-      </ListItem>
+     <TouchableOpacity>
+        <ListItem key={item.postId}>
+          <ListItem.Content style={styles.itemContent}>
+            <ListItem.Content style={styles.orderNumberAndTotalPaid}>
+              <ListItem.Title
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.orderNumber}
+              >
+                {item.serviceName}
+              </ListItem.Title>
+              <ListItem.Content style={styles.paidContainer}>
+                <ListItem.Title style={styles.totalPaid}>
+                  ${item.totalPaid}
+                </ListItem.Title>
+              </ListItem.Content>
+            </ListItem.Content>
+
+            <ListItem.Content style={styles.dateAndCurrentState}>
+              <ListItem.Subtitle style={styles.dateText}>
+                {formattedDate}
+              </ListItem.Subtitle>
+
+              <ListItem.Content
+                style={[
+                  styles.currentStateContainer,
+                  getCurrentStateStyle(item.currentState),
+                ]}
+              >
+                <ListItem.Subtitle style={styles.currentText}>
+                  {item.currentState}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem.Content>
+          </ListItem.Content>
+        </ListItem>
+        </TouchableOpacity>
     );
   }
 
@@ -108,52 +166,95 @@ const ServicesScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header text="Servicios" />
-      <FlatList
-        data={posts}
-        renderItem={renderPosts}
-        keyExtractor={(item, index) => index.toString()}
-        showsVerticalScrollIndicator={false}
-        onEndReached={getMorePosts}
-        onEndReachedThreshold={0.01}
-        scrollEventThrottle={150}
-        ListFooterComponent={isLoading && renderLoader()}
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={isRefreshing}
-        //     onRefresh={onRefresh}
-        //     colors={["#aaa"]}
-        //     tintColor={"#aaa"}
-        //   />
-        // }
-      />
-    </SafeAreaView>
+    <View style={styles.mainContainer}>
+      {/* <View style={styles.mainTitleContainer}>
+      <Text style={styles.mainTitle}>Services</Text>
+      </View> */}
+      <SafeAreaView style={styles.containerSafeArea}>
+        <FlatList
+          data={posts}
+          renderItem={renderPosts}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          onEndReached={getMorePosts}
+          onEndReachedThreshold={0.01}
+          scrollEventThrottle={150}
+          ListFooterComponent={renderLoader}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={["#aaa"]}
+              tintColor={"#aaa"}
+            />
+          }
+        />
+      </SafeAreaView>
+    </View>
   );
 };
 
 export default ServicesScreen;
 
 const styles = StyleSheet.create({
-  titlee: {
-    color: "red",
+
+  mainContainer: {
+    backgroundColor: "white",
+    flex: 1,
+    // paddingTop: 30
   },
-  container: {
+  containerSafeArea: {
     backgroundColor: "white",
     flex: 1,
   },
   itemContent: {
-    backgroundColor: "gray",
-    height: 100,
-    padding: 10,
-    justifyContent: "flex-start",
+    flexDirection: "column",
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
   },
-  title: {
-    fontSize: 40,
-    fontWeight: "bold",
-    textAlign: "left",
-    marginBottom: 15,
-    marginLeft: 15,
-    marginTop: Platform.OS === "android" ? 25 : 15,
+  orderNumberAndTotalPaid: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    width: "100%",
   },
+  dateAndCurrentState: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "flex-end",
+    paddingTop: 8,
+  },
+  dateText: {
+    fontStyle: "italic",
+    width: "60%",
+  },
+  orderNumber: {
+    width: "60%",
+  },
+  currentText: {
+    color: "#ffffff",
+  },
+  currentStateContainer: {
+    padding: 4,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  totalPaid: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paidContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: "40%",
+  },
+  mainTitle: {
+    fontSize: 45,
+  },
+  mainTitleContainer: {
+    paddingLeft: 10,
+    paddingTop: 60,
+    paddingBottom: 30,
+  }
 });

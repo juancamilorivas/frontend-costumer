@@ -1,6 +1,5 @@
 import React from "react";
-// import ServicesScreen from "../screens/ServicesScreen";
-import EnterGuideScreen from "../screens/EnterGuideScreen";
+import ServicesScreen from "../screens/ServicesScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
@@ -15,25 +14,22 @@ const TabNavigation = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        // tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: "black",
+          height: 60
         },
 
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
 
           if (route.name === "Bodega") {
             icon = (
-              <FontAwesomeIcon icon={faWarehouse} size={size} color={color} />
+              <FontAwesomeIcon icon={faWarehouse} size={34} color={color} />
             );
-          } 
-          else if (route.name === "Enter") {
-            icon = (
-              <FontAwesomeIcon icon={faBolt} size={size} color={color} />
-            );
-          } 
-          else if (route.name === "Options") {
-            icon = <FontAwesomeIcon icon={faBars} size={size} color={color} />;
+          } else if (route.name === "Services") {
+            icon = <FontAwesomeIcon icon={faBolt} size={34} color={color} />;
+          } else if (route.name === "Options") {
+            icon = <FontAwesomeIcon icon={faBars} size={34} color={color} />;
           }
 
           return icon;
@@ -47,33 +43,32 @@ const TabNavigation = () => {
         component={ServicesNavigation}
         options={{
           headerShown: false,
-          tabBarLabel: "Bodega",
+          // tabBarLabel: "Bodega",
           tabBarHideOnKeyboard: "true",
           headerStyle: {
-            backgroundColor: '#000000',
+            backgroundColor: "#000000",
           },
-          headerTintColor: '#ffffff',
+          headerTintColor: "#ffffff",
           headerTitleStyle: {
-            fontWeight: 'bold',
+            fontWeight: "bold",
           },
         }}
       />
 
       <Tab.Screen
-        name="Enter"
-        component={EnterGuideScreen}
+        name="Services"
+        component={ServicesScreen}
         options={{
           headerShown: false,
-          tabBarLabel: "Servicios",
         }}
+
       />
 
       <Tab.Screen
         name="Options"
         component={ProfileNavigation}
-        options={{
+            options={{
           headerShown: false,
-          tabBarLabel: "Opciones",
         }}
       />
     </Tab.Navigator>
@@ -81,4 +76,3 @@ const TabNavigation = () => {
 };
 
 export default TabNavigation;
-

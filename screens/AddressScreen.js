@@ -1,12 +1,58 @@
-import { View, Text } from 'react-native'
-import React from 'react'
 
-const AddressScreen = () => {
+
+
+
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import React, {useState} from 'react';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
+
+const App = () => {
+  const [copiedText, setCopiedText] = useState('');
+
+  const copyToClipboard = () => {
+    Clipboard.setString('hello world');
+  };
+
+  const fetchCopiedText = async () => {
+    const text = await Clipboard.getString();
+    setCopiedText(text);
+  };
+
   return (
-    <View>
-      <Text>AddressScreen</Text>
-    </View>
-  )
-}
+    <SafeAreaView style={{flex: 1}}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={copyToClipboard}>
+          <Text>Click here to copy to Clipboard</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={fetchCopiedText}>
+          <Text>View copied text</Text>
+        </TouchableOpacity>
 
-export default AddressScreen
+        <Text style={styles.copiedText}>{copiedText}</Text>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  copiedText: {
+    marginTop: 10,
+    color: 'red',
+  },
+});
+
+export default App;

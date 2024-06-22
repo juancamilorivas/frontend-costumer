@@ -17,6 +17,7 @@ function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <NavigationContainer>
+
           <Stack.Navigator>
             <Stack.Screen
               name="verify"
