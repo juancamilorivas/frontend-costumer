@@ -1,30 +1,29 @@
 import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import ServiceHistoryScreen from "../screens/ServiceHistoryScreen";
 import { TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProfileScreen from "../screens/ProfileScreen";
-import PersonalDataScreen from "../screens/PersonalDataScreen";
-import SearchScreen from "../screens/SearchScreen";
-import AddressScreen from "../screens/AddressScreen";
+import ImportServiceDetailsScreen from "../screens/ImportServiceDetailsScreen";
+import DivisionServiceDetailsScreen from "../screens/DivisionServiceDetailsScreen";
+import ImportConsolidatedServiceDetailsScreen from "../screens/ImportConsolidatedServiceDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 
-const ProfileNavigation = ({navigation}) => {
+const ServiceHistoryNavigation = ({ navigation }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
+        name="ServiceHistoryy"
+        component={ServiceHistoryScreen}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
-        name="PersonalData"
-        component={PersonalDataScreen}
+        name="ImportServiceDetails"
+        component={ImportServiceDetailsScreen}
         options={{
-          title: "Datos personales",
+          title: "Detalle del servicio",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#000000",
@@ -36,7 +35,7 @@ const ProfileNavigation = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Profile");
+                navigation.navigate("ServiceHistoryy");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -55,17 +54,10 @@ const ProfileNavigation = ({navigation}) => {
       />
 
       <Stack.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
-        name="Address"
-        component={AddressScreen}
-        // options={{ headerShown: false }}
+        name="DivisionServiceDetails"
+        component={DivisionServiceDetailsScreen}
         options={{
-          title: "Direccion",
+          title: "Detalle del servicio",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#000000",
@@ -77,7 +69,41 @@ const ProfileNavigation = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Profile");
+                navigation.navigate("ServiceHistoryy");
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name="ImportConsolidatedServiceDetails"
+        component={ImportConsolidatedServiceDetailsScreen}
+        options={{
+          title: "Detalle del servicio",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("ServiceHistoryy");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -98,4 +124,4 @@ const ProfileNavigation = ({navigation}) => {
   );
 };
 
-export default ProfileNavigation;
+export default ServiceHistoryNavigation;

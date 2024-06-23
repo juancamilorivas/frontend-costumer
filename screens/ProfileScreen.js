@@ -66,7 +66,7 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.options}
           onPress={() => navigation.navigate("PersonalData")}
         >
-          <FontAwesomeIcon icon={faUser} size={25} style={styles.icon} />
+          <FontAwesomeIcon icon={faUser} size={25} style={styles.icon} color="gray"  />
           <Text style={styles.textOptions}>Datos personales</Text>
         </TouchableOpacity>
 
@@ -79,6 +79,7 @@ const ProfileScreen = ({ navigation }) => {
             icon={faLocationDot}
             size={25}
             style={styles.icon}
+            color="gray" 
           />
           <Text style={styles.textOptions}>Direccion</Text>
         </TouchableOpacity>
@@ -89,6 +90,7 @@ const ProfileScreen = ({ navigation }) => {
             icon={faArrowRightFromBracket}
             size={25}
             style={styles.icon}
+            color="gray" 
           />
           <Text style={styles.textOptions}>Cerrar sesion</Text>
         </TouchableOpacity>

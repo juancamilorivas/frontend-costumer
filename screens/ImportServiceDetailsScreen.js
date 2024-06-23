@@ -1,18 +1,7 @@
 import React from "react";
-import {
-  Image,
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TextInput,
-  SafeAreaView,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { Text, StyleSheet, View, SafeAreaView, ScrollView } from "react-native";
 
-const PaymentResumeScreen = ({ navigation }) => {
-  const [values, setValue] = React.useState("");
+const ImportServiceDetailsScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
@@ -101,20 +90,13 @@ const PaymentResumeScreen = ({ navigation }) => {
               </View>
             </View>
           </View>
-
-          <TouchableOpacity
-            style={styles.buttonStyles}
-            onPress={() => navigation.navigate("LocalCarrierInsurance")}
-          >
-            <Text style={styles.textButtonStyles}>Continuar</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default PaymentResumeScreen;
+export default ImportServiceDetailsScreen;
 
 //STYLES
 const styles = StyleSheet.create({
@@ -131,10 +113,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
   },
-  link: {
-    color: "blue",
-    textDecorationLine: "underline",
-  },
+
   fromToContainer: {
     backgroundColor: "#ffffff",
     padding: 10,
@@ -158,23 +137,7 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "flex-start",
   },
-  buttonStyles: {
-    backgroundColor: "blue",
-    padding: 10,
-    height: 48,
-    borderRadius: 5,
-    width: "98%",
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    marginTop: 20,
-    marginBottom: 18,
-  },
-  textButtonStyles: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 25,
-  },
+
   inputAndTextContainer: {
     justifyContent: "center",
     width: "100%",
@@ -185,10 +148,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     marginBottom: 10,
-  },
-  subTitle: {
-    fontSize: 14,
-    marginVertical: 15,
   },
   titleTable: {
     fontWeight: "bold",

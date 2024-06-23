@@ -1,6 +1,5 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import PayTransportScreen from "../screens/PayTransportScreen";
 import ConsolidateScreen from "../screens/ConsolidateScreen";
 import DivideScreen from "../screens/DivideScreen";
 import WarehouseScreen from "../screens/WarehouseScreen";
@@ -9,7 +8,6 @@ import DeleteTrackingScreen from "../screens/DeleteTrackingScreen";
 import ViewDetailsScreen from "../screens/ViewDetailsScreen";
 import InAndOutScreen from "../screens/InAndOutScreen";
 import StartTransportNavigation from "./StartTransportNavigation";
-
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +20,7 @@ const ServicesNavigation = () => {
         options={{ headerShown: false }}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="Consolidate"
         component={ConsolidateScreen}
         options={{ headerShown: false }}
@@ -44,7 +42,7 @@ const ServicesNavigation = () => {
         component={RepackScreen}
         options={{ headerShown: false }}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="InAndOut"
         component={InAndOutScreen}
         options={{ headerShown: false }}
@@ -59,6 +57,7 @@ const ServicesNavigation = () => {
         component={ViewDetailsScreen}
         options={{ headerShown: false }}
       />
+ 
     </Stack.Navigator>
   );
 };

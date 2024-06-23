@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchServicesOnSnapshot } from "../apiServices";
 import { fetchMoreServicesOnSnapshot } from "../apiServices";
 
-const ServicesScreen = ({ navigation }) => {
+const ServiceHistoryScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
@@ -116,8 +116,25 @@ const ServicesScreen = ({ navigation }) => {
   function renderPosts({ item }) {
     const createdAtDate = new Date(item.createdAt.seconds * 1000);
     const formattedDate = createdAtDate.toLocaleString("es-ES");
+
+    const navigateToDetailScreen = () => {
+      switch (item.serviceName) {
+        case "Importacion":
+          navigation.navigate("ImportServiceDetails", { currentState: item.currentState  });
+          break;
+        case "Division":
+          navigation.navigate("DivisionServiceDetails");
+          break;
+        case "Importacion consolidada":
+          navigation.navigate("ImportConsolidatedServiceDetails", { currentState: item.currentState  });
+          break;
+        default:
+          console.warn("Unknown serviceName:", item.serviceName);
+      }
+    };
+
     return (
-     <TouchableOpacity>
+     <TouchableOpacity onPress={navigateToDetailScreen}>
         <ListItem key={item.postId}>
           <ListItem.Content style={styles.itemContent}>
             <ListItem.Content style={styles.orderNumberAndTotalPaid}>
@@ -194,7 +211,7 @@ const ServicesScreen = ({ navigation }) => {
   );
 };
 
-export default ServicesScreen;
+export default ServiceHistoryScreen;
 
 const styles = StyleSheet.create({
 
