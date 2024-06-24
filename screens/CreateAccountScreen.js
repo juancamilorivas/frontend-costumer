@@ -9,31 +9,20 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-// import { createUserWithEmailAndPassword, getAuth, getIdToken } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons/faArrowLeft";
+import { faX } from "@fortawesome/free-solid-svg-icons/faX";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { initialAuth } from "../firebase";
 import { useDispatch } from "react-redux";
 import { setUser } from "../reducers/user/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { db } from "../firebase";
-import validator from 'validator';
-import {
-  runTransaction,
-  doc,
-  setDoc,
-} from "firebase/firestore";
-
-// const logo =
-//   "https://qixeul.stripocdn.email/content/guids/CABINET_a5efd8f79280f89c49f5b6e4eb48877f95c5996885e4077eadd41ecc90a9c33a/images/postman_2.png";
+import validator from "validator";
+import { runTransaction, doc, setDoc } from "firebase/firestore";
 
 const sfDocRef = doc(db, "guia", "config");
 
-
 const CreateScreen = ({ navigation }) => {
-
-  // const auth = getAuth();
 
   const MAX_RETRIES = 3;
   let retries = 0;
@@ -44,11 +33,10 @@ const CreateScreen = ({ navigation }) => {
   const [apellidos, setApellidos] = useState("");
   const [cedula, setCedula] = useState("");
   const [password, setPassword] = useState("");
-  
 
   //CONSTS
   const dispatch = useDispatch();
-  const lowerCaseEmail = email.toLowerCase(); 
+  const lowerCaseEmail = email.toLowerCase();
 
   //GUARDAR EN EL STORAGE
   const storeData = async (id) => {
@@ -59,6 +47,11 @@ const CreateScreen = ({ navigation }) => {
       console.log("error al guardar", e);
     }
   };
+
+
+
+
+
 
   //INCREMENT LOCKER NUMBER
   const incrementNumber = async () => {
@@ -87,7 +80,6 @@ const CreateScreen = ({ navigation }) => {
 
       if (newNumber !== null) {
         console.log("Transaction successfully committed!", newNumber);
-        // setGuiaActual(newNumber.toString());
         let locker = newNumber.toString();
         handleCreateAccount(locker);
       }
@@ -103,16 +95,76 @@ const CreateScreen = ({ navigation }) => {
     }
   };
 
+
+
+
+
+
+
+
+
+  // CREATE STRIPE CUSTOMER
+  const handleSubmit = async ({ name, email, userCredential, locker }) => {
+    try {
+      const response = await fetch(
+        "https://app-zrcl5qd7da-uc.a.run.app/api/createstripecustomer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email }),
+        }
+      );
+
+      if (response.ok) {
+        const customer = await response.json();
+        console.log("Customer Created", `Customer ID: ${customer.id}`);
+        const userData = {
+          email: userCredential.user.email,
+          createdAt: new Date(),
+          casillero: "box" + locker,
+          name: nombre,
+          surname: apellidos,
+          nit: cedula,
+          customerId: customer.id,
+        };
+        const uid = userCredential.user.uid;
+        console.log("casillero guardao", locker);
+        storeData(uid);
+
+        try {
+          const userDocRef = doc(db, "users", uid);
+          await setDoc(userDocRef, userData);
+          console.log("User data saved successfully");
+        } catch (error) {
+          console.error("Error saving user data:", error);
+        }
+        navigation.navigate("TabsNavigation");
+      } else {
+        const error = await response.json();
+        Alert.alert("Error", error.message);
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+  };
+
+
+
+
+
+
   //CREATE ACCOUNT
   const handleCreateAccount = async (locker) => {
-    if (nombre, apellidos, cedula == "") {
+    if ((nombre, apellidos, cedula == "")) {
       Alert.alert("Todos los campos son obligatorios");
       return;
     }
     if (!validator.isEmail(email)) {
-      Alert.alert('El correo electrónico proposionado no es valido.');
-      return
-    };
+      Alert.alert("El correo electrónico proposionado no es valido.");
+      return;
+    }
     if (password == "") {
       Alert.alert("Escribe una contrasena");
       return;
@@ -120,9 +172,7 @@ const CreateScreen = ({ navigation }) => {
     if (email !== lowerCaseEmail) {
       Alert.alert("El correo electrónico contiene mayusculas");
       return;
-    }    
-
-
+    }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -139,107 +189,31 @@ const CreateScreen = ({ navigation }) => {
           uid: userCredential.user.uid,
         })
       );
-
-      const userData = {
-        email: userCredential.user.email,
-        createdAt: new Date(),
-        casillero: "box" + locker,
-        nombre: nombre,
-        apellidos: apellidos,
-        cedula: cedula,
-      };
-      const uid = userCredential.user.uid;
-      console.log("casillero guardao", locker);
-      storeData(uid);
-      try {
-        const userDocRef = doc(db, "users", uid);
-        await setDoc(userDocRef, userData);
-        console.log("User data saved successfully");
-      } catch (error) {
-        console.error("Error saving user data:", error);
-      }
-
-
-      // const userToken = auth.currentUser;
-      // const idToken = await getIdToken(userToken);
-      // console.log('ID Token del usuario actual:', idToken);
-
-
-  
-
-      navigation.navigate("TabsNavigation");
+      await handleSubmit({
+        name: nombre,
+        email: email,
+        userCredential: userCredential,
+        locker: locker,
+      });
     } catch (error) {
       Alert.alert(
         "El correo electrónico ya existe o la constrasena es inválida.",
         error
       );
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // const callAuthenticatedFunction = async () => {
-    //   try {
-    //     const response = await fetch('https://helloworld-zrcl5qd7da-uc.a.run.app', {
-    //       method: 'GET',
-    //       headers: {
-    //         // Authorization: `Bearer ${token}`,
-    //         'Content-Type': 'application/json',
-    //       },
-    //     });
-    
-    //     if (!response.ok) {
-    //       throw new Error('Error calling Cloud Function');
-    //     }
-    
-    //     const contentType = response.headers.get('content-type');
-    //     if (contentType && contentType.includes('application/json')) {
-    //       const data = await response.json();
-    //       console.log('Cloud Function response:', data);
-    //     } else {
-    //       const text = await response.text();
-    //       console.log('Unexpected response from Cloud Function:', text);
-    //     }
-    //   } catch (error) {
-    //     console.error('Error calling Cloud Function:', error);
-    //   }
-    // };
-    
-    // callAuthenticatedFunction();
-    
-
-
-
-
-
-
-
-
-
-    
-
-
-
   };
+
+
+
+
+
+
+  
 
   return (
     <View style={styles.container}>
-      
       <TouchableOpacity onPress={() => navigation.goBack()}>
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          size={30}
-          style={styles.iconArrowLeft}
-        />
+        <FontAwesomeIcon icon={faX} size={30} style={styles.iconArrowLeft} />
       </TouchableOpacity>
 
       <ScrollView
@@ -252,7 +226,6 @@ const CreateScreen = ({ navigation }) => {
         }}
       >
         <View style={styles.login}>
-          {/* <Image source={{ uri: logo }} style={styles.logo} /> */}
           <View>
             <Text
               style={{
@@ -308,9 +281,9 @@ const CreateScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity
             onPress={incrementNumber}
-            style={[styles.button, { backgroundColor: "#ee6b6e" }]}
+            style={[styles.button, { backgroundColor: "gray" }]}
           >
-            <Text style={{ fontSize: 17, fontWeight: "400", color: "black" }}>
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "#212020" }}>
               Crear cuenta
             </Text>
           </TouchableOpacity>
@@ -325,7 +298,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "start",
-    backgroundColor: "#000000",
+    backgroundColor: "#212020",
   },
   image: {
     width: "100%",
@@ -334,7 +307,7 @@ const styles = StyleSheet.create({
   },
   login: {
     height: 500,
-    borderColor: "#fff",
+    borderColor: "gray",
     borderRadius: 10,
     alignItems: "center",
   },
@@ -349,7 +322,7 @@ const styles = StyleSheet.create({
   input: {
     width: 290,
     height: 50,
-    borderColor: "#fff",
+    borderColor: "gray",
     borderWidth: 2,
     borderWidth: 2,
     borderRadius: 10,
@@ -371,13 +344,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   iconArrowLeft: {
-       color: "#ffffff",
-       marginTop: 30,
-       marginLeft: 30,
-       marginBottom: 30,
-  
-      },
-
+    color: "#ffffff",
+    marginTop: 30,
+    marginLeft: 30,
+    marginBottom: 30,
+  },
 });
 
 export default CreateScreen;

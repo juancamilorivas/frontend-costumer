@@ -1,17 +1,33 @@
 import React from "react";
 import {
-  Image,
   Text,
   StyleSheet,
   View,
   TouchableOpacity,
   TextInput,
-  ScrollView,
-  Alert,
+
 } from "react-native";
 
 const DeclaredValueScreen = ({navigation}) => {
-  const [values, setValue] = React.useState("")
+  const [declaredValue, setDeclaredValue] = React.useState("")
+
+  const handleInputChange = (text) => {
+    // Eliminar cualquier carácter no numérico excepto el punto decimal
+    const numericValue = text.replace(/[^0-9.]/g, '');
+  
+    // Dividir en parte entera y decimal
+    const parts = numericValue.split('.');
+    let formattedValue = parts[0]; // parte entera
+  
+    if (parts.length > 1) {
+      // Si hay parte decimal, agregar el punto y dos decimales
+      formattedValue += '.' + parts[1].slice(0, 2);
+    }
+  
+    setDeclaredValue(formattedValue);
+  };
+
+
   return (
     <View style={styles.mainContainer}>
       <Text style={styles.title}>Valor declarado</Text>
@@ -21,10 +37,13 @@ const DeclaredValueScreen = ({navigation}) => {
 
     <View  style={styles.inputAndTextContainer}>
     <TextInput
-        onChangeText={(text) => setValue(text.trim())}
+        // onChangeText={(text) => setDeclaredValue(text.trim())}
+        onChangeText={(text) => handleInputChange(text)}
         style={styles.input}
+        value={declaredValue}
         placeholder="Ej: 150.00"
         placeholderTextColor="#C4C4C4"
+        keyboardType="numeric"
       />
       <View style={styles.dianTextContainer}>
         <Text numberOfLines={5} ellipsizeMode="tail">
@@ -50,7 +69,8 @@ const DeclaredValueScreen = ({navigation}) => {
 
       <TouchableOpacity
             style={styles.buttonStyles}
-            onPress={() => navigation.navigate("LocalCarrierInsurance")}
+            onPress={() => navigation.navigate("LocalCarrierInsurance", { declaredValue })}
+
           >
             <Text style={styles.textButtonStyles}>Continuar</Text>
           </TouchableOpacity>

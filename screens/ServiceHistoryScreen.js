@@ -102,7 +102,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
       case "En proceso":
         return { backgroundColor: "#25BD50" };
       case "Finalizado":
-        return { backgroundColor: "#000000" };
+        return { backgroundColor: "gray" };
       case "Cancelado":
         return { backgroundColor: "#FF4949" };
       case "Reajuste":

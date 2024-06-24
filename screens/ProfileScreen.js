@@ -10,12 +10,9 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons/faArrowRightFromBracket";
-import { faClockRotateLeft } from "@fortawesome/free-solid-svg-icons/faClockRotateLeft";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons/faMagnifyingGlass";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signOut } from "firebase/auth";
 import { initialAuth } from "../firebase";
-// import Header from '../components/Header'
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
 
 
@@ -67,7 +64,7 @@ const ProfileScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("PersonalData")}
         >
           <FontAwesomeIcon icon={faUser} size={25} style={styles.icon} color="gray"  />
-          <Text style={styles.textOptions}>Datos personales</Text>
+          <Text style={styles.textOptions}>Mis datos personales</Text>
         </TouchableOpacity>
 
   

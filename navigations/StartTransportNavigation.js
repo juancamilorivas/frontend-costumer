@@ -1,11 +1,12 @@
 import React from "react";
-import { Button, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RecipientScreen from "../screens/RecipientScreen";
 import CreateFavoriteScreen from "../screens/CreateFavoriteScreen";
 import SendToAnotherPersonScreen from "../screens/SendToAnotherPersonScreen";
 import DeclaredValueScreen from "../screens/DeclaredValueScreen";
 import LocalCarrierInsuranceScreen from "../screens/LocalCarrierInsuranceScreen";
+import PersonalDataScreen from "../screens/PersonalDataScreen";
 import PaymentResumeScreen from "../screens/PaymentResumeScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
@@ -70,7 +71,7 @@ const StartTransportNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("Recipient");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -171,6 +172,46 @@ const StartTransportNavigation = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.goBack();
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+
+
+
+
+
+      <Stack.Screen
+        name="PersonalData"
+        component={PersonalDataScreen}
+        options={{
+          title: "Datos personales",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Recipient");
+
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />

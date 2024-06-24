@@ -175,6 +175,28 @@ const RecipientScreen = ({ navigation }) => {
         </View>
       </View>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* enviar a default data del user */}
       <TouchableOpacity
         style={styles.defaultMainContainer}
@@ -196,6 +218,20 @@ const RecipientScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
     </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
       {/* flat list favorites section */}

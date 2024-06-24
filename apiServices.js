@@ -2,6 +2,7 @@ import { db } from "./firebase.js";
 import {
   collection,
   query,
+  doc,
   orderBy,
   getDocs,
   limit,
@@ -297,4 +298,40 @@ export const fetchMoreServicesOnSnapshot = (postsPerLoad, lastVisible, onData, o
   }, onError);
 
   return unsubscribe;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// FETCH PERSONAL DATA ON SNAPSHOT
+// export const fetchPersonalDataOnSnapshot = (uid) => {
+//   const docRef = doc(db, `users/${uid}`);
+
+//   return onSnapshot(docRef, (doc) => {
+//       console.log("Current data: ", doc.data());
+//   });
+// };
+
+export const fetchPersonalDataOnSnapshot = (uid, callback) => {
+  const docRef = doc(db, `users/${uid}`);
+
+  const unsubscribe = onSnapshot(docRef, (doc) => {
+    if (doc.exists()) {
+      callback(doc.data()); // Llama al callback con los datos del documento
+    } else {
+      callback(null); // Maneja el caso donde el documento no existe
+    }
+  });
+  return unsubscribe; // Retorna la función de limpieza de la suscripción
 };

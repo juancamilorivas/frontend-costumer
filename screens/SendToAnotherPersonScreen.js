@@ -11,83 +11,74 @@ import {
 } from "react-native";
 
 //REDUX IMPORTS
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setCreateTracking } from "../reducers/createTrakcing/createTrackingSlice";
+import { setReceiver } from "../reducers/receiver/receiverSlice";
 
 const SendToAnotherPersonScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  //REDUX
-  const {
-    ubicacionEnbodega,
-    locker,
-    peso,
-    alto,
-    largo,
-    ancho,
-    tariffCode,
-    contenido,
-    imei,
-    serial,
-  } = useSelector((state) => state.createTracking);
+
+  const [form, setForm] = React.useState({
+    nombre: "",
+    apellido: "",
+    celular: "",
+    cedula: "",
+    direccion: "",
+    pais: "Colombia",
+    ciudad: "",
+    email: "",
+  });
+
+  const handleChange = (name, value) => {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  };
 
   const enviarFormulario = async () => {
-    if (!locker) {
-      Alert.alert("El campo 'Casillero' es obligatorio");
+    const { cedula, nombre, apellido, direccion, celular, ciudad, email } = form;
+
+    if (!cedula) {
+      Alert.alert("El campo 'Cedula' es obligatorio");
+      return;
+    }
+    if (!nombre) {
+      Alert.alert("El campo 'Nombre' es obligatorio");
+      return;
+    }
+    if (!apellido) {
+      Alert.alert("El campo 'Apellido' es obligatorio");
+      return;
+    }
+    if (!direccion) {
+      Alert.alert("El campo 'Direccion' es obligatorio");
       return;
     }
 
-    if (!peso) {
-      Alert.alert("El campo 'Peso' es obligatorio");
+    if (!celular) {
+      Alert.alert("El campo 'Celular' es obligatorio");
       return;
     }
-    if (!alto) {
-      Alert.alert("El campo 'Alto' es obligatorio");
+    if (!ciudad) {
+      Alert.alert("El campo 'Ciudad' es obligatorio");
       return;
     }
-    if (!ancho) {
-      Alert.alert("El campo 'Ancho' es obligatorio");
+    if (!email) {
+      Alert.alert("El campo 'Email' es obligatorio");
       return;
     }
-
-    if (!tariffCode) {
-      Alert.alert("El campo 'Partida arancelaria' es obligatorio");
-      return;
-    }
-    if (!contenido) {
-      Alert.alert("El campo 'Contenido' es obligatorio");
-      return;
-    }
-
-    if (tariffCode == "321.321.321" && imei == "") {
-      Alert.alert("El campo 'IMEI' es obligatorio");
-      return;
-    }
-    if (tariffCode == "121.121.121" && serial == "") {
-      Alert.alert("El campo 'Serial' es obligatorio");
-      return;
-    }
-    if (!ubicacionEnbodega) {
-      Alert.alert("El campo 'Ubicacion en bodega' es obligatorio");
-      return;
-    }
+  
 
     dispatch(
-      setCreateTracking({
-        peso: "",
-        alto: "",
-        largo: "",
-        ancho: "",
-        tariffCode: "",
-        contenido: "",
-        ubicacionEnbodega: "",
-        trackingNumber: "",
-        locker: "",
-        imei: "",
-        serial: "",
-        status: "Ingreso a bodega Miami FL.",
-        selectedIndex: null,
+      setReceiver({
+        "name": nombre,
+        "surname": apellido,
+        "cellPhone": celular,
+        "email": email,
+        "nit": cedula,
+        "destinyDaneCode": ciudad,
+        "destinationAddress": direccion
       })
     );
     navigation.navigate("DeclaredValue");
@@ -100,63 +91,71 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
         <View style={styles.container}>
         <Text style={styles.title}>Enviar a otra persona</Text>
 
-
         <Text style={styles.textForm}>Cedula (CC)</Text>
           <TextInput
             style={styles.input}
             placeholder="Cedula"
-            value={alto}
-            onChangeText={(text) => dispatch(setCreateTracking({ alto: text }))}
+            value={form.cedula}
+            keyboardType="numeric"
+            onChangeText={(value) => handleChange('cedula', value)}
+          />
+
+        <Text style={styles.textForm}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={form.email}
+            onChangeText={(value) => handleChange('email', value)}
           />
 
           <Text style={styles.textForm}>Nombre(s)</Text>
           <TextInput
             style={styles.input}
             placeholder="Nombre"
-            value={locker}
-            clearButtonMode="while-editing"
-            onChangeText={(text) =>
-              dispatch(setCreateTracking({ locker: text }))
-            }
+            value={form.nombre}
+            // clearButtonMode="while-editing"
+            onChangeText={(value) => handleChange('nombre', value)}
           />
 
           <Text style={styles.textForm}>Apellidos(s)</Text>
           <TextInput
             style={styles.input}
             placeholder="Apellidos"
-            value={peso}
-            onChangeText={(text) => dispatch(setCreateTracking({ peso: text }))}
+            value={form.apellido}
+            onChangeText={(value) => handleChange('apellido', value)}
           />
-
-       
 
           <Text style={styles.textForm}>Direccion*</Text>
           <TextInput
             style={styles.input}
             placeholder="Direccion"
-            value={largo}
-            onChangeText={(text) =>
-              dispatch(setCreateTracking({ largo: text }))
-            }
+            value={form.direccion}
+            onChangeText={(value) => handleChange('direccion', value)}
+          />
+
+          <Text style={styles.textForm}>Celular</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Celular"
+            value={form.celular}
+            onChangeText={(value) => handleChange('celular', value)}
           />
 
           <Text style={styles.textForm}>Pais</Text>
           <TextInput
             style={styles.input}
             placeholder="Pais"
-            value={imei}
-            onChangeText={(text) => dispatch(setCreateTracking({ imei: text }))}
+            value={form.pais}
+            editable={false}
+            onChangeText={(value) => handleChange('pais', value)}
           />
 
           <Text style={styles.textForm}>Ciudad</Text>
           <TextInput
             style={styles.input}
             placeholder="Ciudad"
-            value={serial}
-            clearButtonMode="while-editing"
-            onChangeText={(text) =>
-              dispatch(setCreateTracking({ serial: text }))
-            }
+            value={form.ciudad}
+            onChangeText={(value) => handleChange('ciudad', value)}
           />
 
           <TouchableOpacity
