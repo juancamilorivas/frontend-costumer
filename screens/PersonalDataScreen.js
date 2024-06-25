@@ -11,7 +11,8 @@ import {
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchPersonalDataOnSnapshot } from "../apiServices";
+// import { fetchPersonalDataOnSnapshot } from "../apiServices";
+import { fetchPersonalData } from "../apiServices";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -37,38 +38,70 @@ const PersonalDataScreen = () => {
     });
   };
 
+  // React.useEffect(() => {
+  //   const getMyStringValue = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem("key");
+  //       if (value) {
+  //         setUid(value);
+  //         const unsubscribe = fetchPersonalData(value, (userData) => {
+  //           if (userData) {
+  //             setForm({
+  //               nombre: userData.name || "",
+  //               apellido: userData.surname || "",
+  //               celular: userData.cellPhone || "",
+  //               cedula: userData.nit || "",
+  //               direccion: userData.destinationAddress || "",
+  //               pais: "Colombia",
+  //               ciudad: userData.destinyDaneCode || "",
+  //               email: userData.email || "",
+  //             });
+  //           }
+  //         });
+
+  //         // Limpia la suscripción cuando el componente se desmonta
+  //         return () => unsubscribe();
+  //       }
+  //     } catch (e) {
+  //       console.log("Something went wrong identifying user storage", e);
+  //     }
+  //   };
+
+  //   getMyStringValue();
+  // }, []);
+
+
+
+
+
   React.useEffect(() => {
     const getMyStringValue = async () => {
       try {
         const value = await AsyncStorage.getItem("key");
         if (value) {
           setUid(value);
-          const unsubscribe = fetchPersonalDataOnSnapshot(value, (userData) => {
-            if (userData) {
-              setForm({
-                nombre: userData.name || "",
-                apellido: userData.surname || "",
-                celular: userData.cellPhone || "",
-                cedula: userData.nit || "",
-                direccion: userData.destinationAddress || "",
-                pais: "Colombia",
-                ciudad: userData.destinyDaneCode || "",
-                email: userData.email || "",
-              });
-            }
-          });
-
-          // Limpia la suscripción cuando el componente se desmonta
-          return () => unsubscribe();
+          const userData = await fetchPersonalData(value);
+          if (userData) {
+            setForm({
+              nombre: userData.name || "",
+              apellido: userData.surname || "",
+              celular: userData.cellPhone || "",
+              cedula: userData.nit || "",
+              direccion: userData.destinationAddress || "",
+              pais: "Colombia", // Siempre establecido como "Colombia"
+              ciudad: userData.destinyDaneCode || "",
+              email: userData.email || "",
+            });
+          }
         }
       } catch (e) {
         console.log("Something went wrong identifying user storage", e);
       }
     };
-
+  
     getMyStringValue();
   }, []);
-
+  
 
 
 

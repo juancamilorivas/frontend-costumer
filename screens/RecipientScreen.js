@@ -17,8 +17,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
 import { fetchPersonalDataOnSnapshot } from "../apiServices";
+// import { fetchPersonalData } from "../apiServices";
+import { useDispatch } from "react-redux";
+import { setReceiver } from "../reducers/receiver/receiverSlice";
 
 const RecipientScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
@@ -26,11 +31,15 @@ const RecipientScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
+  const [nameDefault, setNameDefault] = React.useState("");
+  const [destinationAddressDefault, setdestinationAddressDefault] =
+    React.useState("");
+  const [surNameDefault, setSurNameDefault] = React.useState("");
 
-
+  //GET DEFAULT DATA ONSNAPSHOT SOLO SE EJECUTA AL PRESIONAR EL BOTON DE LOS DEFAULT
   const getMyStringValue = async () => {
     try {
-      const value = await AsyncStorage.getItem('key');
+      const value = await AsyncStorage.getItem("key");
       if (value) {
         // Llama a fetchPersonalDataOnSnapshot con el uid obtenido y actualiza el estado del formulario
         const unsubscribe = fetchPersonalDataOnSnapshot(value, (userData) => {
@@ -46,55 +55,48 @@ const RecipientScreen = ({ navigation }) => {
               !userData.email
             ) {
               // Al menos uno de los campos está vacío, redirige a la pantalla "PersonalData"
-              navigation.navigate('PersonalData');
+              navigation.navigate("PersonalData");
             } else {
+              dispatch(
+                setReceiver({
+                  name: userData.name ,
+                  surname: userData.surname ,
+                  cellPhone: userData.cellPhone ,
+                  email: userData.email,
+                  nit: userData.nit,
+                  destinyDaneCode: userData.destinyDaneCode ,
+                  destinationAddress: userData.destinationAddress,
+                })
+              );
               // Ningún campo está vacío, redirige a la pantalla "DeclaredValue"
-              navigation.navigate('DeclaredValue');
+              navigation.navigate("DeclaredValue");
             }
           }
         });
-  
+
         // Limpia la suscripción cuando el componente se desmonta
         return () => unsubscribe();
       }
     } catch (e) {
-      console.log('Something went wrong identifying user storage', e);
+      console.log("Something went wrong identifying user storage", e);
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  // // GET DEFAULT NAME Y ADDRESS SE EJECUTA EN LA PRIEMRA CARGA
   React.useEffect(() => {
     const getMyStringValue = async () => {
       try {
         const value = await AsyncStorage.getItem("key");
         if (value) {
           setUid(value);
+          const unsubscribe = fetchPersonalDataOnSnapshot(value, (userData) => {
+            if (userData) {
+              setNameDefault(userData.name);
+              setSurNameDefault(userData.surname);
+              setdestinationAddressDefault(userData.destinationAddress);
+            }
+          });
+          return () => unsubscribe();
         }
       } catch (e) {
         console.log("Something went wrong identifying user storage", e);
@@ -102,8 +104,6 @@ const RecipientScreen = ({ navigation }) => {
     };
     getMyStringValue();
   }, []);
-
-
 
   //GET FAVORITES
   React.useEffect(() => {
@@ -162,11 +162,7 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-
-
-
-
-  // FVORITES SCROLL SECTION 
+  // FVORITES SCROLL SECTION
   function renderPosts({ item }) {
     return (
       <TouchableOpacity
@@ -178,19 +174,16 @@ const RecipientScreen = ({ navigation }) => {
         <View style={styles.containerIconTexts}>
           <View style={styles.containerDefaultTexts}>
             <Text style={styles.favoriteDefaultName}>
-            {item.name} {item.surname} 
+              {item.name} {item.surname}
             </Text>
             <Text numberOfLines={1} ellipsizeMode="tail">
-            {item.address}
+              {item.address}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     );
   }
-
-
-
 
   const renderLoader = () => {
     return isLoading ? (
@@ -202,118 +195,62 @@ const RecipientScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-
       <View>
-      {/* enviar a otra persona */}
-      <TouchableOpacity
-        style={styles.itemContainer}
-        onPress={() => {
-          navigation.navigate("SendToAnotherPerson");
-        }}
-      >
-        <View style={styles.itemContainerIntern}>
-          <FontAwesomeIcon icon={faUser} size={20} color="gray" />
-          <Text style={styles.itemTitle}>Enviar a otra persona</Text>
-        </View>
-      </TouchableOpacity>
-
-
+        {/* enviar a otra persona */}
+        <TouchableOpacity
+          style={styles.itemContainer}
+          onPress={() => {
+            navigation.navigate("SendToAnotherPerson");
+          }}
+        >
+          <View style={styles.itemContainerIntern}>
+            <FontAwesomeIcon icon={faUser} size={20} color="gray" />
+            <Text style={styles.itemTitle}>Enviar a otra persona</Text>
+          </View>
+        </TouchableOpacity>
 
         {/* recoger en bodega */}
-      <TouchableOpacity
-        style={styles.itemContainerRecogerEnBodega}
-        onPress={() => {
-          navigation.navigate("DeclaredValue");
-        }}
-      >
-        <View style={styles.itemContainerIntern}>
-          <FontAwesomeIcon icon={faWarehouse} size={20} color="gray" />
-          <Text style={styles.itemTitle}>Recoger en bodega Bogota</Text>
-        </View>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.itemContainerRecogerEnBodega}
+          onPress={() => {
+            navigation.navigate("DeclaredValue");
+          }}
+        >
+          <View style={styles.itemContainerIntern}>
+            <FontAwesomeIcon icon={faWarehouse} size={20} color="gray" />
+            <Text style={styles.itemTitle}>Recoger en bodega Bogota</Text>
+          </View>
+        </TouchableOpacity>
 
-      {/* bloque estatico */}
-      <View style={styles.itemContainerFavorite}>
-        <View style={styles.itemContainerInternFavorite}>
-          <Text style={styles.itemTitleFavorite}>Mis Favoritos</Text>
-        </View>
-      </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* enviar a default data del user */}
-      <TouchableOpacity
-        style={styles.defaultMainContainer}
-        onPress={async () => {
-          await getMyStringValue();
-        }}
-      >
-        <View style={styles.containerIconTextsDefault}>
-          <FontAwesomeIcon icon={faStar} size={15} color="gray" />
-          <View style={styles.containerDefaultTexts}>
-            <Text style={styles.favoriteDefaultName}>
-              Juan Camilo Rivas Molina
-            </Text>
-            <Text numberOfLines={1} ellipsizeMode="tail">
-              Calle 24c # 84 - 84 Int 3 Apto 117 Lote 1 Calle 24c # 84 - 84 Int
-              3 Apto 117 Lote 1
-            </Text>
+        {/* bloque estatico */}
+        <View style={styles.itemContainerFavorite}>
+          <View style={styles.itemContainerInternFavorite}>
+            <Text style={styles.itemTitleFavorite}>Mis Favoritos</Text>
           </View>
         </View>
-      </TouchableOpacity>
-    </View>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        {/* enviar a default data del user */}
+        <TouchableOpacity
+          style={styles.defaultMainContainer}
+          onPress={async () => {
+            await getMyStringValue();
+          }}
+        >
+          <View style={styles.containerIconTextsDefault}>
+            <FontAwesomeIcon icon={faStar} size={15} color="gray" />
+            <View style={styles.containerDefaultTexts}>
+              <Text style={styles.favoriteDefaultName}>
+                {nameDefault} {surNameDefault}
+              </Text>
+              <Text numberOfLines={1} ellipsizeMode="tail">
+                {destinationAddressDefault
+                  ? destinationAddressDefault
+                  : "Igresa tu direccion"}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {/* flat list favorites section */}
       <SafeAreaView style={styles.container}>
@@ -371,12 +308,12 @@ const styles = StyleSheet.create({
   },
   descriptionAndWeight: {
     width: "100%",
-    flexDirection: 'row',
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   descriptionText: {
     fontWeight: "bold",
-    fontSize: 13, 
+    fontSize: 13,
   },
   weightText: {
     fontWeight: "bold",
@@ -388,7 +325,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   dateText: {
-    fontStyle: "italic"
+    fontStyle: "italic",
   },
   itemContainer: {
     height: 62,
@@ -401,7 +338,6 @@ const styles = StyleSheet.create({
     height: 62,
     width: "100%",
     justifyContent: "center",
-
   },
   itemContainerIntern: {
     flexDirection: "row",
