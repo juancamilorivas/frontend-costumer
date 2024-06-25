@@ -21,6 +21,7 @@ import { fetchPersonalData } from "../apiServices";
 import { fetchFavoriteData } from "../apiServices";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
+import { SpeedDial } from "@rneui/themed";
 
 const RecipientScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -36,6 +37,28 @@ const RecipientScreen = ({ navigation }) => {
   const [destinationAddressDefault, setdestinationAddressDefault] =
     React.useState("");
   const [surNameDefault, setSurNameDefault] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+
+
+  // GET SPEED DIAL
+  const speedDialComponent = () => {
+    return (
+      <SpeedDial
+        isOpen={open}
+        icon={{ name: "edit", color: "#fff" }}
+        openIcon={{ name: "close", color: "#fff" }}
+        onOpen={() => setOpen(!open)}
+        onClose={() => setOpen(!open)}
+        style={styles.speedDial}
+      >
+        <SpeedDial.Action
+          icon={{ name: "add", color: "#fff" }}
+          title="Agrega un nuevo favorito"
+          onPress={() => navigation.navigate("CreateFavorite")}
+        />
+      </SpeedDial>
+    );
+  };
 
   //GET DEFAULT DATA ONSNAPSHOT SOLO SE EJECUTA AL PRESIONAR EL BOTON DE LOS DEFAULT
   const getMyStringValue = async () => {
@@ -109,32 +132,6 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // //GET DATA PARA RECOGER EN BODEGA BOGOTA
   // const sendToFavorite = async () => {
   //   try {
@@ -165,10 +162,8 @@ const RecipientScreen = ({ navigation }) => {
 
 
 
-
-
+  E
   const sendToFavorite = async () => {
-
     try {
       const value = await AsyncStorage.getItem("key");
       if (value) {
@@ -195,34 +190,6 @@ const RecipientScreen = ({ navigation }) => {
       console.log("Something went wrong identifying user storage", e);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // // GET DEFAULT NAME Y ADDRESS SE EJECUTA EN LA PRIEMRA CARGA
   React.useEffect(() => {
@@ -304,44 +271,6 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // FAVORITES SCROLL SECTION
   function renderPosts({ item }) {
     return (
@@ -368,40 +297,6 @@ const RecipientScreen = ({ navigation }) => {
       </TouchableOpacity>
     );
   }
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const renderLoader = () => {
     return isLoading ? (
@@ -491,6 +386,7 @@ const RecipientScreen = ({ navigation }) => {
           }
         />
       </SafeAreaView>
+      {speedDialComponent()}
     </View>
   );
 };
