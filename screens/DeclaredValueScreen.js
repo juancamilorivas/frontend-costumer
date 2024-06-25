@@ -69,7 +69,7 @@ const DeclaredValueScreen = ({navigation}) => {
 
       <TouchableOpacity
             style={styles.buttonStyles}
-            onPress={() => navigation.navigate("LocalCarrierInsurance", { declaredValue })}
+            onPress={() => navigation.navigate("PaymentResume", { declaredValue })}
 
           >
             <Text style={styles.textButtonStyles}>Continuar</Text>

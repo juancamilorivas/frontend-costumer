@@ -50,7 +50,7 @@ const LocalCarrierInsuranceScreen = ({ navigation }) => {
 
       <TouchableOpacity
         style={styles.buttonStyles}
-        onPress={() => navigation.navigate("PaymentResume")}
+        onPress={() => navigation.navigate("DeclaredValue")}
       >
         <Text style={styles.textButtonStyles}>Continuar</Text>
       </TouchableOpacity>

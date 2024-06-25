@@ -81,7 +81,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
         "destinationAddress": direccion
       })
     );
-    navigation.navigate("DeclaredValue");
+    navigation.navigate("LocalCarrierInsurance");
   };
 
   return (

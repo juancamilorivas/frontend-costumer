@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
 import { fetchPersonalDataOnSnapshot } from "../apiServices";
-// import { fetchPersonalData } from "../apiServices";
+import { fetchPersonalData } from "../apiServices";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
 
@@ -69,7 +69,7 @@ const RecipientScreen = ({ navigation }) => {
                 })
               );
               // Ningún campo está vacío, redirige a la pantalla "DeclaredValue"
-              navigation.navigate("DeclaredValue");
+              navigation.navigate("LocalCarrierInsurance");
             }
           }
         });
@@ -82,9 +82,86 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //GET DATA PARA RECOGER EN BODEGA BOGOTA
+  const sendToWarehouse = async () => {
+    try {
+      const value = await AsyncStorage.getItem("key");
+      if (value) {
+      const userData = await fetchPersonalData(value);
+      if (userData) {
+        dispatch(
+          setReceiver({
+            name: userData.name ,
+            surname: userData.surname ,
+            cellPhone: userData.cellPhone ,
+            email: userData.email,
+            nit: userData.nit,
+            destinyDaneCode: "Bogota",
+            destinationAddress: "Calle 24c # 84 - 84 bodega 34",
+          })
+        );
+        navigation.navigate("DeclaredValue");
+      }
+      }
+    } catch (e) {
+      console.log("Something went wrong identifying user storage", e);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // // GET DEFAULT NAME Y ADDRESS SE EJECUTA EN LA PRIEMRA CARGA
   React.useEffect(() => {
-    const getMyStringValue = async () => {
+    const getMyDefaultValue = async () => {
       try {
         const value = await AsyncStorage.getItem("key");
         if (value) {
@@ -102,7 +179,7 @@ const RecipientScreen = ({ navigation }) => {
         console.log("Something went wrong identifying user storage", e);
       }
     };
-    getMyStringValue();
+    getMyDefaultValue();
   }, []);
 
   //GET FAVORITES
@@ -168,7 +245,7 @@ const RecipientScreen = ({ navigation }) => {
       <TouchableOpacity
         style={styles.defaultMainContainer}
         onPress={() => {
-          navigation.navigate("DeclaredValue");
+          navigation.navigate("LocalCarrierInsurance");
         }}
       >
         <View style={styles.containerIconTexts}>
@@ -209,11 +286,33 @@ const RecipientScreen = ({ navigation }) => {
           </View>
         </TouchableOpacity>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         {/* recoger en bodega */}
         <TouchableOpacity
           style={styles.itemContainerRecogerEnBodega}
-          onPress={() => {
-            navigation.navigate("DeclaredValue");
+          onPress={async () => {
+            await sendToWarehouse();
           }}
         >
           <View style={styles.itemContainerIntern}>
@@ -221,6 +320,25 @@ const RecipientScreen = ({ navigation }) => {
             <Text style={styles.itemTitle}>Recoger en bodega Bogota</Text>
           </View>
         </TouchableOpacity>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
 
         {/* bloque estatico */}
         <View style={styles.itemContainerFavorite}>
