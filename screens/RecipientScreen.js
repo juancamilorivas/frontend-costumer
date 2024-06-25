@@ -17,9 +17,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
 import { fetchPersonalDataOnSnapshot } from "../apiServices";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase";
-
 
 const RecipientScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
@@ -29,88 +26,6 @@ const RecipientScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
-
-
-  // const [form, setForm] = React.useState({
-  //   nombre: "",
-  //   apellido: "",
-  //   celular: "",
-  //   cedula: "",
-  //   direccion: "",
-  //   pais: "Colombia",
-  //   ciudad: "",
-  //   email: "",
-  // });
-
-
-
-// GET PERSONAL DATA FORM FIREBASE
-  // React.useEffect(() => {
-  //   const getMyStringValue = async () => {
-  //     try {
-  //       const value = await AsyncStorage.getItem("key");
-  //       if (value) {
-  //         setUid(value);
-  //         // Llama a fetchPersonalDataOnSnapshot con el uid obtenido y actualiza el estado del formulario
-  //         const unsubscribe = fetchPersonalDataOnSnapshot(value, (userData) => {
-  //           if (userData) {
-  //             setForm({
-  //               nombre: userData.name,
-  //               apellido: userData.surname ,
-  //               celular: userData.cellPhone,
-  //               cedula: userData.nit ,
-  //               direccion: userData.destinationAddress ,
-  //               ciudad: userData.destinyDaneCode,
-  //               email: userData.email,
-  //             });
-  //           }
-  //         });
-
-  //         // Limpia la suscripción cuando el componente se desmonta
-  //         return () => unsubscribe();
-  //       }
-  //     } catch (e) {
-  //       console.log("Something went wrong identifying user storage", e);
-  //     }
-  //   };
-
-  //   getMyStringValue();
-  // }, []);
-
-
-  //    // Verifica si algún campo del formulario está vacío
-  //    const isFormIncomplete = () => {
-  //     return Object.values(form).some((value) => value === "");
-  //   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   const getMyStringValue = async () => {
