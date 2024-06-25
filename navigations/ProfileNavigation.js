@@ -6,7 +6,6 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ProfileScreen from "../screens/ProfileScreen";
 import PersonalDataScreen from "../screens/PersonalDataScreen";
-import SearchScreen from "../screens/SearchScreen";
 import AddressScreen from "../screens/AddressScreen";
 
 const Stack = createNativeStackNavigator();
@@ -24,7 +23,7 @@ const ProfileNavigation = ({navigation}) => {
         name="PersonalData"
         component={PersonalDataScreen}
         options={{
-          title: "Datos personales",
+          title: "Mis datos personales",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#000000",
@@ -55,15 +54,8 @@ const ProfileNavigation = ({navigation}) => {
       />
 
       <Stack.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{ headerShown: false }}
-      />
-
-      <Stack.Screen
         name="Address"
         component={AddressScreen}
-        // options={{ headerShown: false }}
         options={{
           title: "Direccion",
           headerShown: true,

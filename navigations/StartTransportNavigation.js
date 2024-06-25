@@ -10,6 +10,7 @@ import PersonalDataScreen from "../screens/PersonalDataScreen";
 import PaymentResumeScreen from "../screens/PaymentResumeScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
+import { faX } from "@fortawesome/free-solid-svg-icons/faX";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 
 const Stack = createNativeStackNavigator();
@@ -189,16 +190,11 @@ const StartTransportNavigation = ({ navigation }) => {
         }}
       />
 
-
-
-
-
-
       <Stack.Screen
         name="PersonalData"
         component={PersonalDataScreen}
         options={{
-          title: "Datos personales",
+          title: "Mis datos personales",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#000000",
@@ -211,10 +207,9 @@ const StartTransportNavigation = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Recipient");
-
               }}
             >
-              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+              <FontAwesomeIcon icon={faX} size={25} color="#ffffff" />
             </TouchableOpacity>
           ),
           headerRight: () => (

@@ -32,6 +32,7 @@ const CreateScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [cedula, setCedula] = useState("");
+  const [celular, setCelular] = useState("");
   const [password, setPassword] = useState("");
 
   //CONSTS
@@ -127,6 +128,7 @@ const CreateScreen = ({ navigation }) => {
           name: nombre,
           surname: apellidos,
           nit: cedula,
+          cellPhone: celular,
           customerId: customer.id,
         };
         const uid = userCredential.user.uid;
@@ -157,7 +159,7 @@ const CreateScreen = ({ navigation }) => {
 
   //CREATE ACCOUNT
   const handleCreateAccount = async (locker) => {
-    if ((nombre, apellidos, cedula == "")) {
+    if ((nombre, apellidos, cedula, celular == "")) {
       Alert.alert("Todos los campos son obligatorios");
       return;
     }
@@ -225,8 +227,9 @@ const CreateScreen = ({ navigation }) => {
           justifyContent: "start",
         }}
       >
+        
         <View style={styles.login}>
-          <View>
+          {/* <View>
             <Text
               style={{
                 fontSize: 17,
@@ -237,7 +240,7 @@ const CreateScreen = ({ navigation }) => {
             >
               CREAR CUENTA
             </Text>
-          </View>
+          </View> */}
           <View>
             <TextInput
               onChangeText={(text) => setNombre(text.trim())}
@@ -264,6 +267,14 @@ const CreateScreen = ({ navigation }) => {
           </View>
           <View>
             <TextInput
+              onChangeText={(text) => setCelular(text.trim())}
+              style={styles.input}
+              placeholder="Numero celular"
+              placeholderTextColor="#373737"
+            />
+          </View>
+          <View>
+            <TextInput
               onChangeText={(text) => setEmail(text.trim())}
               style={styles.input}
               placeholder="personal@correo.com"
@@ -281,9 +292,9 @@ const CreateScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity
             onPress={incrementNumber}
-            style={[styles.button, { backgroundColor: "gray" }]}
+            style={[styles.button, { backgroundColor: "#0038FF" }]}
           >
-            <Text style={{ fontSize: 17, fontWeight: "400", color: "#212020" }}>
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "#ffffff" }}>
               Crear cuenta
             </Text>
           </TouchableOpacity>

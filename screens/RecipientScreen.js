@@ -16,6 +16,9 @@ import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
+import { fetchPersonalDataOnSnapshot } from "../apiServices";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 
 const RecipientScreen = ({ navigation }) => {
@@ -26,6 +29,148 @@ const RecipientScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
+
+
+  // const [form, setForm] = React.useState({
+  //   nombre: "",
+  //   apellido: "",
+  //   celular: "",
+  //   cedula: "",
+  //   direccion: "",
+  //   pais: "Colombia",
+  //   ciudad: "",
+  //   email: "",
+  // });
+
+
+
+// GET PERSONAL DATA FORM FIREBASE
+  // React.useEffect(() => {
+  //   const getMyStringValue = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem("key");
+  //       if (value) {
+  //         setUid(value);
+  //         // Llama a fetchPersonalDataOnSnapshot con el uid obtenido y actualiza el estado del formulario
+  //         const unsubscribe = fetchPersonalDataOnSnapshot(value, (userData) => {
+  //           if (userData) {
+  //             setForm({
+  //               nombre: userData.name,
+  //               apellido: userData.surname ,
+  //               celular: userData.cellPhone,
+  //               cedula: userData.nit ,
+  //               direccion: userData.destinationAddress ,
+  //               ciudad: userData.destinyDaneCode,
+  //               email: userData.email,
+  //             });
+  //           }
+  //         });
+
+  //         // Limpia la suscripción cuando el componente se desmonta
+  //         return () => unsubscribe();
+  //       }
+  //     } catch (e) {
+  //       console.log("Something went wrong identifying user storage", e);
+  //     }
+  //   };
+
+  //   getMyStringValue();
+  // }, []);
+
+
+  //    // Verifica si algún campo del formulario está vacío
+  //    const isFormIncomplete = () => {
+  //     return Object.values(form).some((value) => value === "");
+  //   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const getMyStringValue = async () => {
+    try {
+      const value = await AsyncStorage.getItem('key');
+      if (value) {
+        // Llama a fetchPersonalDataOnSnapshot con el uid obtenido y actualiza el estado del formulario
+        const unsubscribe = fetchPersonalDataOnSnapshot(value, (userData) => {
+          if (userData) {
+            // Verifica si alguno de los campos requeridos está vacío
+            if (
+              !userData.name ||
+              !userData.surname ||
+              !userData.cellPhone ||
+              !userData.nit ||
+              !userData.destinationAddress ||
+              !userData.destinyDaneCode ||
+              !userData.email
+            ) {
+              // Al menos uno de los campos está vacío, redirige a la pantalla "PersonalData"
+              navigation.navigate('PersonalData');
+            } else {
+              // Ningún campo está vacío, redirige a la pantalla "DeclaredValue"
+              navigation.navigate('DeclaredValue');
+            }
+          }
+        });
+  
+        // Limpia la suscripción cuando el componente se desmonta
+        return () => unsubscribe();
+      }
+    } catch (e) {
+      console.log('Something went wrong identifying user storage', e);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -101,6 +246,10 @@ const RecipientScreen = ({ navigation }) => {
       setIsLoading(false);
     }
   };
+
+
+
+
 
   // FVORITES SCROLL SECTION 
   function renderPosts({ item }) {
@@ -197,11 +346,16 @@ const RecipientScreen = ({ navigation }) => {
 
 
 
+
+
+
+
+
       {/* enviar a default data del user */}
       <TouchableOpacity
         style={styles.defaultMainContainer}
-        onPress={() => {
-          navigation.navigate("DeclaredValue");
+        onPress={async () => {
+          await getMyStringValue();
         }}
       >
         <View style={styles.containerIconTextsDefault}>
@@ -218,6 +372,18 @@ const RecipientScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
     </View>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
