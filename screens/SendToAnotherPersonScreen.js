@@ -17,7 +17,6 @@ import { setReceiver } from "../reducers/receiver/receiverSlice";
 const SendToAnotherPersonScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
-
   const [form, setForm] = React.useState({
     nombre: "",
     apellido: "",
@@ -37,7 +36,8 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
   };
 
   const enviarFormulario = async () => {
-    const { cedula, nombre, apellido, direccion, celular, ciudad, email } = form;
+    const { cedula, nombre, apellido, direccion, celular, ciudad, email } =
+      form;
 
     if (!cedula) {
       Alert.alert("El campo 'Cedula' es obligatorio");
@@ -68,17 +68,16 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
       Alert.alert("El campo 'Email' es obligatorio");
       return;
     }
-  
 
     dispatch(
       setReceiver({
-        "name": nombre,
-        "surname": apellido,
-        "cellPhone": celular,
-        "email": email,
-        "nit": cedula,
-        "destinyDaneCode": ciudad,
-        "destinationAddress": direccion
+        name: nombre,
+        surname: apellido,
+        cellPhone: celular,
+        email: email,
+        nit: cedula,
+        destinyDaneCode: ciudad,
+        destinationAddress: direccion,
       })
     );
     navigation.navigate("LocalCarrierInsurance");
@@ -87,25 +86,24 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
-
         <View style={styles.container}>
-        <Text style={styles.title}>Enviar a otra persona</Text>
+          <Text style={styles.title}>Enviar a otra persona</Text>
 
-        <Text style={styles.textForm}>Cedula (CC)</Text>
+          <Text style={styles.textForm}>Cedula (CC)</Text>
           <TextInput
             style={styles.input}
             placeholder="Cedula"
             value={form.cedula}
             keyboardType="numeric"
-            onChangeText={(value) => handleChange('cedula', value)}
+            onChangeText={(value) => handleChange("cedula", value)}
           />
 
-        <Text style={styles.textForm}>Email</Text>
+          <Text style={styles.textForm}>Email</Text>
           <TextInput
             style={styles.input}
             placeholder="Email"
             value={form.email}
-            onChangeText={(value) => handleChange('email', value)}
+            onChangeText={(value) => handleChange("email", value)}
           />
 
           <Text style={styles.textForm}>Nombre(s)</Text>
@@ -114,7 +112,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             placeholder="Nombre"
             value={form.nombre}
             // clearButtonMode="while-editing"
-            onChangeText={(value) => handleChange('nombre', value)}
+            onChangeText={(value) => handleChange("nombre", value)}
           />
 
           <Text style={styles.textForm}>Apellidos(s)</Text>
@@ -122,7 +120,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Apellidos"
             value={form.apellido}
-            onChangeText={(value) => handleChange('apellido', value)}
+            onChangeText={(value) => handleChange("apellido", value)}
           />
 
           <Text style={styles.textForm}>Direccion*</Text>
@@ -130,7 +128,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Direccion"
             value={form.direccion}
-            onChangeText={(value) => handleChange('direccion', value)}
+            onChangeText={(value) => handleChange("direccion", value)}
           />
 
           <Text style={styles.textForm}>Celular</Text>
@@ -138,7 +136,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Celular"
             value={form.celular}
-            onChangeText={(value) => handleChange('celular', value)}
+            onChangeText={(value) => handleChange("celular", value)}
           />
 
           <Text style={styles.textForm}>Pais</Text>
@@ -147,7 +145,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             placeholder="Pais"
             value={form.pais}
             editable={false}
-            onChangeText={(value) => handleChange('pais', value)}
+            onChangeText={(value) => handleChange("pais", value)}
           />
 
           <Text style={styles.textForm}>Ciudad</Text>
@@ -155,7 +153,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             style={styles.input}
             placeholder="Ciudad"
             value={form.ciudad}
-            onChangeText={(value) => handleChange('ciudad', value)}
+            onChangeText={(value) => handleChange("ciudad", value)}
           />
 
           <TouchableOpacity

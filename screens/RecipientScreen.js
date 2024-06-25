@@ -18,6 +18,7 @@ import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
 import { fetchPersonalDataOnSnapshot } from "../apiServices";
 import { fetchPersonalData } from "../apiServices";
+import { fetchFavoriteData } from "../apiServices";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
 
@@ -59,12 +60,12 @@ const RecipientScreen = ({ navigation }) => {
             } else {
               dispatch(
                 setReceiver({
-                  name: userData.name ,
-                  surname: userData.surname ,
-                  cellPhone: userData.cellPhone ,
+                  name: userData.name,
+                  surname: userData.surname,
+                  cellPhone: userData.cellPhone,
                   email: userData.email,
                   nit: userData.nit,
-                  destinyDaneCode: userData.destinyDaneCode ,
+                  destinyDaneCode: userData.destinyDaneCode,
                   destinationAddress: userData.destinationAddress,
                 })
               );
@@ -76,6 +77,32 @@ const RecipientScreen = ({ navigation }) => {
 
         // Limpia la suscripción cuando el componente se desmonta
         return () => unsubscribe();
+      }
+    } catch (e) {
+      console.log("Something went wrong identifying user storage", e);
+    }
+  };
+
+  //GET DATA PARA RECOGER EN BODEGA BOGOTA
+  const sendToWarehouse = async () => {
+    try {
+      const value = await AsyncStorage.getItem("key");
+      if (value) {
+        const userData = await fetchPersonalData(value);
+        if (userData) {
+          dispatch(
+            setReceiver({
+              name: userData.name,
+              surname: userData.surname,
+              cellPhone: userData.cellPhone,
+              email: userData.email,
+              nit: userData.nit,
+              destinyDaneCode: "Bogota",
+              destinationAddress: "Calle 24c # 84 - 84 bodega 34",
+            })
+          );
+          navigation.navigate("DeclaredValue");
+        }
       }
     } catch (e) {
       console.log("Something went wrong identifying user storage", e);
@@ -105,26 +132,64 @@ const RecipientScreen = ({ navigation }) => {
 
 
 
-  //GET DATA PARA RECOGER EN BODEGA BOGOTA
-  const sendToWarehouse = async () => {
+
+
+
+  // //GET DATA PARA RECOGER EN BODEGA BOGOTA
+  // const sendToFavorite = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem("key");
+  //     if (value) {
+  //       const userData = await fetchFavoriteData(value);
+  //       if (userData) {
+  //         console.log(userData)
+  //         dispatch(
+  //           setReceiver({
+  //             name: userData.name,
+  //             surname: userData.surname,
+  //             cellPhone: userData.cellPhone,
+  //             email: userData.email,
+  //             nit: userData.nit,
+  //             destinyDaneCode: userData.destinyDaneCode,
+  //             destinationAddress: userData.destinationAddress,
+  //           })
+  //         );
+  //         navigation.navigate("LocalCarrierInsurance");
+
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log("Something went wrong identifying user storage", e);
+  //   }
+  // };
+
+
+
+
+
+  const sendToFavorite = async () => {
+
     try {
       const value = await AsyncStorage.getItem("key");
       if (value) {
-      const userData = await fetchPersonalData(value);
-      if (userData) {
-        dispatch(
-          setReceiver({
-            name: userData.name ,
-            surname: userData.surname ,
-            cellPhone: userData.cellPhone ,
-            email: userData.email,
-            nit: userData.nit,
-            destinyDaneCode: "Bogota",
-            destinationAddress: "Calle 24c # 84 - 84 bodega 34",
-          })
-        );
-        navigation.navigate("DeclaredValue");
-      }
+        const userData = await fetchFavoriteData(value);
+        if (userData && userData.length > 0) {
+          // Assuming you want to use the first favorite address for now
+          const firstFavoriteAddress = userData[0];
+          console.log(firstFavoriteAddress);
+          dispatch(
+            setReceiver({
+              name: firstFavoriteAddress.name,
+              surname: firstFavoriteAddress.surname,
+              cellPhone: firstFavoriteAddress.cellPhone,
+              email: firstFavoriteAddress.email,
+              nit: firstFavoriteAddress.nit,
+              destinyDaneCode: firstFavoriteAddress.destinyDaneCode,
+              destinationAddress: firstFavoriteAddress.destinationAddress,
+            })
+          );
+          navigation.navigate("LocalCarrierInsurance");
+        }
       }
     } catch (e) {
       console.log("Something went wrong identifying user storage", e);
@@ -239,13 +304,55 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-  // FVORITES SCROLL SECTION
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // FAVORITES SCROLL SECTION
   function renderPosts({ item }) {
     return (
       <TouchableOpacity
         style={styles.defaultMainContainer}
-        onPress={() => {
-          navigation.navigate("LocalCarrierInsurance");
+        // onPress={() => {
+        //   navigation.navigate("LocalCarrierInsurance");
+        // }}
+
+        onPress={async () => {
+          await sendToFavorite();
         }}
       >
         <View style={styles.containerIconTexts}>
@@ -254,13 +361,47 @@ const RecipientScreen = ({ navigation }) => {
               {item.name} {item.surname}
             </Text>
             <Text numberOfLines={1} ellipsizeMode="tail">
-              {item.address}
+              {item.destinationAddress}
             </Text>
           </View>
         </View>
       </TouchableOpacity>
     );
   }
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const renderLoader = () => {
     return isLoading ? (
@@ -286,28 +427,6 @@ const RecipientScreen = ({ navigation }) => {
           </View>
         </TouchableOpacity>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         {/* recoger en bodega */}
         <TouchableOpacity
           style={styles.itemContainerRecogerEnBodega}
@@ -320,25 +439,6 @@ const RecipientScreen = ({ navigation }) => {
             <Text style={styles.itemTitle}>Recoger en bodega Bogota</Text>
           </View>
         </TouchableOpacity>
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
 
         {/* bloque estatico */}
         <View style={styles.itemContainerFavorite}>

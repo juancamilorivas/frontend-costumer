@@ -290,3 +290,36 @@ export const fetchPersonalData = async (uid) => {
     return null;
   }
 };
+
+
+// export const fetchFavoriteData = async (uid) => {
+//   const docRef = doc(db, `users/${uid}/favoriteAddresses`);
+//   try {
+//     const docSnapshot = await getDoc(docRef);
+//     if (docSnapshot.exists()) {
+//       return docSnapshot.data();
+//     } else {
+//       console.warn("No such document!");
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("Error obteniendo el documento: ", error);
+//     return null;
+//   }
+// };
+
+
+export const fetchFavoriteData = async (uid) => {
+  const collectionRef = collection(db, `users/${uid}/favoriteAddresses`);
+  try {
+    const querySnapshot = await getDocs(collectionRef);
+    const favoriteAddresses = [];
+    querySnapshot.forEach((doc) => {
+      favoriteAddresses.push(doc.data());
+    });
+    return favoriteAddresses;
+  } catch (error) {
+    console.error("Error obteniendo el documento: ", error);
+    return null;
+  }
+};
