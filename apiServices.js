@@ -1,6 +1,8 @@
 import { db } from "./firebase.js";
 import {
   collection,
+  addDoc,
+  deleteDoc,
   query,
   doc,
   orderBy,
@@ -149,6 +151,7 @@ export const fetchFavoritesOnSnapshot = (
     q,
     (querySnapshot) => {
       const posts = [];
+
       querySnapshot.forEach((doc) => {
         let postData = doc.data();
         postData.postId = doc.id;
@@ -275,6 +278,7 @@ export const fetchPersonalDataOnSnapshot = (uid, callback) => {
   return unsubscribe; // Retorna la función de limpieza de la suscripción
 };
 
+// FETCH PERSONAL DATA
 export const fetchPersonalData = async (uid) => {
   const docRef = doc(db, `users/${uid}`);
   try {
@@ -291,24 +295,7 @@ export const fetchPersonalData = async (uid) => {
   }
 };
 
-
-// export const fetchFavoriteData = async (uid) => {
-//   const docRef = doc(db, `users/${uid}/favoriteAddresses`);
-//   try {
-//     const docSnapshot = await getDoc(docRef);
-//     if (docSnapshot.exists()) {
-//       return docSnapshot.data();
-//     } else {
-//       console.warn("No such document!");
-//       return null;
-//     }
-//   } catch (error) {
-//     console.error("Error obteniendo el documento: ", error);
-//     return null;
-//   }
-// };
-
-
+// FETCH FAVORITES
 export const fetchFavoriteData = async (uid) => {
   const collectionRef = collection(db, `users/${uid}/favoriteAddresses`);
   try {
@@ -323,3 +310,44 @@ export const fetchFavoriteData = async (uid) => {
     return null;
   }
 };
+
+// SAVE FAVORITE
+export async function saveFavoriteAddress(
+  uid,
+  nombre,
+  apellido,
+  celular,
+  email,
+  cedula,
+  ciudad,
+  direccion
+) {
+  const data = {
+    name: nombre,
+    surname: apellido,
+    cellPhone: celular,
+    email: email,
+    nit: cedula,
+    destinyDaneCode: ciudad,
+    destinationAddress: direccion,
+    createdAt: new Date(),
+  };
+  console.log(data, uid);
+
+  try {
+    await addDoc(collection(db, `users/${uid}/favoriteAddresses`), data);
+  } catch (e) {
+    console.error("Error al agregar el documento: ", e);
+  }
+}
+
+// DELETE FAVORITE
+ export const deleteFavoriteAddress = async (uid, idDocument) => {
+    const userRef = doc(db, `users/${uid}/favoriteAddresses/${idDocument}`);
+    try {
+      await deleteDoc(userRef);
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
+  };
+

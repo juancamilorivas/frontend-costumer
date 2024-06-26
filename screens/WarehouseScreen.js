@@ -29,7 +29,7 @@ const WarehouseScreen = ({ navigation }) => {
   const [uid, setUid] = React.useState(null);
 
   //modal breakpoints
-  const snapPoints = React.useMemo(() => ["50%", "65%"], []);
+  const snapPoints = React.useMemo(() => ["49%", "65%"], []);
 
   //modal state with ref
   const bottomSheetRef = React.useRef(null);

@@ -18,10 +18,12 @@ import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
 import { fetchPersonalDataOnSnapshot } from "../apiServices";
 import { fetchPersonalData } from "../apiServices";
-import { fetchFavoriteData } from "../apiServices";
+// import { fetchFavoriteData } from "../apiServices";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
 import { SpeedDial } from "@rneui/themed";
+// import { Skeleton } from '@rneui/themed';
+
 
 const RecipientScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -55,6 +57,11 @@ const RecipientScreen = ({ navigation }) => {
           icon={{ name: "add", color: "#fff" }}
           title="Agrega un nuevo favorito"
           onPress={() => navigation.navigate("CreateFavorite")}
+        />
+         <SpeedDial.Action
+          icon={{ name: "add", color: "#fff" }}
+          title="Eliminar un favorito"
+          onPress={() => navigation.navigate("DeleteFavorite")}
         />
       </SpeedDial>
     );
@@ -132,27 +139,53 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-  // //GET DATA PARA RECOGER EN BODEGA BOGOTA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // // //GET DATA TO SEND TO FAVORITE
   // const sendToFavorite = async () => {
   //   try {
   //     const value = await AsyncStorage.getItem("key");
   //     if (value) {
   //       const userData = await fetchFavoriteData(value);
-  //       if (userData) {
-  //         console.log(userData)
+  //       if (userData && userData.length > 0) {
+  //         // Assuming you want to use the first favorite address for now
+  //         const firstFavoriteAddress = userData[0];
+  //         console.log(firstFavoriteAddress);
   //         dispatch(
   //           setReceiver({
-  //             name: userData.name,
-  //             surname: userData.surname,
-  //             cellPhone: userData.cellPhone,
-  //             email: userData.email,
-  //             nit: userData.nit,
-  //             destinyDaneCode: userData.destinyDaneCode,
-  //             destinationAddress: userData.destinationAddress,
+  //             name: firstFavoriteAddress.name,
+  //             surname: firstFavoriteAddress.surname,
+  //             cellPhone: firstFavoriteAddress.cellPhone,
+  //             email: firstFavoriteAddress.email,
+  //             nit: firstFavoriteAddress.nit,
+  //             destinyDaneCode: firstFavoriteAddress.destinyDaneCode,
+  //             destinationAddress: firstFavoriteAddress.destinationAddress,
   //           })
   //         );
   //         navigation.navigate("LocalCarrierInsurance");
-
   //       }
   //     }
   //   } catch (e) {
@@ -162,36 +195,44 @@ const RecipientScreen = ({ navigation }) => {
 
 
 
-  E
-  const sendToFavorite = async () => {
+
+
+
+
+//SAVE FAVORITE DATA ON REDUX
+  const sendToFavorite = async (selectedItem) => {
     try {
-      const value = await AsyncStorage.getItem("key");
-      if (value) {
-        const userData = await fetchFavoriteData(value);
-        if (userData && userData.length > 0) {
-          // Assuming you want to use the first favorite address for now
-          const firstFavoriteAddress = userData[0];
-          console.log(firstFavoriteAddress);
-          dispatch(
-            setReceiver({
-              name: firstFavoriteAddress.name,
-              surname: firstFavoriteAddress.surname,
-              cellPhone: firstFavoriteAddress.cellPhone,
-              email: firstFavoriteAddress.email,
-              nit: firstFavoriteAddress.nit,
-              destinyDaneCode: firstFavoriteAddress.destinyDaneCode,
-              destinationAddress: firstFavoriteAddress.destinationAddress,
-            })
-          );
-          navigation.navigate("LocalCarrierInsurance");
-        }
-      }
+      const { name, surname, cellPhone, email, nit, destinyDaneCode, destinationAddress } = selectedItem;
+      dispatch(
+        setReceiver({
+          name,
+          surname,
+          cellPhone,
+          email,
+          nit,
+          destinyDaneCode,
+          destinationAddress,
+        })
+      );
+        navigation.navigate("LocalCarrierInsurance");
     } catch (e) {
       console.log("Something went wrong identifying user storage", e);
     }
   };
 
-  // // GET DEFAULT NAME Y ADDRESS SE EJECUTA EN LA PRIEMRA CARGA
+
+
+
+
+
+
+
+
+
+
+
+
+  // // GET DEFAULT NAME Y ADDRESS - SE EJECUTA EN LA PRIEMRA CARGA
   React.useEffect(() => {
     const getMyDefaultValue = async () => {
       try {
@@ -213,6 +254,9 @@ const RecipientScreen = ({ navigation }) => {
     };
     getMyDefaultValue();
   }, []);
+
+
+
 
   //GET FAVORITES
   React.useEffect(() => {
@@ -243,6 +287,9 @@ const RecipientScreen = ({ navigation }) => {
   const onRefresh = () => {
     setIsRefreshing(true); // Activa el estado de refresco
   };
+
+
+
 
   //GET MORE FAVORITES
   const getMorePosts = () => {
@@ -276,12 +323,8 @@ const RecipientScreen = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={styles.defaultMainContainer}
-        // onPress={() => {
-        //   navigation.navigate("LocalCarrierInsurance");
-        // }}
-
         onPress={async () => {
-          await sendToFavorite();
+          await sendToFavorite(item)
         }}
       >
         <View style={styles.containerIconTexts}>
@@ -292,6 +335,21 @@ const RecipientScreen = ({ navigation }) => {
             <Text numberOfLines={1} ellipsizeMode="tail">
               {item.destinationAddress}
             </Text>
+                {/* {isLoading ? (
+              <>
+                <Skeleton animation="pulse" width={80} height={20} />
+                <Skeleton animation="pulse" width={200} height={20} style={{ marginTop: 5 }} />
+              </>
+            ) : (
+              <>
+                <Text style={styles.favoriteDefaultName}>
+                  {item.name} {item.surname}
+                </Text>
+                <Text numberOfLines={1} ellipsizeMode="tail">
+                  {item.destinationAddress}
+                </Text>
+              </>
+            )} */}
           </View>
         </View>
       </TouchableOpacity>

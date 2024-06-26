@@ -3,6 +3,7 @@ import { TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RecipientScreen from "../screens/RecipientScreen";
 import CreateFavoriteScreen from "../screens/CreateFavoriteScreen";
+import DeleteFavoriteScreen from "../screens/DeleteFavoriteScreen";
 import SendToAnotherPersonScreen from "../screens/SendToAnotherPersonScreen";
 import DeclaredValueScreen from "../screens/DeclaredValueScreen";
 import LocalCarrierInsuranceScreen from "../screens/LocalCarrierInsuranceScreen";
@@ -51,11 +52,117 @@ const StartTransportNavigation = ({ navigation }) => {
           ),
         }}
       />
+
+
+
       <Stack.Screen
         name="CreateFavorite"
         component={CreateFavoriteScreen}
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
+        options={{
+          title: "Crear favorito",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Recipient");
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <Stack.Screen
+        name="DeleteFavorite"
+        component={DeleteFavoriteScreen}
+        // options={{ headerShown: false }}
+        options={{
+          title: "Eliminar favorito",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Recipient");
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <Stack.Screen
         name="SendToAnotherPerson"
         component={SendToAnotherPersonScreen}
