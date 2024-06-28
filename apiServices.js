@@ -11,73 +11,18 @@ import {
   limit,
   startAfter,
   onSnapshot,
+  where,
 } from "firebase/firestore";
-
-//GET POSTS
-export const fetchPosts = async (postsPerLoad) => {
-  const posts = [];
-
-  try {
-    const q = query(
-      collection(db, "blogPosts"),
-      orderBy("createdAt", "desc"),
-      limit(postsPerLoad)
-    );
-    const querySnapshot = await getDocs(q);
-    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-
-    querySnapshot.forEach((doc) => {
-      let postData = doc.data();
-      postData.postId = doc.id;
-      posts.push(postData);
-    });
-
-    return { posts, lastVisible };
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    return { error: "Error fetching posts" };
-  }
-};
-
-//GET MORE POSTS
-export const fetchMorePosts = async (startAfterr, postsPerLoad) => {
-  const posts = [];
-
-  try {
-    const q = query(
-      collection(db, "blogPosts"),
-      orderBy("createdAt", "desc"),
-      startAfter(startAfterr),
-      limit(postsPerLoad)
-    );
-    const querySnapshot = await getDocs(q);
-    const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-
-    // console.log("last", lastVisible.id);
-
-    querySnapshot.forEach((doc) => {
-      let postData = doc.data();
-      postData.postId = doc.id;
-      posts.push(postData);
-    });
-
-    return { posts, lastVisible };
-  } catch (error) {
-    // console.error("Error fetching posts:", error);
-    return { error: "Error fetching posts" };
-  }
-};
 
 // FETCH POSTS ON SNAPSHOT
 export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
   // console.log("soy el uidddddddd", uid)
   const q = query(
-    // collection(db, "blogPosts"),
-    collection(db, `users/${uid}/shipments`),
-    orderBy("createdAt", "asc"),
+    collection(db, "shipments"),
+    where("uidClient", "==", uid),
+    orderBy("createdAt", "desc"),
     limit(postsPerLoad)
   );
-
   const unsubscribe = onSnapshot(
     q,
     (querySnapshot) => {
@@ -98,7 +43,7 @@ export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
   return unsubscribe;
 };
 
-//// FETCH MORE POSTS ON SNAPSHOT
+// //// FETCH MORE POSTS ON SNAPSHOT
 export const fetchMorePostsOnSnapshot = (
   postsPerLoad,
   lastVisible,
@@ -106,11 +51,10 @@ export const fetchMorePostsOnSnapshot = (
   onError,
   uid
 ) => {
-  // console.log("jajajajajajajaj", uid)
   const q = query(
-    // collection(db, "blogPosts"),
-    collection(db, `users/${uid}/shipments`),
-    orderBy("createdAt", "asc"),
+    collection(db, "shipments"),
+    where("uidClient", "==", uid),
+    orderBy("createdAt", "desc"),
     limit(postsPerLoad),
     startAfter(lastVisible) // Fetch posts after the last visible one
   );
@@ -202,10 +146,12 @@ export const fetchMoreFavoritesOnSnapshot = (
   return unsubscribe;
 };
 
-// FETCH FAVORITES ON SNAPSHOT
+
+// FETCH SERVICES ON SNAPSHOT
 export const fetchServicesOnSnapshot = (postsPerLoad, onData, onError, uid) => {
   const q = query(
-    collection(db, `users/${uid}/services`),
+    collection(db, "services"),
+    where("uidClient", "==", uid),
     orderBy("createdAt", "desc"),
     limit(postsPerLoad)
   );
@@ -230,7 +176,7 @@ export const fetchServicesOnSnapshot = (postsPerLoad, onData, onError, uid) => {
   return unsubscribe;
 };
 
-//// FETCH MORE FAVORITES ON SNAPSHOT
+//// FETCH MORE SERVICES ON SNAPSHOT
 export const fetchMoreServicesOnSnapshot = (
   postsPerLoad,
   lastVisible,
@@ -239,7 +185,8 @@ export const fetchMoreServicesOnSnapshot = (
   uid
 ) => {
   const q = query(
-    collection(db, `users/${uid}/services`),
+    collection(db, "services"),
+    where("uidClient", "==", uid),
     orderBy("createdAt", "desc"),
     limit(postsPerLoad),
     startAfter(lastVisible) // Fetch posts after the last visible one
@@ -317,8 +264,6 @@ export async function saveFavoriteAddress(
   nombre,
   apellido,
   celular,
-  email,
-  cedula,
   ciudad,
   direccion
 ) {
@@ -326,8 +271,6 @@ export async function saveFavoriteAddress(
     name: nombre,
     surname: apellido,
     cellPhone: celular,
-    email: email,
-    nit: cedula,
     destinyDaneCode: ciudad,
     destinationAddress: direccion,
     createdAt: new Date(),
@@ -342,12 +285,11 @@ export async function saveFavoriteAddress(
 }
 
 // DELETE FAVORITE
- export const deleteFavoriteAddress = async (uid, idDocument) => {
-    const userRef = doc(db, `users/${uid}/favoriteAddresses/${idDocument}`);
-    try {
-      await deleteDoc(userRef);
-    } catch (error) {
-      console.error("Error deleting document: ", error);
-    }
-  };
-
+export const deleteFavoriteAddress = async (uid, idDocument) => {
+  const userRef = doc(db, `users/${uid}/favoriteAddresses/${idDocument}`);
+  try {
+    await deleteDoc(userRef);
+  } catch (error) {
+    console.error("Error deleting document: ", error);
+  }
+};

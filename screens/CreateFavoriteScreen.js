@@ -10,26 +10,19 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-
-//REDUX IMPORTS
-import { useDispatch } from "react-redux";
-import { setReceiver } from "../reducers/receiver/receiverSlice";
 import { saveFavoriteAddress } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CreateFavoriteScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [form, setForm] = React.useState({
     nombre: "",
     apellido: "",
     celular: "",
-    cedula: "",
     direccion: "",
     pais: "Colombia",
     ciudad: "",
-    email: "",
   });
 
   const handleChange = (name, value) => {
@@ -42,66 +35,22 @@ const CreateFavoriteScreen = ({ navigation }) => {
   const enviarFormulario = async () => {
     setIsLoading(true);
 
-    const { cedula, nombre, apellido, direccion, celular, ciudad, email } =
+    const { nombre, apellido, direccion, celular, ciudad } =
       form;
 
     // Verificar si algún campo está vacío
     if (
-      !cedula ||
       !nombre ||
       !apellido ||
       !direccion ||
       !celular ||
-      !ciudad ||
-      !email
+      !ciudad 
     ) {
       Alert.alert("Todos los campos son obligatorios");
       setIsLoading(false);
       return;
     }
 
-    // if (!cedula) {
-    //   Alert.alert("El campo 'Cedula' es obligatorio");
-    //   return;
-    // }
-    // if (!nombre) {
-    //   Alert.alert("El campo 'Nombre' es obligatorio");
-    //   return;
-    // }
-    // if (!apellido) {
-    //   Alert.alert("El campo 'Apellido' es obligatorio");
-    //   return;
-    // }
-    // if (!direccion) {
-    //   Alert.alert("El campo 'Direccion' es obligatorio");
-    //   return;
-    // }
-
-    // if (!celular) {
-    //   Alert.alert("El campo 'Celular' es obligatorio");
-    //   return;
-    // }
-    // if (!ciudad) {
-    //   Alert.alert("El campo 'Ciudad' es obligatorio");
-    //   return;
-    // }
-    // if (!email) {
-    //   Alert.alert("El campo 'Email' es obligatorio");
-    //   return;
-    // }
-
-    // dispatch(
-    //   setReceiver({
-    //     name: nombre,
-    //     surname: apellido,
-    //     cellPhone: celular,
-    //     email: email,
-    //     nit: cedula,
-    //     destinyDaneCode: ciudad,
-    //     destinationAddress: direccion,
-    //   })
-    // );
-    // navigation.navigate("LocalCarrierInsurance");
 
     try {
       const uid = await AsyncStorage.getItem("key");
@@ -112,8 +61,6 @@ const CreateFavoriteScreen = ({ navigation }) => {
           nombre,
           apellido,
           celular,
-          email,
-          cedula,
           ciudad,
           direccion
         );
@@ -122,11 +69,9 @@ const CreateFavoriteScreen = ({ navigation }) => {
             nombre: "",
             apellido: "",
             celular: "",
-            cedula: "",
             direccion: "",
             pais: "Colombia",
             ciudad: "",
-            email: "",
           }
         )
       }
@@ -143,23 +88,6 @@ const CreateFavoriteScreen = ({ navigation }) => {
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.title}>Crear favorito</Text>
-
-          <Text style={styles.textForm}>Cedula (CC)</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Cedula"
-            value={form.cedula}
-            keyboardType="numeric"
-            onChangeText={(value) => handleChange("cedula", value)}
-          />
-
-          <Text style={styles.textForm}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={form.email}
-            onChangeText={(value) => handleChange("email", value)}
-          />
 
           <Text style={styles.textForm}>Nombre(s)</Text>
           <TextInput

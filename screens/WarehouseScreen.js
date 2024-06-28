@@ -207,7 +207,7 @@ const WarehouseScreen = ({ navigation }) => {
         <ListItem key={item.postId}>
           <ListItem.Content style={styles.itemContent}>
             <ListItem.Title style={styles.shippingNumber}>
-              {item.postId}
+              {item.shipmentNumber}
             </ListItem.Title>
             <ListItem.Subtitle style={styles.dateText}>
               {formattedDate}
