@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 //REDUX IMPORTS
 import { useDispatch } from "react-redux";
@@ -21,12 +23,14 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
     nombre: "",
     apellido: "",
     celular: "",
-    cedula: "",
     direccion: "",
     pais: "Colombia",
     ciudad: "",
-    email: "",
+    destinyDaneCode: "",
   });
+  const [value, setValue] = React.useState(null);
+  const [isFocus, setIsFocus] = React.useState(false);
+  const [dataa, setDataa] = React.useState([]);
 
   const handleChange = (name, value) => {
     setForm({
@@ -35,14 +39,50 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
     });
   };
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://api-v2.dev.mpr.mipaquete.com/getLocations",
+          {
+            method: "GET",
+            headers: {
+              apikey:
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDMwODhlMzRkYWJkMjVlZTRlM2U2NjQiLCJuYW1lIjoiVGVzdC1taS1wYXF1ZXRlLXJlYWwiLCJzdXJuYW1lIjoiSnVuaW9yIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImNlbGxQaG9uZSI6IjMxNDY1NzEyMzMiLCJjcmVhdGVkQXQiOiIyMDE5LTA3LTE4VDE0OjU3OjM5LjA0NFoiLCJkYXRlIjoiMjAyNC0wNi0yOCAyMjowMTo1NiIsImlhdCI6MTcxOTYzMDExNn0.AYBaP1U6drvnSrjp55b2LHJrODCuDRZxADWZJzca1ys",
+              "session-tracker": "a0c96ea6-b22d-4fb7-a278-850678d5429c",
+            },
+          }
+        );
+        const result = await response.json();
+        const capitalize = (text) => {
+          return text
+            .toLowerCase()
+            .split(" ")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+        };
+        const transformedData = result
+          .map((item) => ({
+            label: `${capitalize(item.locationName)}, ${capitalize(
+              item.departmentOrStateName
+            )}`,
+            value: item._id,
+            locationCode: item.locationCode,
+          }))
+          .sort((a, b) => a.label.localeCompare(b.label));
+        setDataa(transformedData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const enviarFormulario = async () => {
-    const { cedula, nombre, apellido, direccion, celular, ciudad, email } =
+    const { nombre, apellido, direccion, celular, ciudad, destinyDaneCode } =
       form;
 
-    if (!cedula) {
-      Alert.alert("El campo 'Cedula' es obligatorio");
-      return;
-    }
     if (!nombre) {
       Alert.alert("El campo 'Nombre' es obligatorio");
       return;
@@ -64,19 +104,14 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
       Alert.alert("El campo 'Ciudad' es obligatorio");
       return;
     }
-    if (!email) {
-      Alert.alert("El campo 'Email' es obligatorio");
-      return;
-    }
 
     dispatch(
       setReceiver({
         name: nombre,
         surname: apellido,
         cellPhone: celular,
-        email: email,
-        nit: cedula,
-        destinyDaneCode: ciudad,
+        locationName: ciudad,
+        destinyDaneCode: destinyDaneCode,
         destinationAddress: direccion,
       })
     );
@@ -89,22 +124,53 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
         <View style={styles.container}>
           <Text style={styles.title}>Enviar a otra persona</Text>
 
-          <Text style={styles.textForm}>Cedula (CC)</Text>
+          <Text style={styles.textForm}>Pais</Text>
           <TextInput
             style={styles.input}
-            placeholder="Cedula"
-            value={form.cedula}
-            keyboardType="numeric"
-            onChangeText={(value) => handleChange("cedula", value)}
+            placeholder="Pais"
+            value={form.pais}
+            editable={false}
+            onChangeText={(value) => handleChange("pais", value)}
           />
 
-          <Text style={styles.textForm}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            value={form.email}
-            onChangeText={(value) => handleChange("email", value)}
-          />
+          <Text style={styles.textForm}>Ciudad</Text>
+          <View style={styles.containerDropDown}>
+            <Dropdown
+              style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+              placeholderStyle={styles.placeholderStyle}
+              selectedTextStyle={styles.selectedTextStyle}
+              inputSearchStyle={styles.inputSearchStyle}
+              iconStyle={styles.iconStyle}
+              data={dataa}
+              search
+              maxHeight={250}
+              labelField="label"
+              valueField="value"
+              placeholder={!isFocus && form.ciudad ? form.ciudad : "Ciudad"}
+              searchPlaceholder="Search..."
+              value={value}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+              onChange={(item) => {
+                setValue(item.value);
+                // setLocationCode(item.locationCode);
+                setForm((prevForm) => ({
+                  ...prevForm,
+                  ciudad: item.label,
+                  destinyDaneCode: item.locationCode,
+                }));
+                setIsFocus(false);
+              }}
+              renderLeftIcon={() => (
+                <AntDesign
+                  style={styles.icon}
+                  color={isFocus ? "blue" : "black"}
+                  name="Safety"
+                  size={20}
+                />
+              )}
+            />
+          </View>
 
           <Text style={styles.textForm}>Nombre(s)</Text>
           <TextInput
@@ -139,23 +205,6 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             onChangeText={(value) => handleChange("celular", value)}
           />
 
-          <Text style={styles.textForm}>Pais</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Pais"
-            value={form.pais}
-            editable={false}
-            onChangeText={(value) => handleChange("pais", value)}
-          />
-
-          <Text style={styles.textForm}>Ciudad</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Ciudad"
-            value={form.ciudad}
-            onChangeText={(value) => handleChange("ciudad", value)}
-          />
-
           <TouchableOpacity
             style={styles.buttonStyles}
             onPress={enviarFormulario}
@@ -183,7 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   input: {
-    height: 45,
+    height: 50,
     width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
@@ -191,6 +240,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "#fff",
     borderRadius: 5,
+    fontSize: 16,
   },
   inputTracking: {
     height: 45,
@@ -271,5 +321,44 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     marginVertical: 20,
+  },
+
+  containerDropDown: {
+    backgroundColor: "transparent",
+    paddingBottom: 10,
+  },
+  dropdown: {
+    height: 50,
+    borderColor: "gray",
+    borderWidth: 0.5,
+    borderRadius: 5,
+    paddingHorizontal: 8,
+    backgroundColor: "white",
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: "absolute",
+    backgroundColor: "white",
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });

@@ -265,13 +265,15 @@ export async function saveFavoriteAddress(
   apellido,
   celular,
   ciudad,
-  direccion
+  direccion,
+  destinyDaneCode
 ) {
   const data = {
     name: nombre,
     surname: apellido,
     cellPhone: celular,
-    destinyDaneCode: ciudad,
+    locationName: ciudad,
+    destinyDaneCode: destinyDaneCode,
     destinationAddress: direccion,
     createdAt: new Date(),
   };

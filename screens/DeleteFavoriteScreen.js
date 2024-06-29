@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Alert,
 } from "react-native";
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -23,7 +24,7 @@ const DeleteFavoriteScreen = ({ navigation }) => {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
 
-  // GET UID FROM ASYNCSTORAGE
+  // GET UID ASYNCSTORAGE
   React.useEffect(() => {
     const getMyDefaultValue = async () => {
       try {
@@ -38,7 +39,7 @@ const DeleteFavoriteScreen = ({ navigation }) => {
     getMyDefaultValue();
   }, []);
 
-  //GET FAVORITES
+  //GET FAVORITES ADDRESSES
   React.useEffect(() => {
     try {
       const unsubscribe = fetchFavoritesOnSnapshot(
@@ -95,22 +96,9 @@ const DeleteFavoriteScreen = ({ navigation }) => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
   //DELETE  FAVORITES
   const deleteFavorite = async (idDocument) => {
     const uid = await AsyncStorage.getItem("key");
-
     if (uid) {
       try {
         deleteFavoriteAddress(uid, idDocument);
@@ -122,18 +110,57 @@ const DeleteFavoriteScreen = ({ navigation }) => {
     }
   };
 
+  // // FAVORITES SCROLL SECTION
+  // function renderPosts({ item }) {
+  //   return (
+  //     <TouchableOpacity
+  //       style={styles.defaultMainContainer}
+  //       onPress={() => deleteFavorite(item.postId)}
+  //     >
+  //       <View style={styles.containerIconTexts}>
+  //         <View style={styles.containerDefaultTexts}>
+  //           <Text style={styles.favoriteDefaultName}>
+  //             {item.name} {item.surname}
+  //           </Text>
+  //           <Text numberOfLines={1} ellipsizeMode="tail">
+  //             {item.destinationAddress}
+  //           </Text>
+  //         </View>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // }
 
 
 
 
 
+  // Handle delete with confirmation
+  const confirmDelete = (idDocument) => {
+    Alert.alert(
+      "Confirmar",
+      "Desea eliminar este item?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancelar",
+        },
+        {
+          text: "Eliminar",
+          onPress: () => deleteFavorite(idDocument),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   // FAVORITES SCROLL SECTION
   function renderPosts({ item }) {
     return (
       <TouchableOpacity
         style={styles.defaultMainContainer}
-        onPress={() => deleteFavorite(item.postId)}
+        onPress={() => confirmDelete(item.postId)}
       >
         <View style={styles.containerIconTexts}>
           <View style={styles.containerDefaultTexts}>
@@ -148,6 +175,7 @@ const DeleteFavoriteScreen = ({ navigation }) => {
       </TouchableOpacity>
     );
   }
+
 
   const renderLoader = () => {
     return isLoading ? (
@@ -307,3 +335,4 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
 });
+

@@ -29,12 +29,11 @@ const PersonalDataScreen = () => {
     pais: "Colombia",
     ciudad: "",
     email: "",
+    destinyDaneCode: ""
   });
   const [value, setValue] = React.useState(null);
   const [isFocus, setIsFocus] = React.useState(false);
   const [dataa, setDataa] = React.useState([]);
-  const [locationCode, setLocationCode] = React.useState(null);
-  const [locationName, setLocationName] = React.useState(null);
 
   const handleChange = (name, value) => {
     setForm({
@@ -42,6 +41,10 @@ const PersonalDataScreen = () => {
       [name]: value,
     });
   };
+
+
+
+
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +55,7 @@ const PersonalDataScreen = () => {
             method: "GET",
             headers: {
               apikey:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDMwODhlMzRkYWJkMjVlZTRlM2U2NjQiLCJuYW1lIjoiVGVzdC1taS1wYXF1ZXRlLXJlYWwiLCJzdXJuYW1lIjoiSnVuaW9yIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImNlbGxQaG9uZSI6IjMxNDY1NzEyMzMiLCJjcmVhdGVkQXQiOiIyMDE5LTA3LTE4VDE0OjU3OjM5LjA0NFoiLCJkYXRlIjoiMjAyNC0wNi0yNyAxOTo0MDoyNSIsImlhdCI6MTcxOTUzNTIyNX0.qOT_feCv2pitJVEjfQUm2VY1sGSTk6tu5lvst4Y_D2g",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDMwODhlMzRkYWJkMjVlZTRlM2U2NjQiLCJuYW1lIjoiVGVzdC1taS1wYXF1ZXRlLXJlYWwiLCJzdXJuYW1lIjoiSnVuaW9yIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImNlbGxQaG9uZSI6IjMxNDY1NzEyMzMiLCJjcmVhdGVkQXQiOiIyMDE5LTA3LTE4VDE0OjU3OjM5LjA0NFoiLCJkYXRlIjoiMjAyNC0wNi0yOCAyMjowMTo1NiIsImlhdCI6MTcxOTYzMDExNn0.AYBaP1U6drvnSrjp55b2LHJrODCuDRZxADWZJzca1ys",
               "session-tracker": "a0c96ea6-b22d-4fb7-a278-850678d5429c",
             },
           }
@@ -76,7 +79,7 @@ const PersonalDataScreen = () => {
           .sort((a, b) => a.label.localeCompare(b.label));
         setDataa(transformedData);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -85,6 +88,10 @@ const PersonalDataScreen = () => {
 
 
 
+
+
+
+// LLAMADO INCIAL PARA TRAER LA DATA DEL CLIENTE, SE CARGA AL ABRIR LA SCREEN
   React.useEffect(() => {
     const getMyStringValue = async () => {
       try {
@@ -102,23 +109,27 @@ const PersonalDataScreen = () => {
               pais: "Colombia", // Siempre establecido como "Colombia"
               ciudad: userData.locationName || "",
               email: userData.email || "",
+              destinyDaneCode: userData.destinyDaneCode || "",
             });
           }
         }
       } catch (e) {
-        console.log("Something went wrong identifying user storage", e);
+        console.error("Something went wrong identifying user storage", e);
       }
     };
 
     getMyStringValue();
   }, []);
 
+
+
+
+
+// GUARDAR INFORMACION DEL FORMULARIO EN FIREBASE
   const enviarFormulario = async () => {
     setIsLoading(true);
-
-    const { cedula, nombre, apellido, direccion, celular, ciudad, email } =
+    const { cedula, nombre, apellido, direccion, celular, ciudad, email, destinyDaneCode } =
       form;
-
     // Verificar si algún campo está vacío
     if (
       !cedula ||
@@ -138,9 +149,12 @@ const PersonalDataScreen = () => {
       surname: apellido,
       nit: cedula,
       cellPhone: celular,
+      prefix: "+57",
+      nitType: "CC",
+      countryCode: "170",
       email: email,
-      locationName: locationName,
-      destinyDaneCode: locationCode,
+      locationName: ciudad,
+      destinyDaneCode: destinyDaneCode,
       destinationAddress: direccion,
     };
     try {
@@ -151,17 +165,6 @@ const PersonalDataScreen = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const renderLabel = () => {
-    if (value || isFocus) {
-      return (
-        <Text style={[styles.label, isFocus && { color: "blue" }]}>
-          Destino
-        </Text>
-      );
-    }
-    return null;
   };
 
   return (
@@ -181,7 +184,6 @@ const PersonalDataScreen = () => {
 
           <Text style={styles.textForm}>Ciudad</Text>
           <View style={styles.containerDropDown}>
-            {/* {renderLabel()} */}
             <Dropdown
               style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
               placeholderStyle={styles.placeholderStyle}
@@ -193,15 +195,19 @@ const PersonalDataScreen = () => {
               maxHeight={250}
               labelField="label"
               valueField="value"
-              placeholder={!isFocus && form.ciudad ? form.ciudad : "Elige una opcion"}
+              placeholder={!isFocus && form.ciudad ? form.ciudad : "Ciudad"}
               searchPlaceholder="Search..."
               value={value}
               onFocus={() => setIsFocus(true)}
               onBlur={() => setIsFocus(false)}
               onChange={(item) => {
                 setValue(item.value);
-                setLocationCode(item.locationCode);
-                setLocationName(item.locationName);
+                // setLocationCode(item.locationCode);
+                setForm(prevForm => ({
+                  ...prevForm,
+                  ciudad: item.label,
+                  destinyDaneCode: item.locationCode
+                }));
                 setIsFocus(false);
               }}
               renderLeftIcon={() => (
@@ -397,6 +403,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 
+
+
+
+
+
+  
   containerDropDown: {
     backgroundColor: "transparent",
     paddingBottom: 10,
@@ -436,3 +448,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+

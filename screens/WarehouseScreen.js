@@ -18,8 +18,12 @@ import { ListItem } from "@rneui/themed";
 import { fetchMorePostsOnSnapshot } from "../apiServices";
 import { fetchPostsOnSnapshot } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
+import { setReceiver } from "../reducers/receiver/receiverSlice";
 
 const WarehouseScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
@@ -126,6 +130,7 @@ const WarehouseScreen = ({ navigation }) => {
         style={styles.itemContainer}
         onPress={async () => {
           await handleClosePress();
+
           navigation.navigate(item.navigationPath, { uid: uid });
         }}
       >
@@ -202,8 +207,13 @@ const WarehouseScreen = ({ navigation }) => {
     const formattedDate = createdAtDate.toLocaleString("es-ES");
     const descriptionInUpperCase = item.description.toUpperCase();
 
+    const handlePress = () => {
+      dispatch(setReceiver({ shipmentNumber: item.shipmentNumber }));
+      snapeToIndex(0);
+    };
+
     return (
-      <TouchableOpacity onPress={() => snapeToIndex(0)}>
+      <TouchableOpacity onPress={handlePress}>
         <ListItem key={item.postId}>
           <ListItem.Content style={styles.itemContent}>
             <ListItem.Title style={styles.shippingNumber}>

@@ -11,6 +11,10 @@ const DivideScreen = () => {
   const [locationCode, setLocationCode] = useState(null);
 
 
+
+
+
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,6 +52,12 @@ const DivideScreen = () => {
 
     fetchData();
   }, []);
+
+
+
+
+
+
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -139,3 +149,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+

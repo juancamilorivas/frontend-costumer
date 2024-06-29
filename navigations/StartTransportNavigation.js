@@ -234,7 +234,7 @@ const StartTransportNavigation = ({ navigation }) => {
         name="LocalCarrierInsurance"
         component={LocalCarrierInsuranceScreen}
         options={{
-          title: "Seguro nacional",
+          title: "Seguro",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#000000",
