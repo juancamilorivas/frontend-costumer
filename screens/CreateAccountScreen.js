@@ -176,6 +176,7 @@ const CreateScreen = ({ navigation }) => {
       return;
     }
 
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         initialAuth,
@@ -229,18 +230,6 @@ const CreateScreen = ({ navigation }) => {
       >
         
         <View style={styles.login}>
-          {/* <View>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "400",
-                color: "white",
-                marginBottom: 20,
-              }}
-            >
-              CREAR CUENTA
-            </Text>
-          </View> */}
           <View>
             <TextInput
               onChangeText={(text) => setNombre(text.trim())}
