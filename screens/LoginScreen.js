@@ -13,12 +13,11 @@ import {
 import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
-
 import { getAuth } from "firebase/auth";
-
 import { useDispatch } from "react-redux";
 import { setUser } from "../reducers/user/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchPersonalData } from "../apiServices";
 
 const logo =
   "https://qixeul.stripocdn.email/content/guids/CABINET_a5efd8f79280f89c49f5b6e4eb48877f95c5996885e4077eadd41ecc90a9c33a/images/postman_2.png";
@@ -30,6 +29,17 @@ const LoginScreen = ({ navigation }) => {
   //STATES
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // const [form, setForm] = React.useState({
+  //   nombre: "",
+  //   apellido: "",
+  //   celular: "",
+  //   cedula: "",
+  //   direccion: "",
+  //   pais: "Colombia",
+  //   ciudad: "",
+  //   email: "",
+  //   destinyDaneCode: "",
+  // });
 
 
 
@@ -50,69 +60,125 @@ const LoginScreen = ({ navigation }) => {
 
 
 
-//GUARDAR EN EL STORAGE
-const storeData = async (id) => {
+// //GUARDAR EN EL STORAGE
+// const storeData = async (id) => {
+//   try {
+//     const value = await AsyncStorage.setItem('key', id)
+//     console.log('User guardado en storage', value)
+//   } catch(e) {
+//     console.log('error al guardar', e);
+//   }
+// }
+
+
+ //GUARDAR EN EL STORAGE
+ const storeData = async (id, userData) => {
   try {
-    const value = await AsyncStorage.setItem('key', id)
-    console.log('User guardado en storage', value)
-  } catch(e) {
-    console.log('error al guardar', e);
+    await AsyncStorage.setItem("key", id);
+    console.log("User guardado en storage", id);
+
+    const jsonData = JSON.stringify(userData);
+    await AsyncStorage.setItem("userData", jsonData);
+    console.log("User data guardado en storage", jsonData);
+  } catch  {
+    Alert.alert("error al guardar");
   }
-}
+};
 
 
 
 
 
 
-  //SIGN IN
-  const handleSignIn = () => {
 
-    if(email == "") {
-      Alert.alert("Escribe un correo electronico");
+  // //SIGN IN
+  // const handleSignIn = () => {
+
+  //   if(email == "") {
+  //     Alert.alert("Escribe un correo electronico");
+  //     return;
+  //   }
+  //   if(password == "") {
+  //     Alert.alert("Escribe una contrasena");
+  //     return;
+  //   }
+  //   if (!isValidEmail) {
+  //     Alert.alert("El correo electrónico proposionado no es valido.");
+  //     return;
+  //   }
+   
+  //   const auth = getAuth();
+  //   signInWithEmailAndPassword(auth, email, password)
+  //     .then((userCredential) => {
+  //       dispatch(
+  //         setUser({
+  //           authentication: true,
+  //           email: userCredential.user.email,
+  //           accessToken: userCredential.user.accessToken,
+  //           uid: userCredential.user.uid,
+  //         })
+  //       );
+  //       // console.log("Signed In!!", userCredential.user.uid);
+
+  //       storeData(userCredential.user.uid)
+  //       dispatch(
+  //         setUser({
+  //           authentication: true,
+  //           email: userCredential.user.email,
+  //           accessToken: userCredential.user.accessToken,
+  //           uid: userCredential.user.uid,
+  //         })
+  //       );
+  //       navigation.navigate("TabsNavigation");
+  //     })
+  //     .catch((error) => {
+  //       Alert.alert("El correo no existe en la base de datos o es inválido.");
+  //     });
+  // };
+
+
+
+
+  const handleSignIn = async () => {
+    if (email === "") {
+      Alert.alert("Escribe un correo electrónico");
       return;
     }
-    if(password == "") {
-      Alert.alert("Escribe una contrasena");
+    if (password === "") {
+      Alert.alert("Escribe una contraseña");
       return;
     }
     if (!isValidEmail) {
-      Alert.alert("El correo electrónico proposionado no es valido.");
+      Alert.alert("El correo electrónico proporcionado no es válido.");
       return;
     }
-   
+  
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        dispatch(
-          setUser({
-            authentication: true,
-            email: userCredential.user.email,
-            accessToken: userCredential.user.accessToken,
-            uid: userCredential.user.uid,
-          })
-        );
-        console.log("Signed In!!", userCredential.user.uid);
-        storeData(userCredential.user.uid)
-        dispatch(
-          setUser({
-            authentication: true,
-            email: userCredential.user.email,
-            accessToken: userCredential.user.accessToken,
-            uid: userCredential.user.uid,
-          })
-        );
-        navigation.navigate("TabsNavigation");
-      })
-      .catch((error) => {
-        Alert.alert("El correo no existe en la base de datos o es inválido.");
-      });
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      dispatch(
+        setUser({
+          authentication: true,
+          email: userCredential.user.email,
+          accessToken: userCredential.user.accessToken,
+          uid: userCredential.user.uid,
+        })
+      );
+  
+      const value = userCredential.user.uid
+      if (value) {
+        const userData = await fetchPersonalData(value);
+        if (userData) {
+          storeData(value, userData);
+        }
+      }
+      
+      navigation.navigate("TabsNavigation");
+    } catch (error) {
+      Alert.alert("El correo no existe en la base de datos o es inválido.");
+    }
   };
-
-
-
-
-
+  
 
 
 
@@ -149,8 +215,10 @@ const storeData = async (id) => {
               E-mail
             </Text>
             <TextInput
-              onChangeText={(text) => setEmail(text.trim())}
+              // onChangeText={(text) => setEmail(text.trim())}
+              onChangeText={(text) => setEmail(text.trim().toLowerCase())}
               style={styles.input}
+              value={email}
               placeholder="personal@correo.com"
               placeholderTextColor="#373737"
             />

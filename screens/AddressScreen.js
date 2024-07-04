@@ -4,17 +4,41 @@ import {
   Text,
   StyleSheet,
   View,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const AddressScreen = ({ navigation }) => {
-  const [values, setValue] = React.useState("");
+
+const AddressScreen = () => {
+
+
+
+  const [casillero, setCasillero] = React.useState(null);
+
+  // Función para obtener userData del almacenamiento
+  const getUserData = async () => {
+    try {
+      const jsonData = await AsyncStorage.getItem("userData");
+      if (jsonData !== null) {
+        const userData = JSON.parse(jsonData);
+        console.log("User data obtenida del storage", userData);
+        setCasillero(userData.casillero.toUpperCase());
+      } else {
+        console.log("No se encontró ningún userData en el storage");
+      }
+    } catch (e) {
+      Alert.alert("Error al obtener los datos");
+      console.error("Error al obtener los datos del storage", e);
+    }
+  };
+
+  React.useEffect(() => {
+    getUserData();
+  }, []);
+
+
   return (
     <View style={styles.mainContainer}>
-      <Text style={styles.title}>Direccion Miami</Text>
+      <Text style={styles.title}>Direccion</Text>
 
       <View style={styles.inputAndTextContainer}>
         <Text style={styles.subTitle}>Address Line 1</Text>
@@ -37,7 +61,7 @@ const AddressScreen = ({ navigation }) => {
             ellipsizeMode="tail"
             style={styles.addressText}
           >
-            8435 NW 74TH ST
+            {casillero}
           </Text>
         </View>
       </View>
@@ -58,6 +82,11 @@ const AddressScreen = ({ navigation }) => {
             style={styles.addressTextBigText}
           >
             Phone Number: 305-5915802
+          </Text>
+          <Text
+            style={styles.addressTextBigText}
+          >
+            United States
           </Text>
         </View>
       </View>
@@ -150,6 +179,6 @@ const styles = StyleSheet.create({
   },
   addressTextBigText: {
     fontSize: 16,
-    paddingBottom: 5
+    paddingVertical: 4
   }
 });

@@ -14,6 +14,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchFavoritesOnSnapshot } from "../apiServices";
 import { fetchMoreFavoritesOnSnapshot } from "../apiServices";
 import { deleteFavoriteAddress } from "../apiServices";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+
 
 const DeleteFavoriteScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
@@ -110,29 +113,6 @@ const DeleteFavoriteScreen = ({ navigation }) => {
     }
   };
 
-  // // FAVORITES SCROLL SECTION
-  // function renderPosts({ item }) {
-  //   return (
-  //     <TouchableOpacity
-  //       style={styles.defaultMainContainer}
-  //       onPress={() => deleteFavorite(item.postId)}
-  //     >
-  //       <View style={styles.containerIconTexts}>
-  //         <View style={styles.containerDefaultTexts}>
-  //           <Text style={styles.favoriteDefaultName}>
-  //             {item.name} {item.surname}
-  //           </Text>
-  //           <Text numberOfLines={1} ellipsizeMode="tail">
-  //             {item.destinationAddress}
-  //           </Text>
-  //         </View>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // }
-
-
-
 
 
   // Handle delete with confirmation
@@ -186,28 +166,43 @@ const DeleteFavoriteScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          data={posts}
-          renderItem={renderPosts}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          onEndReached={getMorePosts}
-          onEndReachedThreshold={0.01}
-          scrollEventThrottle={150}
-          ListFooterComponent={renderLoader}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={onRefresh}
-              colors={["#aaa"]}
-              tintColor={"#aaa"}
-            />
-          }
+
+<>
+
+
+{posts.length > 0 && (
+  <View style={styles.container}>
+  <SafeAreaView style={styles.container}>
+    <FlatList
+      data={posts}
+      renderItem={renderPosts}
+      keyExtractor={(item, index) => index.toString()}
+      showsVerticalScrollIndicator={false}
+      onEndReached={getMorePosts}
+      onEndReachedThreshold={0.01}
+      scrollEventThrottle={150}
+      ListFooterComponent={renderLoader}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={onRefresh}
+          colors={["#aaa"]}
+          tintColor={"#aaa"}
         />
-      </SafeAreaView>
-    </View>
+      }
+    />
+  </SafeAreaView>
+</View>
+)}
+
+
+{posts.length === 0 && (
+  <View style={styles.noDataContainer}>
+    {/* <FontAwesomeIcon icon={faBolt} size={54} color={"#ffffff"} /> */}
+    <Text style={styles.noDataText}>No tienes direcciones favoritas</Text>
+  </View>
+)}
+</>
   );
 };
 
@@ -333,6 +328,20 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     marginLeft: 15,
+  },
+
+
+
+  noDataContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+  },
+  noDataText: {
+    paddingTop: 10,
+    fontSize: 16,
+    color: "#000000",
   },
 });
 

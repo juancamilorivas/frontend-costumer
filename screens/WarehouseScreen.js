@@ -20,6 +20,8 @@ import { fetchPostsOnSnapshot } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 
 const WarehouseScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -29,8 +31,10 @@ const WarehouseScreen = ({ navigation }) => {
   const [postsPerLoad] = React.useState(5);
   const [lastPost, setLastPost] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
+
 
   //modal breakpoints
   const snapPoints = React.useMemo(() => ["49%", "65%"], []);
@@ -151,6 +155,7 @@ const WarehouseScreen = ({ navigation }) => {
         postsPerLoad,
         (data) => {
           setIsLoading(false);
+          setIsLoading2(false);
           if (data.posts.length == 0) {
             setLastPost(true);
           }
@@ -242,47 +247,127 @@ const WarehouseScreen = ({ navigation }) => {
     ) : null;
   };
 
+
+
+
+
   return (
-    <View style={styles.container}>
-      {/* <Button title="snap to 0" onPress={() => snapeToIndex(0)} /> */}
+    // <>
+    //   {posts.length > 0 && (
+    //     <SafeAreaView style={styles.container}>
+    //       <View style={styles.container}>
+    //         <FlatList
+    //           data={posts}
+    //           renderItem={renderPosts}
+    //           keyExtractor={(item, index) => index.toString()}
+    //           showsVerticalScrollIndicator={false}
+    //           onEndReached={getMorePosts}
+    //           onEndReachedThreshold={0.01}
+    //           scrollEventThrottle={150}
+    //           ListFooterComponent={renderLoader}
+    //           refreshControl={
+    //             <RefreshControl
+    //               refreshing={isRefreshing}
+    //               onRefresh={onRefresh}
+    //               colors={["#aaa"]}
+    //               tintColor={"#aaa"}
+    //             />
+    //           }
+    //         />
+    //       </View>
 
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          data={posts}
-          renderItem={renderPosts}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          onEndReached={getMorePosts}
-          onEndReachedThreshold={0.01}
-          scrollEventThrottle={150}
-          ListFooterComponent={renderLoader}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={onRefresh}
-              colors={["#aaa"]}
-              tintColor={"#aaa"}
+    //       {/* Modal */}
+    //       <BottomSheet
+    //         ref={bottomSheetRef}
+    //         index={-1}
+    //         snapPoints={snapPoints}
+    //         enablePanDownToClose={true}
+    //         backdropComponent={renderBackdrop}
+    //       >
+    //         <BottomSheetFlatList
+    //           data={data}
+    //           keyExtractor={(item) => item.id}
+    //           renderItem={renderItem}
+    //           contentContainerStyle={styles.contentContainer}
+    //         />
+    //       </BottomSheet>
+    //     </SafeAreaView>
+    //   )}
+
+    //   {posts.length === 0 && (
+    //     <View style={styles.noDataContainer}>
+    //       <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
+    //       <Text style={styles.noDataText}>No hay paquetes en tu casillero</Text>
+    //     </View>
+    
+    //   )}
+    // </>
+
+
+
+
+
+<>
+    {isLoading2 ? (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#aaa" />
+      </View>
+    ) : (
+      <>
+      {posts.length > 0 && (
+        <SafeAreaView style={styles.container}>
+          <View style={styles.container}>
+            <FlatList
+              data={posts}
+              renderItem={renderPosts}
+              keyExtractor={(item, index) => index.toString()}
+              showsVerticalScrollIndicator={false}
+              onEndReached={getMorePosts}
+              onEndReachedThreshold={0.01}
+              scrollEventThrottle={150}
+              ListFooterComponent={renderLoader}
+              refreshControl={
+                <RefreshControl
+                  refreshing={isRefreshing}
+                  onRefresh={onRefresh}
+                  colors={["#aaa"]}
+                  tintColor={"#aaa"}
+                />
+              }
             />
-          }
-        />
-      </SafeAreaView>
+          </View>
 
-      {/* Modal */}
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={-1}
-        snapPoints={snapPoints}
-        enablePanDownToClose={true}
-        backdropComponent={renderBackdrop}
-      >
-        <BottomSheetFlatList
-          data={data}
-          keyExtractor={(i) => i.id}
-          renderItem={renderItem}
-          contentContainerStyle={styles.contentContainer}
-        />
-      </BottomSheet>
-    </View>
+          {/* Modal */}
+          <BottomSheet
+            ref={bottomSheetRef}
+            index={-1}
+            snapPoints={snapPoints}
+            enablePanDownToClose={true}
+            backdropComponent={renderBackdrop}
+          >
+            <BottomSheetFlatList
+              data={data}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              contentContainerStyle={styles.contentContainer}
+            />
+          </BottomSheet>
+        </SafeAreaView>
+      )}
+
+      {posts.length === 0 && (
+        <View style={styles.noDataContainer}>
+          <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
+          <Text style={styles.noDataText}>No hay paquetes en tu casillero</Text>
+        </View>
+    
+      )}
+    </>
+    )}
+  </>
+
+
+    
   );
 };
 
@@ -334,7 +419,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "80%",
     gap: 5,
-
   },
   itemDescription: {
     fontSize: 15,
@@ -367,5 +451,23 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontStyle: "italic",
+  },
+
+  noDataContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000000",
+  },
+  noDataText: {
+    paddingTop: 10,
+    fontSize: 16,
+    color: "#565555",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
   },
 });

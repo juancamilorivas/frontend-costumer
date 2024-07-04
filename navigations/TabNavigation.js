@@ -1,5 +1,4 @@
 import React from "react";
-import ServiceHistoryScreen from "../screens/ServiceHistoryScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";

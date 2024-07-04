@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   TextInput,
   SafeAreaView,
@@ -44,8 +44,49 @@ const PersonalDataScreen = () => {
 
 
 
+//   //ASYNC STORAGE INFO CLIENTE FUNCION
+//   const getUserData = async () => {
+//     try {
+//       const jsonData = await AsyncStorage.getItem("userData");
+//       if (jsonData !== null) {
+//         const userData = JSON.parse(jsonData);
+//         setForm(prevForm => ({
+//           ...prevForm,  // mantiene los valores actuales del formulario
+//           nombre: userData.name,
+//           apellido: userData.surname,
+//           celular: userData.cellPhone,
+//           cedula: userData.nit,
+//           pais: userData.country,
+//           email: userData.email,
+//           direccion: userData.destinationAddress,
+//           destinyDaneCode: userData.destinyDaneCode,
+//           ciudad: userData.locationName,
+//         }));
+//         return userData;
+//       }
+//     } catch (e) {
+//       console.log("Error al recuperar datos", e);
+//     }
+//   };
 
 
+
+// //ASYNC STORAGE INFO CLIENTE EJECUCION DE FUNCION
+// useEffect(() => {
+//   const fetchData = async () => {
+//     const data = await getUserData();
+//     if (data) {
+//       // console.log("DATA DESDE EL STORAGE", data)
+//     }
+//   };
+//   fetchData()
+// }, [])
+    
+
+
+
+
+// LLAMADA A MI PAQUETE
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -125,6 +166,10 @@ const PersonalDataScreen = () => {
 
 
 
+
+
+
+
 // GUARDAR INFORMACION DEL FORMULARIO EN FIREBASE
   const enviarFormulario = async () => {
     setIsLoading(true);
@@ -151,7 +196,6 @@ const PersonalDataScreen = () => {
       cellPhone: celular,
       prefix: "+57",
       nitType: "CC",
-      countryCode: "170",
       email: email,
       locationName: ciudad,
       destinyDaneCode: destinyDaneCode,

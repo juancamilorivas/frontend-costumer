@@ -23,7 +23,6 @@ import { runTransaction, doc, setDoc } from "firebase/firestore";
 const sfDocRef = doc(db, "guia", "config");
 
 const CreateScreen = ({ navigation }) => {
-
   const MAX_RETRIES = 3;
   let retries = 0;
 
@@ -40,19 +39,18 @@ const CreateScreen = ({ navigation }) => {
   const lowerCaseEmail = email.toLowerCase();
 
   //GUARDAR EN EL STORAGE
-  const storeData = async (id) => {
+  const storeData = async (id, userData) => {
     try {
-      const value = await AsyncStorage.setItem("key", id);
-      console.log("User guardado en storage", value);
-    } catch (e) {
-      console.log("error al guardar", e);
+      await AsyncStorage.setItem("key", id);
+      console.log("User guardado en storage", id);
+
+      const jsonData = JSON.stringify(userData);
+      await AsyncStorage.setItem("userData", jsonData);
+      console.log("User data guardado en storage", jsonData);
+    } catch  {
+      Alert.alert("error al guardar");
     }
   };
-
-
-
-
-
 
   //INCREMENT LOCKER NUMBER
   const incrementNumber = async () => {
@@ -70,7 +68,6 @@ const CreateScreen = ({ navigation }) => {
         transaction.update(sfDocRef, { isUpdating: false });
         return newNumber;
       } else {
-        console.log("Document is currently being updated. Try again later.");
         return null;
       }
     };
@@ -80,31 +77,20 @@ const CreateScreen = ({ navigation }) => {
       });
 
       if (newNumber !== null) {
-        console.log("Transaction successfully committed!", newNumber);
         let locker = newNumber.toString();
         handleCreateAccount(locker);
       }
-    } catch (error) {
+    } catch {
       if (error.code === "failed-precondition" && retries < MAX_RETRIES) {
         retries++;
-        console.log("Transaction failed due to precondition. Retrying...");
         await incrementNumber(); // Reintentar la transacción
       } else {
-        console.log("Transaction failed three times: ", error);
-        // Manejar el error si se excedieron los reintentos
+        await incrementNumber(); // Reintentar la transacción
       }
     }
   };
 
-
-
-
-
-
-
-
-
-  // CREATE STRIPE CUSTOMER
+  // // CREATE STRIPE CUSTOMER
   const handleSubmit = async ({ name, email, userCredential, locker }) => {
     try {
       const response = await fetch(
@@ -120,25 +106,28 @@ const CreateScreen = ({ navigation }) => {
 
       if (response.ok) {
         const customer = await response.json();
-        console.log("Customer Created", `Customer ID: ${customer.id}`);
         const userData = {
           email: userCredential.user.email,
           createdAt: new Date(),
           casillero: "box" + locker,
           name: nombre,
           surname: apellidos,
+          country: "Colombia",
           nit: cedula,
           cellPhone: celular,
           customerId: customer.id,
+          destinationAddress: "",
+          destinyDaneCode: "",
+          locationName: "",
+          prefix: "+057",
         };
         const uid = userCredential.user.uid;
-        console.log("casillero guardao", locker);
-        storeData(uid);
+        storeData(uid, userData);
+
 
         try {
           const userDocRef = doc(db, "users", uid);
           await setDoc(userDocRef, userData);
-          console.log("User data saved successfully");
         } catch (error) {
           console.error("Error saving user data:", error);
         }
@@ -151,11 +140,6 @@ const CreateScreen = ({ navigation }) => {
       Alert.alert("Error", error.message);
     }
   };
-
-
-
-
-
 
   //CREATE ACCOUNT
   const handleCreateAccount = async (locker) => {
@@ -175,7 +159,6 @@ const CreateScreen = ({ navigation }) => {
       Alert.alert("El correo electrónico contiene mayusculas");
       return;
     }
-
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -198,20 +181,12 @@ const CreateScreen = ({ navigation }) => {
         userCredential: userCredential,
         locker: locker,
       });
-    } catch (error) {
+    } catch {
       Alert.alert(
-        "El correo electrónico ya existe o la constrasena es inválida.",
-        error
+        "El correo electrónico ya existe o la constrasena es inválida."
       );
     }
   };
-
-
-
-
-
-
-  
 
   return (
     <View style={styles.container}>
@@ -228,7 +203,6 @@ const CreateScreen = ({ navigation }) => {
           justifyContent: "start",
         }}
       >
-        
         <View style={styles.login}>
           <View>
             <TextInput
@@ -264,7 +238,9 @@ const CreateScreen = ({ navigation }) => {
           </View>
           <View>
             <TextInput
-              onChangeText={(text) => setEmail(text.trim())}
+              // onChangeText={(text) => setEmail(text.trim())}
+              onChangeText={(text) => setEmail(text.trim().toLowerCase())}
+              value={email}
               style={styles.input}
               placeholder="personal@correo.com"
               placeholderTextColor="#373737"

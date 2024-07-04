@@ -295,3 +295,49 @@ export const deleteFavoriteAddress = async (uid, idDocument) => {
     console.error("Error deleting document: ", error);
   }
 };
+
+
+
+
+// // FETCH POST
+// export const fetchPost = async () => {
+//   const userRef = query(
+//     collection(db, "shipments"),
+//     where("shipmentNumber", "==", "2121654943")
+//   );
+//   try {
+//     const docSnap = await getDoc(userRef);
+//     if (docSnap.exists()) {
+//       return docSnap.data();
+//     } else {
+//       console.log("No such document!");
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("Error fetching document:", error);
+//     throw new Error("Error fetching document");
+//   }
+// };
+
+
+
+export const fetchPost = async (shipmentNumber) => {
+  const shipmentsRef = collection(db, "shipments");
+  const q = query(shipmentsRef, where("shipmentNumber", "==", shipmentNumber));
+
+  try {
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      // Supongamos que solo debe haber un documento que cumpla con el criterio
+      const docSnap = querySnapshot.docs[0];
+      console.log("Document data:", docSnap.data());
+      return docSnap.data();
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching document:", error);
+    throw new Error("Error fetching document");
+  }
+};

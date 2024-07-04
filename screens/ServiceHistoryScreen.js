@@ -13,6 +13,9 @@ import { ListItem } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchServicesOnSnapshot } from "../apiServices";
 import { fetchMoreServicesOnSnapshot } from "../apiServices";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+
 
 const ServiceHistoryScreen = ({ navigation }) => {
   const [posts, setPosts] = React.useState([]);
@@ -20,6 +23,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
   const [postsPerLoad] = React.useState(5);
   const [lastPost, setLastPost] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
 
@@ -44,6 +48,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
         postsPerLoad,
         (data) => {
           setIsLoading(false);
+          setIsLoading2(false);
           if (data.posts.length == 0) {
             setLastPost(true);
           }
@@ -183,31 +188,47 @@ const ServiceHistoryScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.mainContainer}>
-      {/* <View style={styles.mainTitleContainer}>
-      <Text style={styles.mainTitle}>Services</Text>
-      </View> */}
-      <SafeAreaView style={styles.containerSafeArea}>
-        <FlatList
-          data={posts}
-          renderItem={renderPosts}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          onEndReached={getMorePosts}
-          onEndReachedThreshold={0.01}
-          scrollEventThrottle={150}
-          ListFooterComponent={renderLoader}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={onRefresh}
-              colors={["#aaa"]}
-              tintColor={"#aaa"}
-            />
-          }
-        />
-      </SafeAreaView>
-    </View>
+
+<>
+    {isLoading2 ? (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#aaa" />
+      </View>
+    ) : (
+      <>
+        {posts.length > 0 && (
+          <SafeAreaView style={styles.mainContainer}>
+            <View style={styles.containerSafeArea}>
+              <FlatList
+                data={posts}
+                renderItem={renderPosts}
+                keyExtractor={(item, index) => index.toString()}
+                showsVerticalScrollIndicator={false}
+                onEndReached={getMorePosts}
+                onEndReachedThreshold={0.01}
+                scrollEventThrottle={150}
+                ListFooterComponent={renderLoader}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
+                    colors={["#aaa"]}
+                    tintColor={"#aaa"}
+                  />
+                }
+              />
+            </View>
+          </SafeAreaView>
+        )}
+        {posts.length === 0 && (
+          <View style={styles.noDataContainer}>
+            <FontAwesomeIcon icon={faBolt} size={54} color={"#212020"} />
+            <Text style={styles.noDataText}>Aun no tienes servicios para mostrar</Text>
+          </View>
+        )}
+      </>
+    )}
+  </>
   );
 };
 
@@ -273,5 +294,25 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingTop: 60,
     paddingBottom: 30,
-  }
+  },
+
+
+  noDataContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000000",
+  },
+  noDataText: {
+    paddingTop: 10,
+    fontSize: 16,
+    color: "#565555",
+  },
+
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
 });

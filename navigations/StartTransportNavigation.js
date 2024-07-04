@@ -9,6 +9,8 @@ import DeclaredValueScreen from "../screens/DeclaredValueScreen";
 import LocalCarrierInsuranceScreen from "../screens/LocalCarrierInsuranceScreen";
 import PersonalDataScreen from "../screens/PersonalDataScreen";
 import PaymentResumeScreen from "../screens/PaymentResumeScreen";
+import FromDataScreen from "../screens/FromDataScreen";
+import ToDataScreen from "../screens/ToDataScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faX } from "@fortawesome/free-solid-svg-icons/faX";
@@ -53,8 +55,6 @@ const StartTransportNavigation = ({ navigation }) => {
         }}
       />
 
-
-
       <Stack.Screen
         name="CreateFavorite"
         component={CreateFavoriteScreen}
@@ -90,19 +90,6 @@ const StartTransportNavigation = ({ navigation }) => {
         }}
       />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
       <Stack.Screen
         name="DeleteFavorite"
         component={DeleteFavoriteScreen}
@@ -137,31 +124,6 @@ const StartTransportNavigation = ({ navigation }) => {
           ),
         }}
       />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       <Stack.Screen
         name="SendToAnotherPerson"
@@ -317,6 +279,87 @@ const StartTransportNavigation = ({ navigation }) => {
               }}
             >
               <FontAwesomeIcon icon={faX} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+      <Stack.Screen
+        name="fromData"
+        component={FromDataScreen}
+        options={{
+          title: "Remitente",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("PaymentResume");
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <Stack.Screen
+        name="toData"
+        component={ToDataScreen}
+        options={{
+          title: "Destinatario",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("PaymentResume");
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
             </TouchableOpacity>
           ),
           headerRight: () => (
