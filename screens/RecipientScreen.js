@@ -99,6 +99,9 @@ const RecipientScreen = ({ navigation }) => {
               // Ningún campo está vacío, redirige a la pantalla "DeclaredValue"
               navigation.navigate("LocalCarrierInsurance");
             }
+          } else {
+            navigation.navigate("LoginCreate")
+
           }
         });
 
@@ -110,7 +113,7 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-  //GET DATA PARA RECOGER EN BODEGA BOGOTA
+  //GET DATA PARA RECOGER EN BODEGA BOGOTA CON DATOS POR DEFECTO DE LA DIRECCION DE OFICINA PRINCIPAL EN BOGOTA
   const sendToWarehouse = async () => {
     try {
       const value = await AsyncStorage.getItem("key");
@@ -124,6 +127,8 @@ const RecipientScreen = ({ navigation }) => {
               cellPhone: userData.cellPhone,
               destinationAddress: "Calle 24c # 84 - 84 bodega 34",
               locationName: "Bogota, DC",
+              // destinyDaneCode: "11001000",
+              recogeEnBodega: true,
             })
           );
           navigation.navigate("DeclaredValue");
@@ -134,6 +139,8 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
+
+
   //SAVE FAVORITE DATA ON REDUX
   const sendToFavorite = async (selectedItem) => {
     try {
@@ -143,9 +150,12 @@ const RecipientScreen = ({ navigation }) => {
         cellPhone,
         email,
         nit,
+        locationName,
         destinyDaneCode,
         destinationAddress,
       } = selectedItem;
+
+      console.log()
       dispatch(
         setReceiver({
           name,
@@ -153,6 +163,7 @@ const RecipientScreen = ({ navigation }) => {
           cellPhone,
           email,
           nit,
+          locationName,
           destinyDaneCode,
           destinationAddress,
         })
@@ -163,7 +174,7 @@ const RecipientScreen = ({ navigation }) => {
     }
   };
 
-  // // GET DEFAULT NAME Y ADDRESS - SE EJECUTA EN LA PRIEMRA CARGA
+  // // GET DEFAULT NAME Y ADDRESS - SE EJECUTA EN LA PRIMERA CARGA
   React.useEffect(() => {
     const getMyDefaultValue = async () => {
       try {

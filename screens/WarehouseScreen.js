@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Button,
 } from "react-native";
 import React, { useCallback, useMemo } from "react";
 import BottomSheet, {
@@ -22,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
+import { useFocusEffect } from "@react-navigation/native";
 
 const WarehouseScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -34,7 +36,6 @@ const WarehouseScreen = ({ navigation }) => {
   const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
-
 
   //modal breakpoints
   const snapPoints = React.useMemo(() => ["49%", "65%"], []);
@@ -113,19 +114,25 @@ const WarehouseScreen = ({ navigation }) => {
     []
   );
 
-  React.useEffect(() => {
-    const getMyStringValue = async () => {
-      try {
-        const value = await AsyncStorage.getItem("key");
-        if (value) {
-          setUid(value);
+  // // Effect to reset data when screen gets focus
+  useFocusEffect(
+    React.useCallback(() => {
+      const getMyStringValue = async () => {
+        try {
+          const value = await AsyncStorage.getItem("key");
+          if (value) {
+            setUid(value);
+          } else {
+            navigation.navigate("LoginCreate");
+          }
+        } catch (e) {
+          console.log("Something went wrong identifying user storage", e);
         }
-      } catch (e) {
-        console.log("Something went wrong identifying user storage", e);
-      }
-    };
-    getMyStringValue();
-  }, []);
+      };
+      getMyStringValue();
+    }, [])
+  );
+
 
   //MODAL CONTENT
   const renderItem = useCallback(
@@ -247,10 +254,6 @@ const WarehouseScreen = ({ navigation }) => {
     ) : null;
   };
 
-
-
-
-
   return (
     // <>
     //   {posts.length > 0 && (
@@ -299,75 +302,69 @@ const WarehouseScreen = ({ navigation }) => {
     //       <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
     //       <Text style={styles.noDataText}>No hay paquetes en tu casillero</Text>
     //     </View>
-    
+
     //   )}
     // </>
 
-
-
-
-
-<>
-    {isLoading2 ? (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#aaa" />
-      </View>
-    ) : (
-      <>
-      {posts.length > 0 && (
-        <SafeAreaView style={styles.container}>
-          <View style={styles.container}>
-            <FlatList
-              data={posts}
-              renderItem={renderPosts}
-              keyExtractor={(item, index) => index.toString()}
-              showsVerticalScrollIndicator={false}
-              onEndReached={getMorePosts}
-              onEndReachedThreshold={0.01}
-              scrollEventThrottle={150}
-              ListFooterComponent={renderLoader}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isRefreshing}
-                  onRefresh={onRefresh}
-                  colors={["#aaa"]}
-                  tintColor={"#aaa"}
-                />
-              }
-            />
-          </View>
-
-          {/* Modal */}
-          <BottomSheet
-            ref={bottomSheetRef}
-            index={-1}
-            snapPoints={snapPoints}
-            enablePanDownToClose={true}
-            backdropComponent={renderBackdrop}
-          >
-            <BottomSheetFlatList
-              data={data}
-              keyExtractor={(item) => item.id}
-              renderItem={renderItem}
-              contentContainerStyle={styles.contentContainer}
-            />
-          </BottomSheet>
-        </SafeAreaView>
-      )}
-
-      {posts.length === 0 && (
-        <View style={styles.noDataContainer}>
-          <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
-          <Text style={styles.noDataText}>No hay paquetes en tu casillero</Text>
+    <>
+      {isLoading2 ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#aaa" />
         </View>
-    
+      ) : (
+        <>
+          {posts.length > 0 && (
+            <SafeAreaView style={styles.container}>
+              <View style={styles.container}>
+                <FlatList
+                  data={posts}
+                  renderItem={renderPosts}
+                  keyExtractor={(item, index) => index.toString()}
+                  showsVerticalScrollIndicator={false}
+                  onEndReached={getMorePosts}
+                  onEndReachedThreshold={0.01}
+                  scrollEventThrottle={150}
+                  ListFooterComponent={renderLoader}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={isRefreshing}
+                      onRefresh={onRefresh}
+                      colors={["#aaa"]}
+                      tintColor={"#aaa"}
+                    />
+                  }
+                />
+              </View>
+
+              {/* Modal */}
+              <BottomSheet
+                ref={bottomSheetRef}
+                index={-1}
+                snapPoints={snapPoints}
+                enablePanDownToClose={true}
+                backdropComponent={renderBackdrop}
+              >
+                <BottomSheetFlatList
+                  data={data}
+                  keyExtractor={(item) => item.id}
+                  renderItem={renderItem}
+                  contentContainerStyle={styles.contentContainer}
+                />
+              </BottomSheet>
+            </SafeAreaView>
+          )}
+
+          {posts.length === 0 && (
+            <View style={styles.noDataContainer}>
+              <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
+              <Text style={styles.noDataText}>
+                No hay paquetes en tu casillero
+              </Text>
+            </View>
+          )}
+        </>
       )}
     </>
-    )}
-  </>
-
-
-    
   );
 };
 
@@ -466,8 +463,8 @@ const styles = StyleSheet.create({
   },
   loaderContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
 });

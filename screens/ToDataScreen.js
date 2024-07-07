@@ -21,7 +21,7 @@ const ToDataScreen = () => {
         cellPhone,
       } = useSelector((state) => state.receiver);
 
-  const [form, setForm] = React.useState({
+  const [form] = React.useState({
     nombre: name,
     apellido: surname,
     celular: cellPhone,

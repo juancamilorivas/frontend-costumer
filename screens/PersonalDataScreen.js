@@ -16,8 +16,13 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import {EXPO_PUBLIC_API_MIPAQUETE} from "@env"
+
 
 const PersonalDataScreen = () => {
+console.log(EXPO_PUBLIC_API_MIPAQUETE)
+
+
   const [uid, setUid] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [form, setForm] = React.useState({
@@ -26,10 +31,11 @@ const PersonalDataScreen = () => {
     celular: "",
     cedula: "",
     direccion: "",
-    pais: "Colombia",
+    pais: "",
     ciudad: "",
     email: "",
-    destinyDaneCode: ""
+    destinyDaneCode: "",
+    casillero: "",
   });
   const [value, setValue] = React.useState(null);
   const [isFocus, setIsFocus] = React.useState(false);
@@ -96,7 +102,7 @@ const PersonalDataScreen = () => {
             method: "GET",
             headers: {
               apikey:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDMwODhlMzRkYWJkMjVlZTRlM2U2NjQiLCJuYW1lIjoiVGVzdC1taS1wYXF1ZXRlLXJlYWwiLCJzdXJuYW1lIjoiSnVuaW9yIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImNlbGxQaG9uZSI6IjMxNDY1NzEyMzMiLCJjcmVhdGVkQXQiOiIyMDE5LTA3LTE4VDE0OjU3OjM5LjA0NFoiLCJkYXRlIjoiMjAyNC0wNi0yOCAyMjowMTo1NiIsImlhdCI6MTcxOTYzMDExNn0.AYBaP1U6drvnSrjp55b2LHJrODCuDRZxADWZJzca1ys",
+              EXPO_PUBLIC_API_MIPAQUETE,
               "session-tracker": "a0c96ea6-b22d-4fb7-a278-850678d5429c",
             },
           }
@@ -147,10 +153,11 @@ const PersonalDataScreen = () => {
               celular: userData.cellPhone || "",
               cedula: userData.nit || "",
               direccion: userData.destinationAddress || "",
-              pais: "Colombia", // Siempre establecido como "Colombia"
+              pais: userData.country,
               ciudad: userData.locationName || "",
               email: userData.email || "",
               destinyDaneCode: userData.destinyDaneCode || "",
+              casillero: userData.casillero.toUpperCase() || "",
             });
           }
         }
@@ -217,6 +224,8 @@ const PersonalDataScreen = () => {
         <View style={styles.container}>
           <Text style={styles.title}>Mis datos personales</Text>
 
+       
+
           <Text style={styles.textForm}>Pais</Text>
           <TextInput
             style={styles.input}
@@ -265,6 +274,15 @@ const PersonalDataScreen = () => {
             />
           </View>
 
+
+          <Text style={styles.textForm}>Casillero</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Pais"
+            value={form.casillero}
+            editable={false}
+          />
+
           <Text style={styles.textForm}>Cedula (CC)</Text>
           <TextInput
             style={styles.input}
@@ -272,7 +290,6 @@ const PersonalDataScreen = () => {
             value={form.cedula}
             keyboardType="numeric"
             editable={false}
-            onChangeText={(value) => handleChange("cedula", value)}
           />
 
           <Text style={styles.textForm}>Email</Text>
@@ -281,7 +298,6 @@ const PersonalDataScreen = () => {
             placeholder="Email"
             value={form.email}
             editable={false}
-            onChangeText={(value) => handleChange("email", value)}
           />
 
           <Text style={styles.textForm}>Nombre(s)</Text>
@@ -336,6 +352,7 @@ const PersonalDataScreen = () => {
             )}
           </TouchableOpacity>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );

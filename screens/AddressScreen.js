@@ -71,7 +71,12 @@ const AddressScreen = () => {
           <Text
             style={styles.addressTextBigText}
           >
-            City: Miami State: Florida
+            City: Miami
+          </Text>
+          <Text
+            style={styles.addressTextBigText}
+          >
+            State: Florida
           </Text>
           <Text
             style={styles.addressTextBigText}
@@ -86,7 +91,7 @@ const AddressScreen = () => {
           <Text
             style={styles.addressTextBigText}
           >
-            United States
+            Country: United States
           </Text>
         </View>
       </View>
@@ -166,8 +171,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: "bold",
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingVertical: 30,
   },
   subTitle: {
     fontSize: 18,

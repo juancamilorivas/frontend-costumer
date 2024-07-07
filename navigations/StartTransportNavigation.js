@@ -174,7 +174,7 @@ const StartTransportNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("Recipient");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -208,7 +208,7 @@ const StartTransportNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("Recipient");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -241,7 +241,7 @@ const StartTransportNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack();
+                navigation.navigate("DeclaredValue");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />

@@ -8,6 +8,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { faX } from "@fortawesome/free-solid-svg-icons/faX";
@@ -33,6 +34,8 @@ const CreateScreen = ({ navigation }) => {
   const [cedula, setCedula] = useState("");
   const [celular, setCelular] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
+
 
   //CONSTS
   const dispatch = useDispatch();
@@ -54,9 +57,36 @@ const CreateScreen = ({ navigation }) => {
 
   //INCREMENT LOCKER NUMBER
   const incrementNumber = async () => {
+
+
+
+
+    setIsLoading(true);
+
+    if ((nombre, apellidos, cedula, celular == "")) {
+      setIsLoading(false);
+      Alert.alert("Todos los campos son obligatorios");
+      return;
+    }
+    if (!validator.isEmail(email)) {
+      setIsLoading(false);
+      Alert.alert("El correo electrónico proposionado no es valido.");
+      return;
+    }
+    if (password == "") {
+      setIsLoading(false);
+      Alert.alert("Escribe una contrasena");
+      return;
+    }
+    if (email !== lowerCaseEmail) {
+      setIsLoading(false);
+      Alert.alert("El correo electrónico contiene mayusculas");
+      return;
+    }
     const transactionFunction = async (transaction) => {
       const sfDoc = await transaction.get(sfDocRef);
       if (!sfDoc.exists()) {
+        setIsLoading(false);
         throw new Error("Document does not exist!");
       }
       const isUpdating = sfDoc.data().isUpdating;
@@ -68,6 +98,7 @@ const CreateScreen = ({ navigation }) => {
         transaction.update(sfDocRef, { isUpdating: false });
         return newNumber;
       } else {
+        setIsLoading(false);
         return null;
       }
     };
@@ -83,8 +114,10 @@ const CreateScreen = ({ navigation }) => {
     } catch {
       if (error.code === "failed-precondition" && retries < MAX_RETRIES) {
         retries++;
+        setIsLoading(false);
         await incrementNumber(); // Reintentar la transacción
       } else {
+        setIsLoading(false);
         await incrementNumber(); // Reintentar la transacción
       }
     }
@@ -143,22 +176,26 @@ const CreateScreen = ({ navigation }) => {
 
   //CREATE ACCOUNT
   const handleCreateAccount = async (locker) => {
-    if ((nombre, apellidos, cedula, celular == "")) {
-      Alert.alert("Todos los campos son obligatorios");
-      return;
-    }
-    if (!validator.isEmail(email)) {
-      Alert.alert("El correo electrónico proposionado no es valido.");
-      return;
-    }
-    if (password == "") {
-      Alert.alert("Escribe una contrasena");
-      return;
-    }
-    if (email !== lowerCaseEmail) {
-      Alert.alert("El correo electrónico contiene mayusculas");
-      return;
-    }
+    // if ((nombre, apellidos, cedula, celular == "")) {
+    //   setIsLoading(false);
+    //   Alert.alert("Todos los campos son obligatorios");
+    //   return;
+    // }
+    // if (!validator.isEmail(email)) {
+    //   setIsLoading(false);
+    //   Alert.alert("El correo electrónico proposionado no es valido.");
+    //   return;
+    // }
+    // if (password == "") {
+    //   setIsLoading(false);
+    //   Alert.alert("Escribe una contrasena");
+    //   return;
+    // }
+    // if (email !== lowerCaseEmail) {
+    //   setIsLoading(false);
+    //   Alert.alert("El correo electrónico contiene mayusculas");
+    //   return;
+    // }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -182,9 +219,12 @@ const CreateScreen = ({ navigation }) => {
         locker: locker,
       });
     } catch {
+      setIsLoading(false);
       Alert.alert(
         "El correo electrónico ya existe o la constrasena es inválida."
       );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -255,14 +295,42 @@ const CreateScreen = ({ navigation }) => {
               secureTextEntry={true}
             />
           </View>
-          <TouchableOpacity
+
+
+
+
+
+          {/* <TouchableOpacity
             onPress={incrementNumber}
             style={[styles.button, { backgroundColor: "#0038FF" }]}
           >
             <Text style={{ fontSize: 17, fontWeight: "400", color: "#ffffff" }}>
               Crear cuenta
             </Text>
+          </TouchableOpacity> */}
+
+
+
+
+
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: "#0038FF" }]}
+            onPress={incrementNumber}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="large" color="#fff" />
+            ) : (
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "#ffffff" }}>
+              Crear cuenta
+            </Text>            )}
           </TouchableOpacity>
+
+
+
+
+
+
         </View>
       </ScrollView>
     </View>

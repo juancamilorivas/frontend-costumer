@@ -88,7 +88,7 @@ const LocalCarrierInsuranceScreen = ({ navigation }) => {
     }
     dispatch(
       setReceiver({
-        declaredValue: cleanedValue,
+        declaredValue: Math.round(cleanedValue * 100),
       }),
       navigation.navigate("DeclaredValue")
     );

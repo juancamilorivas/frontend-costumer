@@ -14,6 +14,9 @@ import { saveFavoriteAddress } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import {EXPO_PUBLIC_API_MIPAQUETE} from "@env"
+
+
 
 const CreateFavoriteScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(false);
@@ -60,6 +63,7 @@ const CreateFavoriteScreen = ({ navigation }) => {
           direccion,
           destinyDaneCode
         );
+
         Alert.alert("Dirección favorita guardada exitosamente");
         //RESET VALUES OF FORM
         setForm({
@@ -73,6 +77,8 @@ const CreateFavoriteScreen = ({ navigation }) => {
         })
         setValue(null); // Resetear el valor del Dropdown
 
+      } else {
+        navigation.navigate("LoginCreate")
       }
     } catch (error) {
       console.error("Error al guardar la dirección favorita: ", error);
@@ -93,7 +99,7 @@ const CreateFavoriteScreen = ({ navigation }) => {
             method: "GET",
             headers: {
               apikey:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDMwODhlMzRkYWJkMjVlZTRlM2U2NjQiLCJuYW1lIjoiVGVzdC1taS1wYXF1ZXRlLXJlYWwiLCJzdXJuYW1lIjoiSnVuaW9yIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImNlbGxQaG9uZSI6IjMxNDY1NzEyMzMiLCJjcmVhdGVkQXQiOiIyMDE5LTA3LTE4VDE0OjU3OjM5LjA0NFoiLCJkYXRlIjoiMjAyNC0wNi0yOCAyMjowMTo1NiIsImlhdCI6MTcxOTYzMDExNn0.AYBaP1U6drvnSrjp55b2LHJrODCuDRZxADWZJzca1ys",
+              EXPO_PUBLIC_API_MIPAQUETE,
               "session-tracker": "a0c96ea6-b22d-4fb7-a278-850678d5429c",
             },
           }
@@ -223,7 +229,6 @@ const CreateFavoriteScreen = ({ navigation }) => {
             style={styles.buttonStyles}
             onPress={enviarFormulario}
           >
-            {/* <Text style={styles.textButtonStyles}>Continuar</Text> */}
             {isLoading ? (
               <ActivityIndicator size="large" color="#fff" />
             ) : (

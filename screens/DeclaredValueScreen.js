@@ -29,61 +29,31 @@ import { setReceiver } from "../reducers/receiver/receiverSlice";
 
 
 const LocalCarrierInsuranceScreen = ({ navigation }) => {
+
   const dispatch = useDispatch();
   const [value, setValue] = React.useState("USD ");
-  const {
-    name,
-    surname,
-    locationName,
-    destinyDaneCode,
-    destinationAddress,
-    cellPhone,
-  } = useSelector((state) => state.receiver);
 
-  console.log(
-    name,
-    surname,
-    locationName,
-    destinyDaneCode,
-    destinationAddress,
-    cellPhone
-  );
-
- 
-
-  const formatValue = (text) => {
-    let cleaned = text.replace(/[^\d.]/g, ''); // Remove non-numeric characters except for the period
-    let match = cleaned.match(/^(\d+)?(\.\d{0,2})?/); // Allow up to two decimal places
-    let formatted = match ? match[0] : '';
-    return `USD ${formatted}`;
+  const nextScreen = () => {
+    // Convertir el valor a número
+    const cleanedValue = parseFloat(value.replace(/[^0-9.]/g, ""));
+    
+    // Validar si el valor es válido
+    if (isNaN(cleanedValue)) {
+      Alert.alert("Error", "Por favor, ingrese un valor válido en dólares.");
+      return;
+    }
+    
+    // Disparar la acción de Redux y navegar a la siguiente pantalla
+    dispatch(setReceiver({ declaredValueDian: cleanedValue }));
+    navigation.navigate("PaymentResume");
   };
 
- 
-
   const handleTextChange = (text) => {
-    const formattedText = formatValue(text);
+    // Filtrar caracteres no permitidos (excepto números y punto)
+    const formattedText = text.replace(/[^0-9.]/g, "");
     setValue(formattedText);
   };
 
-
-  const cleanValue = (text) => {
-    return text.replace(/[^0-9]/g, "");
-  };
-
-
-  const nextScreen = () => {
-    const cleanedValue = cleanValue(value);
-    if (!cleanedValue) {
-      Alert.alert("Error", "Por favor, ingrese un valor antes de continuar.");
-      return;
-    }
-    dispatch(
-      setReceiver({
-        declaredValue: cleanedValue,
-      }),
-      navigation.navigate("PaymentResume")
-    );
-  }
 
   return (
     <View style={styles.mainContainer}>

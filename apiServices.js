@@ -330,11 +330,81 @@ export const fetchPost = async (shipmentNumber) => {
     if (!querySnapshot.empty) {
       // Supongamos que solo debe haber un documento que cumpla con el criterio
       const docSnap = querySnapshot.docs[0];
-      console.log("Document data:", docSnap.data());
+      // console.log("Document data:", docSnap.data());
       return docSnap.data();
     } else {
       console.log("No such document!");
       return null;
+    }
+  } catch (error) {
+    console.error("Error fetching document:", error);
+    throw new Error("Error fetching document");
+  }
+};
+
+
+// export async function fetchTrmData() {
+//   try {
+//     const trmCollectionRef = collection(db, "trm");
+//     const trmSnapshot = await getDocs(trmCollectionRef);
+//     const trmList = trmSnapshot.docs.map(doc => doc.data().trm);
+//     return trmList
+
+//   } catch (error) {
+//     console.error("Error fetching TRM data: ", error);
+//   }
+// }
+
+
+export async function getTrm() {
+  // Referencia al documento específico
+  const trmDocRef = doc(db, "trm", "trmactual");
+
+  try {
+    // Obtiene el documento
+    const trmDoc = await getDoc(trmDocRef);
+
+    // Verifica si el documento existe
+    if (trmDoc.exists()) {
+      // Obtiene el campo 'trm' del documento
+      const trmValue = trmDoc.data().trm;
+      return trmValue;
+    } else {
+      console.log("El documento no existe.");
+    }
+  } catch (error) {
+    console.error("Error al obtener el documento:", error);
+  }
+}
+
+
+
+// export const fetchPartidaArancelariaPorcentajes = async (partidaArancelaria) => {
+//   const shipmentsRef = collection(db, "partidas-arancelarias");
+//   const q = query(shipmentsRef, where("partida-arancelaria", "==", partidaArancelaria));
+
+//   try {
+
+//   } catch (error) {
+//     console.error("Error fetching document:", error);
+//     throw new Error("Error fetching document");
+//   }
+// };
+
+
+
+
+export const fetchPartidaArancelariaPorcentajes = async (partidaArancelaria) => {
+  const partidasArancelariasRef = collection(db, "partidas-arancelarias");
+  const q = query(partidasArancelariasRef, where("partida-arancelaria", "==", partidaArancelaria));
+
+  try {
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const documentData = querySnapshot.docs[0].data(); // Asumiendo que solo hay un documento que coincide
+      return documentData;
+    } else {
+      throw new Error("No document found with the specified 'partida-arancelaria'");
     }
   } catch (error) {
     console.error("Error fetching document:", error);

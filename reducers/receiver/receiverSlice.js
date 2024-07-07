@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+ 
 const initialState = {
   name: "",
   surname: "",
@@ -14,7 +14,7 @@ const initialState = {
   weight: null,
   forbiddenProduct: true,
   declaredValue: null,
-  destinyDaneCode: 11001000,
+  declaredValueDian: null,
   channel: "Nowbox",
   criteria: "price",
   description: "",
@@ -22,7 +22,9 @@ const initialState = {
   valueCollection: 0,
   adminTransactionData: 0,
   locationName: "",
-  shipmentNumber: ""
+  shipmentNumber: "",
+  recogeEnBodega: false,
+
 };
 
 export const receiverSlice = createSlice({
@@ -49,6 +51,7 @@ export const receiverSlice = createSlice({
       state.weight = null;
       state.forbiddenProduct = true;
       state.declaredValue = null;
+      state.declaredValueDian = null;
       state.destinyDaneCode = 11001000;
       state.channel = "Nowbox";
       state.criteria = "price";
@@ -58,6 +61,7 @@ export const receiverSlice = createSlice({
       state.adminTransactionData = 0;
       state.locationName = "";
       state.shipmentNumber = "";
+      state.shipmentNumber = false;
     },
   },
 });
@@ -79,6 +83,7 @@ export const height = (state) => state.receiver.height;
 export const weight = (state) => state.receiver.weight;
 export const forbiddenProduct = (state) => state.receiver.forbiddenProduct;
 export const declaredValue = (state) => state.receiver.declaredValue;
+export const declaredValueDian = (state) => state.receiver.declaredValueDian;
 export const channel = (state) => state.receiver.channel;
 export const criteria = (state) => state.receiver.criteria;
 export const description = (state) => state.receiver.description;
@@ -86,6 +91,7 @@ export const paymentType = (state) => state.receiver.paymentType;
 export const valueCollection = (state) => state.receiver.valueCollection;
 export const adminTransactionData = (state) => state.receiver.adminTransactionData;
 export const shipmentNumber = (state) => state.receiver.shipmentNumber;
+export const recogeEnBodega = (state) => state.receiver.recogeEnBodega;
 
 export default receiverSlice.reducer;
 

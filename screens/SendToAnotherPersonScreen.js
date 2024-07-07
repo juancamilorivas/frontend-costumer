@@ -15,6 +15,8 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 //REDUX IMPORTS
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
+import {EXPO_PUBLIC_API_MIPAQUETE} from "@env"
+
 
 const SendToAnotherPersonScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -48,7 +50,7 @@ const SendToAnotherPersonScreen = ({ navigation }) => {
             method: "GET",
             headers: {
               apikey:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDMwODhlMzRkYWJkMjVlZTRlM2U2NjQiLCJuYW1lIjoiVGVzdC1taS1wYXF1ZXRlLXJlYWwiLCJzdXJuYW1lIjoiSnVuaW9yIiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImNlbGxQaG9uZSI6IjMxNDY1NzEyMzMiLCJjcmVhdGVkQXQiOiIyMDE5LTA3LTE4VDE0OjU3OjM5LjA0NFoiLCJkYXRlIjoiMjAyNC0wNi0yOCAyMjowMTo1NiIsImlhdCI6MTcxOTYzMDExNn0.AYBaP1U6drvnSrjp55b2LHJrODCuDRZxADWZJzca1ys",
+              EXPO_PUBLIC_API_MIPAQUETE,
               "session-tracker": "a0c96ea6-b22d-4fb7-a278-850678d5429c",
             },
           }

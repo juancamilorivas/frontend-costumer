@@ -8,6 +8,8 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  ActivityIndicator,
+
 } from "react-native";
 
 import {
@@ -29,6 +31,8 @@ const LoginScreen = ({ navigation }) => {
   //STATES
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
+
   // const [form, setForm] = React.useState({
   //   nombre: "",
   //   apellido: "",
@@ -140,16 +144,20 @@ const LoginScreen = ({ navigation }) => {
 
 
   const handleSignIn = async () => {
+    setIsLoading(true);
     if (email === "") {
       Alert.alert("Escribe un correo electrónico");
+      setIsLoading(false);
       return;
     }
     if (password === "") {
       Alert.alert("Escribe una contraseña");
+      setIsLoading(false);
       return;
     }
     if (!isValidEmail) {
       Alert.alert("El correo electrónico proporcionado no es válido.");
+      setIsLoading(false);
       return;
     }
   
@@ -176,6 +184,9 @@ const LoginScreen = ({ navigation }) => {
       navigation.navigate("TabsNavigation");
     } catch (error) {
       Alert.alert("El correo no existe en la base de datos o es inválido.");
+    }
+    finally {
+      setIsLoading(false);
     }
   };
   
@@ -235,23 +246,55 @@ const LoginScreen = ({ navigation }) => {
               secureTextEntry={true}
             />
           </View>
-          <TouchableOpacity
+
+
+          {/* <TouchableOpacity
             onPress={handleSignIn}
             style={[styles.button, { backgroundColor: "#00cfeb90" }]}
           >
             <Text style={{ fontSize: 17, fontWeight: "400", color: "white" }}>
               Iniciar sesion
             </Text>
+          </TouchableOpacity> */}
+
+
+          {/* <TouchableOpacity
+            onPress={() => navigation.navigate("CreateAccountScreen")}
+          >
+            <Text style={{ fontSize: 17, fontWeight: "400", color: "white", paddingTop: 30 }}>
+              Crear cuenta
+            </Text>
+          </TouchableOpacity> */}
+
+
+
+    
+
+
+
+        <TouchableOpacity
+            style={[styles.button, { backgroundColor: "#00cfeb90" }]}
+            onPress={handleSignIn}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="large" color="#fff" />
+            ) : (
+             <Text style={{ fontSize: 17, fontWeight: "400", color: "white" }}>
+              Iniciar sesion
+            </Text>         )}
           </TouchableOpacity>
+
+
+
           <TouchableOpacity
             onPress={() => navigation.navigate("CreateAccountScreen")}
-
-        
           >
             <Text style={{ fontSize: 17, fontWeight: "400", color: "white", paddingTop: 30 }}>
               Crear cuenta
             </Text>
           </TouchableOpacity>
+
         </View>
       </ScrollView>
     </View>

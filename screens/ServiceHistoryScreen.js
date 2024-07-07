@@ -15,6 +15,7 @@ import { fetchServicesOnSnapshot } from "../apiServices";
 import { fetchMoreServicesOnSnapshot } from "../apiServices";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const ServiceHistoryScreen = ({ navigation }) => {
@@ -27,19 +28,52 @@ const ServiceHistoryScreen = ({ navigation }) => {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
 
-  React.useEffect(() => {
-    const getMyStringValue = async () => {
-      try {
-        const value = await AsyncStorage.getItem("key");
-        if (value) {
-          setUid(value);
-        }
-      } catch (e) {
-        console.log("Something went wrong identifying user storage", e);
-      }
-    };
-    getMyStringValue();
-  }, []);
+  // React.useEffect(() => {
+  //   const getMyStringValue = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem("key");
+  //       if (value) {
+  //         setUid(value);
+  //       }
+  //     } catch (e) {
+  //       console.log("Something went wrong identifying user storage", e);
+  //     }
+  //   };
+  //   getMyStringValue();
+  // }, []);
+
+
+
+
+
+
+
+
+    // // Effect to reset data when screen gets focus
+    useFocusEffect(
+      React.useCallback(() => {
+        const getMyStringValue = async () => {
+          try {
+            const value = await AsyncStorage.getItem("key");
+            if (value) {
+              setUid(value);
+            } else {
+              navigation.navigate("LoginCreate");
+            }
+          } catch (e) {
+            console.log("Something went wrong identifying user storage", e);
+          }
+        };
+        getMyStringValue();
+      }, [])
+    );
+  
+
+
+
+
+
+
 
   //GET SERVICES
   React.useEffect(() => {
