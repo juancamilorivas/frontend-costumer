@@ -261,16 +261,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
     const fetchPaymentSheetParams = async () => {
       const data = await fetchPost(shipmentNumber);
   
