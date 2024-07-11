@@ -8,7 +8,9 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 import ImportServiceDetailsScreen from "../screens/ImportServiceDetailsScreen";
 import DivisionServiceDetailsScreen from "../screens/DivisionServiceDetailsScreen";
 import ImportConsolidatedServiceDetailsScreen from "../screens/ImportConsolidatedServiceDetailsScreen";
-
+import ToDataScreen from "../screens/ToDataScreen";
+import ImportReceiverHistoryScreen from "../screens/ImportReceiverHistoryScreen";
+import ViewDetailsHistoryScreen from "../screens/ViewDetailsHistoryScreen"
 const Stack = createNativeStackNavigator();
 
 const ServiceHistoryNavigation = ({ navigation }) => {
@@ -120,9 +122,80 @@ const ServiceHistoryNavigation = ({ navigation }) => {
           ),
         }}
       />
+
+      <Stack.Screen
+        name="ImportReceiverHistory"
+        component={ImportReceiverHistoryScreen}
+        options={{
+          title: "Destinatario",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("ImportServiceDetails");
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+
+
+
+<Stack.Screen
+        name="ViewDetailsHistory"
+        component={ViewDetailsHistoryScreen}
+        // options={{ headerShown: false }}
+        options={{
+          title: "Detalle del envio",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('ImportServiceDetails');
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack.Navigator>
   );
 };
 
 export default ServiceHistoryNavigation;
-

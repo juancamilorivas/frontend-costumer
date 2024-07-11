@@ -1,17 +1,8 @@
 import React from "react";
-import {
-  Image,
-  Text,
-  StyleSheet,
-  View,
-} from "react-native";
+import { Image, Text, StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 const AddressScreen = () => {
-
-
-
   const [casillero, setCasillero] = React.useState(null);
 
   // Función para obtener userData del almacenamiento
@@ -20,7 +11,6 @@ const AddressScreen = () => {
       const jsonData = await AsyncStorage.getItem("userData");
       if (jsonData !== null) {
         const userData = JSON.parse(jsonData);
-        console.log("User data obtenida del storage", userData);
         setCasillero(userData.casillero.toUpperCase());
       } else {
         console.log("No se encontró ningún userData en el storage");
@@ -34,7 +24,6 @@ const AddressScreen = () => {
   React.useEffect(() => {
     getUserData();
   }, []);
-
 
   return (
     <View style={styles.mainContainer}>
@@ -68,35 +57,15 @@ const AddressScreen = () => {
 
       <View style={styles.bigInputAndTextContainer}>
         <View style={styles.bigTextContainer}>
-          <Text
-            style={styles.addressTextBigText}
-          >
-            City: Miami
-          </Text>
-          <Text
-            style={styles.addressTextBigText}
-          >
-            State: Florida
-          </Text>
-          <Text
-            style={styles.addressTextBigText}
-          >
-            Zip Code: 33166 
-          </Text>
-          <Text
-            style={styles.addressTextBigText}
-          >
+          <Text style={styles.addressTextBigText}>City: Miami</Text>
+          <Text style={styles.addressTextBigText}>State: Florida</Text>
+          <Text style={styles.addressTextBigText}>Zip Code: 33166</Text>
+          <Text style={styles.addressTextBigText}>
             Phone Number: 305-5915802
           </Text>
-          <Text
-            style={styles.addressTextBigText}
-          >
-            Country: United States
-          </Text>
+          <Text style={styles.addressTextBigText}>Country: United States</Text>
         </View>
       </View>
-
-
     </View>
   );
 };
@@ -166,7 +135,7 @@ const styles = StyleSheet.create({
   bigInputAndTextContainer: {
     justifyContent: "center",
     width: "100%",
-    paddingTop: 20
+    paddingTop: 20,
   },
   title: {
     fontSize: 25,
@@ -183,6 +152,6 @@ const styles = StyleSheet.create({
   },
   addressTextBigText: {
     fontSize: 16,
-    paddingVertical: 4
-  }
+    paddingVertical: 4,
+  },
 });

@@ -3,9 +3,9 @@ import { SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchShipmentDetail } from "../apiServices";
 
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 
-const ViewDetailsScreen = ({route}) => {
+const ViewDetailsHistoryScreen = ({route}) => {
   const [form, setForm] = React.useState({
     createdAt: "",
     description: "",
@@ -21,7 +21,8 @@ const ViewDetailsScreen = ({route}) => {
     shipmentNumberTransportadora: "",
   });
 
-  const { shipmentNumber } = useSelector((state) => state.receiver);
+//   const { shipmentNumber } = useSelector((state) => state.receiver);
+  const { shipmentNumber } = route.params;
 
 
 
@@ -135,7 +136,9 @@ const ViewDetailsScreen = ({route}) => {
   );
 };
 
-export default ViewDetailsScreen;
+export default ViewDetailsHistoryScreen;
+
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

@@ -1,8 +1,3 @@
-
-
-
-
-
 import React from "react";
 import { Text, StyleSheet, View, SafeAreaView, ScrollView } from "react-native";
 

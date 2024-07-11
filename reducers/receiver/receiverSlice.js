@@ -8,13 +8,13 @@ const initialState = {
   destinyDaneCode: "",
   prefix: "+57",
   quantity: 1,
-  width: null,
-  large: null,
-  height: null,
-  weight: null,
+  width: 0,
+  large: 0,
+  height: 0,
+  weight: 0,
   forbiddenProduct: true,
-  declaredValue: null,
-  declaredValueDian: null,
+  declaredValue: 0,
+  declaredValueDian: 0,
   channel: "Nowbox",
   criteria: "price",
   description: "",
@@ -45,14 +45,13 @@ export const receiverSlice = createSlice({
       state.destinyDaneCode = "";
       state.prefix = "+57";
       state.quantity = 1;
-      state.width = null;
-      state.large = null;
-      state.height = null;
-      state.weight = null;
+      state.width = 0;
+      state.large = 0;
+      state.height = 0;
+      state.weight = 0;
       state.forbiddenProduct = true;
-      state.declaredValue = null;
-      state.declaredValueDian = null;
-      state.destinyDaneCode = 11001000;
+      state.declaredValue = 0;
+      state.declaredValueDian = 0;
       state.channel = "Nowbox";
       state.criteria = "price";
       state.description = "";
@@ -61,7 +60,7 @@ export const receiverSlice = createSlice({
       state.adminTransactionData = 0;
       state.locationName = "";
       state.shipmentNumber = "";
-      state.shipmentNumber = false;
+      state.recogeEnBodega = false;
     },
   },
 });
@@ -95,62 +94,3 @@ export const recogeEnBodega = (state) => state.receiver.recogeEnBodega;
 
 export default receiverSlice.reducer;
 
-
-
-
-// import { createSlice } from '@reduxjs/toolkit'
-
-
-// const initialState = {
-//     "name": "",
-//     "surname": "",
-//     "cellPhone": "",
-//     "destinationAddress": "",
-//     "destinyDaneCode": "",
-//     "prefix": "+57",
-//     "email": "",
-//     "nit": "",
-//     "nitType": "CC",
-// }
-  
-
-// export const receiverSlice = createSlice({
-//   name: 'receiver',
-//   initialState,
-//   reducers: {
-//     setReceiver: (state, action) => {
-//         state.name = action.payload.name
-//         state.surname = action.payload.surname
-//         state.cellPhone = action.payload.cellPhone
-//         state.email = action.payload.email   
-//         state.nit = action.payload.nit   
-//         state.destinationAddress = action.payload.destinationAddress   
-//         state.destinyDaneCode = action.payload.destinyDaneCode   
-//     },
-//     unsetReceiver: (state ) => {
-//         state.name = '';
-//         state.surname = '';
-//         state.cellPhone = '';
-//         state.email = '';
-//         state.nit = '';
-//         state.destinationAddress = '';
-//         state.destinyDaneCode = '';
-//       },
-//   },
-// })
-
-// // Action creators are generated for each case reducer function
-// export const { setReceiver, unsetReceiver } = receiverSlice.actions
-
-
-// export const name = (state) => state.receiver.name;
-// export const surname = (state) => state.receiver.surname;
-// export const cellPhone = (state) => state.receiver.cellPhone;
-// export const email = (state) => state.receiver.email;
-// export const nit = (state) => state.receiver.nit;
-// export const destinationAddress = (state) => state.receiver.destinationAddress;
-// export const destinyDaneCode = (state) => state.receiver.destinyDaneCode;
-
-
-
-// export default receiverSlice.reducer

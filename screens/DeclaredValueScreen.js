@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 import React from "react";
 import {
   Image,
@@ -19,7 +9,6 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { useSelector } from "react-redux";
 
 //REDUX IMPORTS
 import { useDispatch } from "react-redux";
@@ -31,7 +20,7 @@ import { setReceiver } from "../reducers/receiver/receiverSlice";
 const LocalCarrierInsuranceScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
-  const [value, setValue] = React.useState("USD ");
+  const [value, setValue] = React.useState("");
 
   const nextScreen = () => {
     // Convertir el valor a número

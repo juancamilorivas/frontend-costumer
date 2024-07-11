@@ -12,13 +12,14 @@ import {
   startAfter,
   onSnapshot,
   where,
+  updateDoc,
 } from "firebase/firestore";
 
 // FETCH POSTS ON SNAPSHOT
 export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
-  // console.log("soy el uidddddddd", uid)
   const q = query(
     collection(db, "shipments"),
+    where("show", "==", true),
     where("uidClient", "==", uid),
     orderBy("createdAt", "desc"),
     limit(postsPerLoad)
@@ -31,7 +32,6 @@ export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
         let postData = doc.data();
         postData.postId = doc.id;
         posts.push(postData);
-        // console.log("FETCH POSTS ONSNAPSHOT");
       });
 
       const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
@@ -53,6 +53,7 @@ export const fetchMorePostsOnSnapshot = (
 ) => {
   const q = query(
     collection(db, "shipments"),
+    where("show", "==", true),
     where("uidClient", "==", uid),
     orderBy("createdAt", "desc"),
     limit(postsPerLoad),
@@ -145,7 +146,6 @@ export const fetchMoreFavoritesOnSnapshot = (
 
   return unsubscribe;
 };
-
 
 // FETCH SERVICES ON SNAPSHOT
 export const fetchServicesOnSnapshot = (postsPerLoad, onData, onError, uid) => {
@@ -296,31 +296,6 @@ export const deleteFavoriteAddress = async (uid, idDocument) => {
   }
 };
 
-
-
-
-// // FETCH POST
-// export const fetchPost = async () => {
-//   const userRef = query(
-//     collection(db, "shipments"),
-//     where("shipmentNumber", "==", "2121654943")
-//   );
-//   try {
-//     const docSnap = await getDoc(userRef);
-//     if (docSnap.exists()) {
-//       return docSnap.data();
-//     } else {
-//       console.log("No such document!");
-//       return null;
-//     }
-//   } catch (error) {
-//     console.error("Error fetching document:", error);
-//     throw new Error("Error fetching document");
-//   }
-// };
-
-
-
 export const fetchPost = async (shipmentNumber) => {
   const shipmentsRef = collection(db, "shipments");
   const q = query(shipmentsRef, where("shipmentNumber", "==", shipmentNumber));
@@ -341,20 +316,6 @@ export const fetchPost = async (shipmentNumber) => {
     throw new Error("Error fetching document");
   }
 };
-
-
-// export async function fetchTrmData() {
-//   try {
-//     const trmCollectionRef = collection(db, "trm");
-//     const trmSnapshot = await getDocs(trmCollectionRef);
-//     const trmList = trmSnapshot.docs.map(doc => doc.data().trm);
-//     return trmList
-
-//   } catch (error) {
-//     console.error("Error fetching TRM data: ", error);
-//   }
-// }
-
 
 export async function getTrm() {
   // Referencia al documento específico
@@ -377,26 +338,15 @@ export async function getTrm() {
   }
 }
 
-
-
-// export const fetchPartidaArancelariaPorcentajes = async (partidaArancelaria) => {
-//   const shipmentsRef = collection(db, "partidas-arancelarias");
-//   const q = query(shipmentsRef, where("partida-arancelaria", "==", partidaArancelaria));
-
-//   try {
-
-//   } catch (error) {
-//     console.error("Error fetching document:", error);
-//     throw new Error("Error fetching document");
-//   }
-// };
-
-
-
-
-export const fetchPartidaArancelariaPorcentajes = async (partidaArancelaria) => {
+export const fetchPartidaArancelariaPorcentajes = async (
+  partidaArancelaria
+) => {
   const partidasArancelariasRef = collection(db, "partidas-arancelarias");
-  const q = query(partidasArancelariasRef, where("partida-arancelaria", "==", partidaArancelaria));
+  const q = query(
+    partidasArancelariasRef,
+    // where("partida-arancelaria", "==", partidaArancelaria)
+    where("partidaArancelaria", "==", partidaArancelaria)
+  );
 
   try {
     const querySnapshot = await getDocs(q);
@@ -404,7 +354,192 @@ export const fetchPartidaArancelariaPorcentajes = async (partidaArancelaria) => 
       const documentData = querySnapshot.docs[0].data(); // Asumiendo que solo hay un documento que coincide
       return documentData;
     } else {
-      throw new Error("No document found with the specified 'partida-arancelaria'");
+      throw new Error(
+        "No document found with the specified 'partida-arancelaria'"
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching document:", error);
+    throw new Error("Error fetching document");
+  }
+};
+
+export async function savePayment(
+  totalValue,
+  uid,
+  declaredValue,
+  airCostValue,
+  envioNacionaldollars,
+  trm,
+  iva,
+  arancel,
+  locker,
+  shipmentNumber,
+  name,
+  surname,
+  declaredValueDian,
+  destinyDaneCode,
+  recogeEnBodega,
+  locationName,
+  destinationAddress,
+  cellPhone,
+  paymentState,
+  partidaArancelaria
+) {
+  const data = {
+    createdAt: new Date(),
+    currentState: "En proceso",
+    paymentState: paymentState,
+    serviceName: "Importacion",
+    totalPaid: totalValue,
+    uidClient: uid,
+    Insurance: declaredValue,
+    airCost: airCostValue,
+    valorTransportadoraNacionalPesos: envioNacionaldollars,
+    trm: trm,
+    iva: iva,
+    arancel: arancel,
+    declaredValueDian: declaredValueDian,
+    locker: locker,
+    shipmentNumber: shipmentNumber,
+    receiverName: name,
+    receiverSurname: surname,
+    destinyDaneCode: destinyDaneCode,
+    recogeEnBodega: recogeEnBodega,
+    country: "Colombia",
+    locationName: locationName,
+    destinationAddress: destinationAddress,
+    cellPhone: cellPhone,
+    partidaArancelaria: partidaArancelaria
+  };
+  console.log(data, uid);
+
+  try {
+    await addDoc(collection(db, `services`), data);
+  } catch (e) {
+    console.error("Error al agregar el documento: ", e);
+  }
+}
+
+export async function changeShipmentStatus(shipmentNumber) {
+  // Query to find the document with the specific shipmentNumber
+  const shipmentsRef = collection(db, "shipments");
+  const q = query(shipmentsRef, where("shipmentNumber", "==", shipmentNumber));
+  const querySnapshot = await getDocs(q);
+
+  // If a document with the specified shipmentNumber is found
+  if (!querySnapshot.empty) {
+    querySnapshot.forEach(async (document) => {
+      const docRef = doc(db, "shipments", document.id);
+
+      // Retrieve the current data of the document
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const currentData = docSnap.data();
+
+        // Check if the field you want to update is true, then update it to false
+        if (currentData.show === true) {
+          await updateDoc(docRef, {
+            show: false,
+          });
+          console.log(`Document ${document.id} updated successfully.`);
+        } else {
+          console.log(`The field is already false or not found.`);
+        }
+      } else {
+        console.log("No such document!");
+      }
+    });
+  } else {
+    console.log("No document found with the specified shipmentNumber.");
+  }
+}
+
+export async function getServiceData(docId) {
+  try {
+    const docRef = doc(db, "services", docId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log("No se encontró el documento");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error al obtener el documento:", error);
+    throw error;
+  }
+}
+
+
+export async function fetchShipmentDetail(shipmentNumber) {
+  try {
+    const shipmentRef = collection(db, "shipments");
+    const q = query(shipmentRef, where("shipmentNumber", "==", shipmentNumber));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      // Si no se encontraron documentos
+      throw new Error(`No shipment detail found for uidClient: ${shipmentNumber}`);
+    }
+
+    // Obtenemos el primer documento encontrado
+    const doc = querySnapshot.docs[0];
+    const shipmentDetail = { id: doc.id, ...doc.data() };
+
+    return shipmentDetail;
+  } catch (error) {
+    console.error("Error fetching documents: ", error.message);
+    throw new Error(`Unable to fetch shipment detail: ${error.message}`);
+  }
+}
+
+
+
+
+
+export const fetchPartidaArancelariaComputadores = async () => {
+  const partidasArancelariasRef = collection(db, "partidas-arancelarias");
+  const q = query(
+    partidasArancelariasRef,
+    where("descripcion", "==", "Computadores/Tablets")
+  );
+
+  try {
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const documentData = querySnapshot.docs[0].data(); // Asumiendo que solo hay un documento que coincide
+      return documentData;
+    } else {
+      throw new Error(
+        "No document found with the specified 'partida-arancelaria'"
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching document:", error);
+    throw new Error("Error fetching document");
+  }
+};
+
+
+
+export const fetchPartidaArancelariaCelulares = async () => {
+  const partidasArancelariasRef = collection(db, "partidas-arancelarias");
+  const q = query(
+    partidasArancelariasRef,
+    where("descripcion", "==", "Celulares")
+  );
+
+  try {
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const documentData = querySnapshot.docs[0].data(); // Asumiendo que solo hay un documento que coincide
+      return documentData;
+    } else {
+      throw new Error(
+        "No document found with the specified 'partida-arancelaria'"
+      );
     }
   } catch (error) {
     console.error("Error fetching document:", error);

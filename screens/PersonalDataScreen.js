@@ -16,13 +16,9 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import {EXPO_PUBLIC_API_MIPAQUETE} from "@env"
-
+import { EXPO_PUBLIC_API_MIPAQUETE } from "@env";
 
 const PersonalDataScreen = () => {
-console.log(EXPO_PUBLIC_API_MIPAQUETE)
-
-
   const [uid, setUid] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [form, setForm] = React.useState({
@@ -48,51 +44,7 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
     });
   };
 
-
-
-//   //ASYNC STORAGE INFO CLIENTE FUNCION
-//   const getUserData = async () => {
-//     try {
-//       const jsonData = await AsyncStorage.getItem("userData");
-//       if (jsonData !== null) {
-//         const userData = JSON.parse(jsonData);
-//         setForm(prevForm => ({
-//           ...prevForm,  // mantiene los valores actuales del formulario
-//           nombre: userData.name,
-//           apellido: userData.surname,
-//           celular: userData.cellPhone,
-//           cedula: userData.nit,
-//           pais: userData.country,
-//           email: userData.email,
-//           direccion: userData.destinationAddress,
-//           destinyDaneCode: userData.destinyDaneCode,
-//           ciudad: userData.locationName,
-//         }));
-//         return userData;
-//       }
-//     } catch (e) {
-//       console.log("Error al recuperar datos", e);
-//     }
-//   };
-
-
-
-// //ASYNC STORAGE INFO CLIENTE EJECUCION DE FUNCION
-// useEffect(() => {
-//   const fetchData = async () => {
-//     const data = await getUserData();
-//     if (data) {
-//       // console.log("DATA DESDE EL STORAGE", data)
-//     }
-//   };
-//   fetchData()
-// }, [])
-    
-
-
-
-
-// LLAMADA A MI PAQUETE
+  // LLAMADA A MI PAQUETE
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -101,8 +53,7 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
           {
             method: "GET",
             headers: {
-              apikey:
-              EXPO_PUBLIC_API_MIPAQUETE,
+              apikey: EXPO_PUBLIC_API_MIPAQUETE,
               "session-tracker": "a0c96ea6-b22d-4fb7-a278-850678d5429c",
             },
           }
@@ -133,12 +84,7 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
     fetchData();
   }, []);
 
-
-
-
-
-
-// LLAMADO INCIAL PARA TRAER LA DATA DEL CLIENTE, SE CARGA AL ABRIR LA SCREEN
+  // LLAMADO INCIAL PARA TRAER LA DATA DEL CLIENTE, SE CARGA AL ABRIR LA SCREEN
   React.useEffect(() => {
     const getMyStringValue = async () => {
       try {
@@ -169,19 +115,19 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
     getMyStringValue();
   }, []);
 
-
-
-
-
-
-
-
-
-// GUARDAR INFORMACION DEL FORMULARIO EN FIREBASE
+  // GUARDAR INFORMACION DEL FORMULARIO EN FIREBASE
   const enviarFormulario = async () => {
     setIsLoading(true);
-    const { cedula, nombre, apellido, direccion, celular, ciudad, email, destinyDaneCode } =
-      form;
+    const {
+      cedula,
+      nombre,
+      apellido,
+      direccion,
+      celular,
+      ciudad,
+      email,
+      destinyDaneCode,
+    } = form;
     // Verificar si algún campo está vacío
     if (
       !cedula ||
@@ -224,8 +170,6 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
         <View style={styles.container}>
           <Text style={styles.title}>Mis datos personales</Text>
 
-       
-
           <Text style={styles.textForm}>Pais</Text>
           <TextInput
             style={styles.input}
@@ -256,10 +200,10 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
               onChange={(item) => {
                 setValue(item.value);
                 // setLocationCode(item.locationCode);
-                setForm(prevForm => ({
+                setForm((prevForm) => ({
                   ...prevForm,
                   ciudad: item.label,
-                  destinyDaneCode: item.locationCode
+                  destinyDaneCode: item.locationCode,
                 }));
                 setIsFocus(false);
               }}
@@ -273,7 +217,6 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
               )}
             />
           </View>
-
 
           <Text style={styles.textForm}>Casillero</Text>
           <TextInput
@@ -352,7 +295,6 @@ console.log(EXPO_PUBLIC_API_MIPAQUETE)
             )}
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -464,12 +406,6 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
 
-
-
-
-
-
-  
   containerDropDown: {
     backgroundColor: "transparent",
     paddingBottom: 10,
@@ -509,4 +445,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-

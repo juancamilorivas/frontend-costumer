@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
-  Button,
 } from "react-native";
 import React, { useCallback, useMemo } from "react";
 import BottomSheet, {
@@ -24,6 +23,8 @@ import { setReceiver } from "../reducers/receiver/receiverSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { useFocusEffect } from "@react-navigation/native";
+
+
 
 const WarehouseScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -64,47 +65,26 @@ const WarehouseScreen = ({ navigation }) => {
       {
         id: 1,
         titulo: "Consolidar",
-        descripcion: "Unir diferentes elementos en uno solo.",
+        descripcion: "Unir diferentes elementos en uno solo",
         imagen: require("../assets/consolidar.png"),
         navigationPath: "Consolidate",
       },
       {
         id: 2,
         titulo: "Dividir",
-        descripcion: "Separar un elemento en varias partes.",
+        descripcion: "Separar un elemento en varias partes",
         imagen: require("../assets/divide.png"),
         navigationPath: "Divide",
       },
       {
         id: 3,
         titulo: "Pagar",
-        descripcion: "Realizar un pago por bienes o servicios.",
+        descripcion: "Pagar importacion",
         imagen: require("../assets/payment.png"),
         navigationPath: "StartTransport",
       },
-      // {
-      //   id: 4,
-      //   titulo: "Reempacar",
-      //   descripcion: "Empacar nuevamente productos o elementos.",
-      //   imagen: require("../assets/consolidar.png"),
-      //   navigationPath: "Repack",
-      // },
-      // {
-      //   id: 5,
-      //   titulo: "In and out",
-      //   descripcion: "Proceso de entrada y salida de elementos.",
-      //   imagen: require("../assets/consolidar.png"),
-      //   navigationPath: "InAndOut",
-      // },
-      // {
-      //   id: 6,
-      //   titulo: "Eliminar",
-      //   descripcion: "Remover o borrar un elemento.",
-      //   imagen: require("../assets/consolidar.png"),
-      //   navigationPath: "DeleteTracking",
-      // },
       {
-        id: 7,
+        id: 4,
         titulo: "Ver guía",
         descripcion: "Consultar una guía o manual.",
         imagen: require("../assets/consolidar.png"),
@@ -141,8 +121,11 @@ const WarehouseScreen = ({ navigation }) => {
         style={styles.itemContainer}
         onPress={async () => {
           await handleClosePress();
-
-          navigation.navigate(item.navigationPath, { uid: uid });
+          if (item.titulo === "Consolidar" && posts.length === 1) {
+            alert("No se puede consolidar solo 1 ítem");
+          } else {
+            navigation.navigate(item.navigationPath, { uid: uid });
+          }
         }}
       >
         <Image source={item.imagen} style={styles.itemImage} />
@@ -179,11 +162,10 @@ const WarehouseScreen = ({ navigation }) => {
     } catch (error) {
       console.error(error);
     }
-    // }, []);
   }, [isRefreshing, uid]);
 
   const onRefresh = () => {
-    setIsRefreshing(true); // Activa el estado de refresco
+    setIsRefreshing(true);
   };
 
   //GET MORE POSTS
@@ -224,6 +206,15 @@ const WarehouseScreen = ({ navigation }) => {
       snapeToIndex(0);
     };
 
+    // const handlePress = () => {
+    //   if (posts.length === 1) {
+    //     alert("No se puede consolidar solo 1 ítem");
+    //   } else {
+    //     dispatch(setReceiver({ shipmentNumber: item.shipmentNumber }));
+    //     snapeToIndex(0);
+    //   }
+    // };
+
     return (
       <TouchableOpacity onPress={handlePress}>
         <ListItem key={item.postId}>
@@ -255,57 +246,6 @@ const WarehouseScreen = ({ navigation }) => {
   };
 
   return (
-    // <>
-    //   {posts.length > 0 && (
-    //     <SafeAreaView style={styles.container}>
-    //       <View style={styles.container}>
-    //         <FlatList
-    //           data={posts}
-    //           renderItem={renderPosts}
-    //           keyExtractor={(item, index) => index.toString()}
-    //           showsVerticalScrollIndicator={false}
-    //           onEndReached={getMorePosts}
-    //           onEndReachedThreshold={0.01}
-    //           scrollEventThrottle={150}
-    //           ListFooterComponent={renderLoader}
-    //           refreshControl={
-    //             <RefreshControl
-    //               refreshing={isRefreshing}
-    //               onRefresh={onRefresh}
-    //               colors={["#aaa"]}
-    //               tintColor={"#aaa"}
-    //             />
-    //           }
-    //         />
-    //       </View>
-
-    //       {/* Modal */}
-    //       <BottomSheet
-    //         ref={bottomSheetRef}
-    //         index={-1}
-    //         snapPoints={snapPoints}
-    //         enablePanDownToClose={true}
-    //         backdropComponent={renderBackdrop}
-    //       >
-    //         <BottomSheetFlatList
-    //           data={data}
-    //           keyExtractor={(item) => item.id}
-    //           renderItem={renderItem}
-    //           contentContainerStyle={styles.contentContainer}
-    //         />
-    //       </BottomSheet>
-    //     </SafeAreaView>
-    //   )}
-
-    //   {posts.length === 0 && (
-    //     <View style={styles.noDataContainer}>
-    //       <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
-    //       <Text style={styles.noDataText}>No hay paquetes en tu casillero</Text>
-    //     </View>
-
-    //   )}
-    // </>
-
     <>
       {isLoading2 ? (
         <View style={styles.loaderContainer}>

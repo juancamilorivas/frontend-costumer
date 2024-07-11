@@ -8,10 +8,15 @@ import DeleteTrackingScreen from "../screens/DeleteTrackingScreen";
 import ViewDetailsScreen from "../screens/ViewDetailsScreen";
 import InAndOutScreen from "../screens/InAndOutScreen";
 import StartTransportNavigation from "./StartTransportNavigation";
+import StartTransportConsolidatedNavigation from "./StartTransportConsolidatedNavigation";
+import { TouchableOpacity } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 
 const Stack = createNativeStackNavigator();
 
-const ServicesNavigation = () => {
+const ServicesNavigation = ({navigation}) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -23,8 +28,40 @@ const ServicesNavigation = () => {
       <Stack.Screen
         name="Consolidate"
         component={ConsolidateScreen}
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
+        options={{
+          title: "Consolidar",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Bodega', { screen: 'Warehouse' });
+
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
+
+      
       <Stack.Screen
         name="Divide"
         component={DivideScreen}
@@ -38,11 +75,6 @@ const ServicesNavigation = () => {
       />
 
       <Stack.Screen
-        name="Repack"
-        component={RepackScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
         name="InAndOut"
         component={InAndOutScreen}
         options={{ headerShown: false }}
@@ -55,7 +87,37 @@ const ServicesNavigation = () => {
       <Stack.Screen
         name="ViewDetails"
         component={ViewDetailsScreen}
-        options={{ headerShown: false }}
+        // options={{ headerShown: false }}
+        options={{
+          title: "Opciones de entrega",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Bodega', { screen: 'Warehouse' });
+
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
  
     </Stack.Navigator>

@@ -1,3 +1,6 @@
+
+
+
 import { StripeProvider, usePaymentSheet } from "@stripe/stripe-react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -29,7 +32,7 @@ import {
 // import { useFocusEffect } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
 
-const PaymentResumeScreen = () => {
+const PaymentResumeConsolidation = () => {
   const [ready, setReady] = useState(false);
   const { initPaymentSheet, presentPaymentSheet, loading } = usePaymentSheet();
   const navigation = useNavigation();
@@ -315,8 +318,7 @@ const PaymentResumeScreen = () => {
         locationName,
         destinationAddress,
         cellPhone,
-        paymentState,
-        partidaArancelaria
+        paymentState
       );
       changeShipmentStatus(shipmentNumber);
       Alert.alert("Success", "The payment was confirmed successfully", [
@@ -550,7 +552,7 @@ const PaymentResumeScreen = () => {
     </SafeAreaView>
   );
 };
-export default PaymentResumeScreen;
+export default PaymentResumeConsolidation;
 
 //STYLES
 const styles = StyleSheet.create({

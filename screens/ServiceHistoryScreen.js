@@ -16,9 +16,13 @@ import { fetchMoreServicesOnSnapshot } from "../apiServices";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { useFocusEffect } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { setImportServiceHistory } from "../reducers/importServiceHistory/importServiceHistorySlice";
 
 
 const ServiceHistoryScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   const [posts, setPosts] = React.useState([]);
   const [startAfter, setStartAfter] = React.useState(null);
   const [postsPerLoad] = React.useState(5);
@@ -28,52 +32,24 @@ const ServiceHistoryScreen = ({ navigation }) => {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
 
-  // React.useEffect(() => {
-  //   const getMyStringValue = async () => {
-  //     try {
-  //       const value = await AsyncStorage.getItem("key");
-  //       if (value) {
-  //         setUid(value);
-  //       }
-  //     } catch (e) {
-  //       console.log("Something went wrong identifying user storage", e);
-  //     }
-  //   };
-  //   getMyStringValue();
-  // }, []);
-
-
-
-
-
-
-
-
-    // // Effect to reset data when screen gets focus
-    useFocusEffect(
-      React.useCallback(() => {
-        const getMyStringValue = async () => {
-          try {
-            const value = await AsyncStorage.getItem("key");
-            if (value) {
-              setUid(value);
-            } else {
-              navigation.navigate("LoginCreate");
-            }
-          } catch (e) {
-            console.log("Something went wrong identifying user storage", e);
+  // // Effect to reset data when screen gets focus
+  useFocusEffect(
+    React.useCallback(() => {
+      const getMyStringValue = async () => {
+        try {
+          const value = await AsyncStorage.getItem("key");
+          if (value) {
+            setUid(value);
+          } else {
+            navigation.navigate("LoginCreate");
           }
-        };
-        getMyStringValue();
-      }, [])
-    );
-  
-
-
-
-
-
-
+        } catch (e) {
+          console.log("Something went wrong identifying user storage", e);
+        }
+      };
+      getMyStringValue();
+    }, [])
+  );
 
   //GET SERVICES
   React.useEffect(() => {
@@ -136,10 +112,10 @@ const ServiceHistoryScreen = ({ navigation }) => {
   // Function to determine the background color based on currentState
   const getCurrentStateStyle = (currentState) => {
     switch (currentState) {
-      case "Pagado":
-        return { backgroundColor: "#18A0FB" };
       case "En proceso":
         return { backgroundColor: "#25BD50" };
+      case "Asignado":
+        return { backgroundColor: "#18A0FB" };
       case "Finalizado":
         return { backgroundColor: "gray" };
       case "Cancelado":
@@ -156,24 +132,33 @@ const ServiceHistoryScreen = ({ navigation }) => {
     const createdAtDate = new Date(item.createdAt.seconds * 1000);
     const formattedDate = createdAtDate.toLocaleString("es-ES");
 
+    
     const navigateToDetailScreen = () => {
+      dispatch(setImportServiceHistory({ docId: item.postId }));
+
       switch (item.serviceName) {
         case "Importacion":
-          navigation.navigate("ImportServiceDetails", { currentState: item.currentState  });
+          navigation.navigate("ImportServiceDetails", {
+            docId: item.postId,
+          });
           break;
         case "Division":
-          navigation.navigate("DivisionServiceDetails");
+          navigation.navigate("DivisionServiceDetails", {
+            docId: item.postId,
+          });
           break;
         case "Importacion consolidada":
-          navigation.navigate("ImportConsolidatedServiceDetails", { currentState: item.currentState  });
+          navigation.navigate("ImportConsolidatedServiceDetails", {
+            docId: item.postId,
+          });
           break;
         default:
-          console.warn("Unknown serviceName:", item.serviceName);
+          console.warn("Unknown serviceName:", item.postId);
       }
     };
 
     return (
-     <TouchableOpacity onPress={navigateToDetailScreen}>
+      <TouchableOpacity onPress={navigateToDetailScreen}>
         <ListItem key={item.postId}>
           <ListItem.Content style={styles.itemContent}>
             <ListItem.Content style={styles.orderNumberAndTotalPaid}>
@@ -209,7 +194,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
             </ListItem.Content>
           </ListItem.Content>
         </ListItem>
-        </TouchableOpacity>
+      </TouchableOpacity>
     );
   }
 
@@ -222,54 +207,54 @@ const ServiceHistoryScreen = ({ navigation }) => {
   };
 
   return (
-
-<>
-    {isLoading2 ? (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#aaa" />
-      </View>
-    ) : (
-      <>
-        {posts.length > 0 && (
-          <SafeAreaView style={styles.mainContainer}>
-            <View style={styles.containerSafeArea}>
-              <FlatList
-                data={posts}
-                renderItem={renderPosts}
-                keyExtractor={(item, index) => index.toString()}
-                showsVerticalScrollIndicator={false}
-                onEndReached={getMorePosts}
-                onEndReachedThreshold={0.01}
-                scrollEventThrottle={150}
-                ListFooterComponent={renderLoader}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                    colors={["#aaa"]}
-                    tintColor={"#aaa"}
-                  />
-                }
-              />
+    <>
+      {isLoading2 ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#aaa" />
+        </View>
+      ) : (
+        <>
+          {posts.length > 0 && (
+            <SafeAreaView style={styles.mainContainer}>
+              <View style={styles.containerSafeArea}>
+                <FlatList
+                  data={posts}
+                  renderItem={renderPosts}
+                  keyExtractor={(item, index) => index.toString()}
+                  showsVerticalScrollIndicator={false}
+                  onEndReached={getMorePosts}
+                  onEndReachedThreshold={0.01}
+                  scrollEventThrottle={150}
+                  ListFooterComponent={renderLoader}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={isRefreshing}
+                      onRefresh={onRefresh}
+                      colors={["#aaa"]}
+                      tintColor={"#aaa"}
+                    />
+                  }
+                />
+              </View>
+            </SafeAreaView>
+          )}
+          {posts.length === 0 && (
+            <View style={styles.noDataContainer}>
+              <FontAwesomeIcon icon={faBolt} size={54} color={"#212020"} />
+              <Text style={styles.noDataText}>
+                Aun no tienes servicios para mostrar
+              </Text>
             </View>
-          </SafeAreaView>
-        )}
-        {posts.length === 0 && (
-          <View style={styles.noDataContainer}>
-            <FontAwesomeIcon icon={faBolt} size={54} color={"#212020"} />
-            <Text style={styles.noDataText}>Aun no tienes servicios para mostrar</Text>
-          </View>
-        )}
-      </>
-    )}
-  </>
+          )}
+        </>
+      )}
+    </>
   );
 };
 
 export default ServiceHistoryScreen;
 
 const styles = StyleSheet.create({
-
   mainContainer: {
     backgroundColor: "white",
     flex: 1,
@@ -330,7 +315,6 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 
-
   noDataContainer: {
     flex: 1,
     justifyContent: "center",
@@ -345,8 +329,8 @@ const styles = StyleSheet.create({
 
   loaderContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'black',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
 });

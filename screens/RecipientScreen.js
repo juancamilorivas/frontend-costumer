@@ -31,6 +31,7 @@ const RecipientScreen = ({ navigation }) => {
   const [postsPerLoad] = React.useState(5);
   const [lastPost, setLastPost] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
   const [nameDefault, setNameDefault] = React.useState("");
@@ -56,7 +57,7 @@ const RecipientScreen = ({ navigation }) => {
           onPress={() => navigation.navigate("CreateFavorite")}
         />
         <SpeedDial.Action
-          icon={{ name: "add", color: "#fff" }}
+          icon={{ name: "delete", color: "#fff" }}
           title="Eliminar un favorito"
           onPress={() => navigation.navigate("DeleteFavorite")}
         />
@@ -127,7 +128,6 @@ const RecipientScreen = ({ navigation }) => {
               cellPhone: userData.cellPhone,
               destinationAddress: "Calle 24c # 84 - 84 bodega 34",
               locationName: "Bogota, DC",
-              // destinyDaneCode: "11001000",
               recogeEnBodega: true,
             })
           );
@@ -138,7 +138,6 @@ const RecipientScreen = ({ navigation }) => {
       console.log("Something went wrong identifying user storage", e);
     }
   };
-
 
 
   //SAVE FAVORITE DATA ON REDUX
@@ -155,7 +154,6 @@ const RecipientScreen = ({ navigation }) => {
         destinationAddress,
       } = selectedItem;
 
-      console.log()
       dispatch(
         setReceiver({
           name,
@@ -204,12 +202,13 @@ const RecipientScreen = ({ navigation }) => {
         postsPerLoad,
         (data) => {
           setIsLoading(false);
+          setIsLoading2(false);
           if (data.posts.length == 0) {
             setLastPost(true);
           }
           setPosts([...data.posts]);
           setStartAfter(data.lastVisible);
-          setIsRefreshing(false); // Importante para detener el RefreshControl
+          setIsRefreshing(false);
           setLastPost(false);
         },
         (error) => {
@@ -220,7 +219,6 @@ const RecipientScreen = ({ navigation }) => {
     } catch (error) {
       console.error(error);
     }
-    // }, []);
   }, [isRefreshing, uid]);
 
   const onRefresh = () => {
@@ -345,6 +343,33 @@ const RecipientScreen = ({ navigation }) => {
       </View>
 
       {/* flat list favorites section */}
+      {/* <SafeAreaView style={styles.container}>
+        <FlatList
+          data={posts}
+          renderItem={renderPosts}
+          keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
+          onEndReached={getMorePosts}
+          onEndReachedThreshold={0.01}
+          scrollEventThrottle={150}
+          ListFooterComponent={renderLoader}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={["#aaa"]}
+              tintColor={"#aaa"}
+            />
+          }
+        />
+      </SafeAreaView> */}
+          <>
+      {isLoading2 ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#aaa" />
+        </View>
+      ) : (
+        <>
       <SafeAreaView style={styles.container}>
         <FlatList
           data={posts}
@@ -365,6 +390,9 @@ const RecipientScreen = ({ navigation }) => {
           }
         />
       </SafeAreaView>
+        </>
+      )}
+    </>
       {speedDialComponent()}
     </View>
   );
@@ -492,5 +520,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     marginLeft: 15,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
