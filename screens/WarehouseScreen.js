@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Alert,
 } from "react-native";
 import React, { useCallback, useMemo } from "react";
 import BottomSheet, {
@@ -20,6 +21,7 @@ import { fetchPostsOnSnapshot } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
+import { setConsolidation } from "../reducers/consolidation/consolidationSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { useFocusEffect } from "@react-navigation/native";
@@ -37,6 +39,9 @@ const WarehouseScreen = ({ navigation }) => {
   const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
+
+
+
 
   //modal breakpoints
   const snapPoints = React.useMemo(() => ["49%", "65%"], []);
@@ -67,6 +72,7 @@ const WarehouseScreen = ({ navigation }) => {
         titulo: "Consolidar",
         descripcion: "Unir diferentes elementos en uno solo",
         imagen: require("../assets/consolidar.png"),
+        // navigationPath: "Consolidate",
         navigationPath: "Consolidate",
       },
       {
@@ -114,6 +120,8 @@ const WarehouseScreen = ({ navigation }) => {
   );
 
 
+
+
   //MODAL CONTENT
   const renderItem = useCallback(
     ({ item }) => (
@@ -121,11 +129,7 @@ const WarehouseScreen = ({ navigation }) => {
         style={styles.itemContainer}
         onPress={async () => {
           await handleClosePress();
-          if (item.titulo === "Consolidar" && posts.length === 1) {
-            alert("No se puede consolidar solo 1 ítem");
-          } else {
-            navigation.navigate(item.navigationPath, { uid: uid });
-          }
+          navigation.navigate(item.navigationPath, { uid: uid });
         }}
       >
         <Image source={item.imagen} style={styles.itemImage} />
@@ -137,6 +141,9 @@ const WarehouseScreen = ({ navigation }) => {
     ),
     []
   );
+
+  
+
 
   //GET POSTS
   React.useEffect(() => {
@@ -168,6 +175,9 @@ const WarehouseScreen = ({ navigation }) => {
     setIsRefreshing(true);
   };
 
+
+
+
   //GET MORE POSTS
   const getMorePosts = () => {
     if (!lastPost && startAfter) {
@@ -195,25 +205,24 @@ const WarehouseScreen = ({ navigation }) => {
     }
   };
 
+
+
+
+
+
   // SCREEN CONTENT
   function renderPosts({ item }) {
     const createdAtDate = new Date(item.createdAt.seconds * 1000);
     const formattedDate = createdAtDate.toLocaleString("es-ES");
     const descriptionInUpperCase = item.description.toUpperCase();
 
+
     const handlePress = () => {
       dispatch(setReceiver({ shipmentNumber: item.shipmentNumber }));
       snapeToIndex(0);
+      dispatch(setConsolidation({ postsLenght: posts.length }));
+      // dispatch(setConsolidation({ postsLenght: posts.length }));
     };
-
-    // const handlePress = () => {
-    //   if (posts.length === 1) {
-    //     alert("No se puede consolidar solo 1 ítem");
-    //   } else {
-    //     dispatch(setReceiver({ shipmentNumber: item.shipmentNumber }));
-    //     snapeToIndex(0);
-    //   }
-    // };
 
     return (
       <TouchableOpacity onPress={handlePress}>
@@ -244,6 +253,15 @@ const WarehouseScreen = ({ navigation }) => {
       </View>
     ) : null;
   };
+
+
+
+  // const checkConsolidation = () => {
+    
+  //   Alert.alert("funciona")
+  //   console.log("intento desde la funcion ---->", postsLenght)
+  // }
+
 
   return (
     <>

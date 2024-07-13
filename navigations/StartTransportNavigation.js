@@ -18,11 +18,24 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 import { useDispatch } from "react-redux";
 import { unsetReceiver } from "../reducers/receiver/receiverSlice";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
-import ConsolidateScreen from "../screens/ConsolidateScreen";
+// import ConsolidateScreen from "../screens/ConsolidateScreen";
+// import { useSelector } from "react-redux";
+
 
 const Stack = createNativeStackNavigator();
 
 const StartTransportNavigation = ({ navigation }) => {
+
+
+
+  // const {
+  //   shipmentNumbers,
+  // } = useSelector((state) => state.consolidation);
+
+
+
+
+
 
   const dispatch = useDispatch();
 
@@ -431,7 +444,7 @@ const handleUnsetReceiverAndGoBack = () => {
 
 
 
-<Stack.Screen
+{/* <Stack.Screen
         name="Consolidate"
         component={ConsolidateScreen}
         // options={{ headerShown: false }}
@@ -447,7 +460,7 @@ const handleUnsetReceiverAndGoBack = () => {
           },
           headerLeft: () => (
             <TouchableOpacity
-              onPress={handleUnsetReceiverAndGoBack}
+              onPress={checkConsolidation}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
             </TouchableOpacity>
@@ -462,7 +475,11 @@ const handleUnsetReceiverAndGoBack = () => {
             </TouchableOpacity>
           ),
         }}
-      />
+      /> */}
+
+
+
+
 
     </Stack.Navigator>
   );

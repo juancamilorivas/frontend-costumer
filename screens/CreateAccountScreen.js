@@ -58,9 +58,6 @@ const CreateScreen = ({ navigation }) => {
   //INCREMENT LOCKER NUMBER
   const incrementNumber = async () => {
 
-
-
-
     setIsLoading(true);
 
     if ((nombre, apellidos, cedula, celular == "")) {
@@ -122,6 +119,10 @@ const CreateScreen = ({ navigation }) => {
       }
     }
   };
+
+
+
+  
 
   // // CREATE STRIPE CUSTOMER
   const handleSubmit = async ({ name, email, userCredential, locker }) => {

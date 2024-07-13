@@ -34,13 +34,15 @@ const ConsolidateScreen = ({ navigation }) => {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
   const [selectedItems, setSelectedItems] = React.useState([]);
-  // const [partidaArancelariaComputadores, setPartidaArancelariaComputadores] = React.useState("");
-  // const [partidaArancelariaCelulares, setPartidaArancelariaCelulares] = React.useState("");
+
 
 
   React.useEffect(() => {
-    dispatch(setConsolidation(selectedItems));
+    dispatch(setConsolidation({shipmentNumbers: selectedItems}));
   }, [selectedItems, dispatch]);
+
+
+
 
 
   // // Effect to reset data when screen gets focus

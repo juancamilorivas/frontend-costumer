@@ -8,15 +8,37 @@ import DeleteTrackingScreen from "../screens/DeleteTrackingScreen";
 import ViewDetailsScreen from "../screens/ViewDetailsScreen";
 import InAndOutScreen from "../screens/InAndOutScreen";
 import StartTransportNavigation from "./StartTransportNavigation";
-import StartTransportConsolidatedNavigation from "./StartTransportConsolidatedNavigation";
-import { TouchableOpacity } from "react-native";
+// import StartTransportConsolidatedNavigation from "./StartTransportConsolidatedNavigation";
+import { Alert, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
+import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons/faCircleArrowRight";
+import { useSelector } from "react-redux";
+
 
 const Stack = createNativeStackNavigator();
 
 const ServicesNavigation = ({navigation}) => {
+
+  const {
+    shipmentNumbers,
+  } = useSelector((state) => state.consolidation);
+
+
+
+  
+  const checkConsolidation = () => {
+      if(shipmentNumbers.length <= 1) {
+        Alert.alert("Debes seleccionar almenos 2 items")
+      } else {
+        navigation.navigate("StartTransport")
+      }
+  }
+
+
+
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -28,7 +50,6 @@ const ServicesNavigation = ({navigation}) => {
       <Stack.Screen
         name="Consolidate"
         component={ConsolidateScreen}
-        // options={{ headerShown: false }}
         options={{
           title: "Consolidar",
           headerShown: true,
@@ -50,9 +71,9 @@ const ServicesNavigation = ({navigation}) => {
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+            <TouchableOpacity onPress={checkConsolidation}>
               <FontAwesomeIcon
-                icon={faCircleQuestion}
+                icon={faCircleArrowRight}
                 size={25}
                 color="#ffffff"
               />
