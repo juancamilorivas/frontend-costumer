@@ -53,9 +53,9 @@ const ProfileScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
      
 
-     <View style={styles.mainTitleContainer}>
+     {/* <View style={styles.mainTitleContainer}>
       <Text style={styles.mainTitle}>Opciones</Text>
-      </View>
+      </View> */}
 
      
       <ScrollView style={styles.container}>

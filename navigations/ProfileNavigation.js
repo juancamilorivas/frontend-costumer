@@ -16,7 +16,20 @@ const ProfileNavigation = ({navigation}) => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{ headerShown: false }}
+        // options={{ headerShown: true}}
+        options={{
+          title: "Opciones",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+         
+       
+        }}
       />
 
       <Stack.Screen

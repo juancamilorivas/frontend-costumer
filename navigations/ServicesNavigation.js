@@ -8,13 +8,16 @@ import DeleteTrackingScreen from "../screens/DeleteTrackingScreen";
 import ViewDetailsScreen from "../screens/ViewDetailsScreen";
 import InAndOutScreen from "../screens/InAndOutScreen";
 import StartTransportNavigation from "./StartTransportNavigation";
-// import StartTransportConsolidatedNavigation from "./StartTransportConsolidatedNavigation";
+import StartTransportConsolidatedNavigation from "./StartTransportConsolidatedNavigation";
+import StartDivideNavigation from "./StartDivideNavigation";
 import { Alert, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons/faCircleArrowRight";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { unsetConsolidation } from "../reducers/consolidation/consolidationSlice";
 
 
 const Stack = createNativeStackNavigator();
@@ -32,9 +35,19 @@ const ServicesNavigation = ({navigation}) => {
       if(shipmentNumbers.length <= 1) {
         Alert.alert("Debes seleccionar almenos 2 items")
       } else {
-        navigation.navigate("StartTransport")
+        navigation.navigate("StartTransportConsolidated")
       }
   }
+
+
+
+
+  const dispatch = useDispatch();
+
+  const handleUnsetReceiverAndGoBack = () => {
+    dispatch(unsetConsolidation());
+    navigation.navigate("Bodega", { screen: "Warehouse" });
+  };
 
 
 
@@ -44,8 +57,22 @@ const ServicesNavigation = ({navigation}) => {
       <Stack.Screen
         name="Warehouse"
         component={WarehouseScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Bodega",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
       />
+
+
+
+
 
       <Stack.Screen
         name="Consolidate"
@@ -62,10 +89,7 @@ const ServicesNavigation = ({navigation}) => {
           },
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('Bodega', { screen: 'Warehouse' });
-
-              }}
+              onPress={handleUnsetReceiverAndGoBack}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
             </TouchableOpacity>
@@ -83,10 +107,58 @@ const ServicesNavigation = ({navigation}) => {
       />
 
       
+
+
+
+      <Stack.Screen
+        name="StartTransportConsolidated"
+        component={StartTransportConsolidatedNavigation}
+        options={{ headerShown: false }}
+      />
+
+
+
+<Stack.Screen
+        name="StartDivide"
+        component={StartDivideNavigation}
+        options={{ headerShown: false }}
+      />
+
+
+
+
+
+      
       <Stack.Screen
         name="Divide"
         component={DivideScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Dividir",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={handleUnsetReceiverAndGoBack}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={checkConsolidation}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
 
       <Stack.Screen

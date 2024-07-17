@@ -17,7 +17,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons/faX";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { useDispatch } from "react-redux";
 import { unsetReceiver } from "../reducers/receiver/receiverSlice";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
+// import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 // import ConsolidateScreen from "../screens/ConsolidateScreen";
 // import { useSelector } from "react-redux";
 
@@ -25,14 +25,6 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 const Stack = createNativeStackNavigator();
 
 const StartTransportNavigation = ({ navigation }) => {
-
-
-
-  // const {
-  //   shipmentNumbers,
-  // } = useSelector((state) => state.consolidation);
-
-
 
 
 

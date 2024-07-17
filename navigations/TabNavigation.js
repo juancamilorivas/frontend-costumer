@@ -7,6 +7,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons/faBars";
 import ProfileNavigation from "./ProfileNavigation";
 import ServicesNavigation from "./ServicesNavigation";
 import ServiceHistoryNavigation from "./ServiceHistoryNavigation";
+// import StartTransportNavigation from "./StartTransportNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,7 +15,6 @@ const TabNavigation = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        // tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: "black",
           height: 60
@@ -61,7 +61,6 @@ const TabNavigation = () => {
         options={{
           headerShown: false,
         }}
-
       />
 
       <Tab.Screen

@@ -21,12 +21,10 @@ import { fetchPostsOnSnapshot } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setReceiver } from "../reducers/receiver/receiverSlice";
-import { setConsolidation } from "../reducers/consolidation/consolidationSlice";
+import { setDivide } from "../reducers/divide/divideSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { useFocusEffect } from "@react-navigation/native";
-
-
 
 const WarehouseScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -39,12 +37,11 @@ const WarehouseScreen = ({ navigation }) => {
   const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
-
-
-
+  const [partidaItem, setPartidaItem] = React.useState("");
+  const [shipmentNumberSelected, setShipmentNumberSelected] = React.useState("");
 
   //modal breakpoints
-  const snapPoints = React.useMemo(() => ["49%", "65%"], []);
+  const snapPoints = React.useMemo(() => ["65%"], []);
 
   //modal state with ref
   const bottomSheetRef = React.useRef(null);
@@ -70,15 +67,14 @@ const WarehouseScreen = ({ navigation }) => {
       {
         id: 1,
         titulo: "Consolidar",
-        descripcion: "Unir diferentes elementos en uno solo",
+        descripcion: "Unir diferentes guias en una sola",
         imagen: require("../assets/consolidar.png"),
-        // navigationPath: "Consolidate",
         navigationPath: "Consolidate",
       },
       {
         id: 2,
         titulo: "Dividir",
-        descripcion: "Separar un elemento en varias partes",
+        descripcion: "Dividir contenido en varias guias",
         imagen: require("../assets/divide.png"),
         navigationPath: "Divide",
       },
@@ -92,8 +88,8 @@ const WarehouseScreen = ({ navigation }) => {
       {
         id: 4,
         titulo: "Ver guía",
-        descripcion: "Consultar una guía o manual.",
-        imagen: require("../assets/consolidar.png"),
+        descripcion: "Ver detalles de la guia.",
+        imagen: require("../assets/details.png"),
         navigationPath: "ViewDetails",
       },
     ],
@@ -119,15 +115,39 @@ const WarehouseScreen = ({ navigation }) => {
     }, [])
   );
 
-
-
-
   //MODAL CONTENT
   const renderItem = useCallback(
     ({ item }) => (
       <TouchableOpacity
         style={styles.itemContainer}
         onPress={async () => {
+
+          const closeAndAlert = async (message) => {
+            await handleClosePress();
+            Alert.alert(message);
+          };
+
+          if (item.titulo === "Consolidar" && posts.length === 1) {
+            await closeAndAlert("No se puede consolidar solo 1 ítem");
+            return;
+          }
+          if (item.titulo === "Consolidar" && partidaItem == "7777777") {
+            await closeAndAlert("No se pueden consolidar celulares");
+            return;
+          }
+          if (item.titulo === "Consolidar" && partidaItem == "88888888") {
+            await closeAndAlert("No se pueden consolidar computadores");
+            return;
+          }
+
+          if (item.titulo === "Dividir") {
+            dispatch(
+              setDivide({
+                shipmentNumber: shipmentNumberSelected,
+              })
+            );
+          }
+
           await handleClosePress();
           navigation.navigate(item.navigationPath, { uid: uid });
         }}
@@ -139,11 +159,8 @@ const WarehouseScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
     ),
-    []
+    [posts, partidaItem]
   );
-
-  
-
 
   //GET POSTS
   React.useEffect(() => {
@@ -175,9 +192,6 @@ const WarehouseScreen = ({ navigation }) => {
     setIsRefreshing(true);
   };
 
-
-
-
   //GET MORE POSTS
   const getMorePosts = () => {
     if (!lastPost && startAfter) {
@@ -205,23 +219,17 @@ const WarehouseScreen = ({ navigation }) => {
     }
   };
 
-
-
-
-
-
   // SCREEN CONTENT
   function renderPosts({ item }) {
     const createdAtDate = new Date(item.createdAt.seconds * 1000);
     const formattedDate = createdAtDate.toLocaleString("es-ES");
     const descriptionInUpperCase = item.description.toUpperCase();
 
-
     const handlePress = () => {
       dispatch(setReceiver({ shipmentNumber: item.shipmentNumber }));
       snapeToIndex(0);
-      dispatch(setConsolidation({ postsLenght: posts.length }));
-      // dispatch(setConsolidation({ postsLenght: posts.length }));
+      setPartidaItem(item.partidaArancelariaImpuestos);
+      setShipmentNumberSelected(item.shipmentNumber);
     };
 
     return (
@@ -254,14 +262,11 @@ const WarehouseScreen = ({ navigation }) => {
     ) : null;
   };
 
-
-
   // const checkConsolidation = () => {
-    
+
   //   Alert.alert("funciona")
   //   console.log("intento desde la funcion ---->", postsLenght)
   // }
-
 
   return (
     <>

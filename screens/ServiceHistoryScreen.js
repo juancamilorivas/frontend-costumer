@@ -18,6 +18,7 @@ import { faBolt } from "@fortawesome/free-solid-svg-icons/faBolt";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { setImportServiceHistory } from "../reducers/importServiceHistory/importServiceHistorySlice";
+import { setConsolidatedServiceHistory } from "../reducers/consolidatedServiceHistory/consolidatedServiceHistorySlice";
 
 
 const ServiceHistoryScreen = ({ navigation }) => {
@@ -112,12 +113,14 @@ const ServiceHistoryScreen = ({ navigation }) => {
   // Function to determine the background color based on currentState
   const getCurrentStateStyle = (currentState) => {
     switch (currentState) {
+      case "Pagado":
+        return { backgroundColor: "#F9B857" };
       case "En proceso":
         return { backgroundColor: "#25BD50" };
       case "Asignado":
         return { backgroundColor: "#18A0FB" };
       case "Finalizado":
-        return { backgroundColor: "gray" };
+        return { backgroundColor: "#000000" };
       case "Cancelado":
         return { backgroundColor: "#FF4949" };
       case "Reajuste":
@@ -134,10 +137,11 @@ const ServiceHistoryScreen = ({ navigation }) => {
 
     
     const navigateToDetailScreen = () => {
-      dispatch(setImportServiceHistory({ docId: item.postId }));
+     
 
       switch (item.serviceName) {
         case "Importacion":
+          dispatch(setImportServiceHistory({ docId: item.postId }));
           navigation.navigate("ImportServiceDetails", {
             docId: item.postId,
           });
@@ -147,7 +151,8 @@ const ServiceHistoryScreen = ({ navigation }) => {
             docId: item.postId,
           });
           break;
-        case "Importacion consolidada":
+        case "Consolidacion":
+          dispatch(setConsolidatedServiceHistory({ docId: item.postId }));
           navigation.navigate("ImportConsolidatedServiceDetails", {
             docId: item.postId,
           });

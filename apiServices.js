@@ -388,7 +388,7 @@ export async function savePayment(
 ) {
   const data = {
     createdAt: new Date(),
-    currentState: "En proceso",
+    currentState: "Pagado",
     paymentState: paymentState,
     serviceName: "Importacion",
     totalPaid: totalValue,
@@ -410,7 +410,8 @@ export async function savePayment(
     locationName: locationName,
     destinationAddress: destinationAddress,
     cellPhone: cellPhone,
-    partidaArancelaria: partidaArancelaria
+    partidaArancelaria: partidaArancelaria,
+    show: true,
   };
   console.log(data, uid);
 
@@ -472,7 +473,6 @@ export async function getServiceData(docId) {
   }
 }
 
-
 export async function fetchShipmentDetail(shipmentNumber) {
   try {
     const shipmentRef = collection(db, "shipments");
@@ -481,7 +481,9 @@ export async function fetchShipmentDetail(shipmentNumber) {
 
     if (querySnapshot.empty) {
       // Si no se encontraron documentos
-      throw new Error(`No shipment detail found for uidClient: ${shipmentNumber}`);
+      throw new Error(
+        `No shipment detail found for uidClient: ${shipmentNumber}`
+      );
     }
 
     // Obtenemos el primer documento encontrado
@@ -494,10 +496,6 @@ export async function fetchShipmentDetail(shipmentNumber) {
     throw new Error(`Unable to fetch shipment detail: ${error.message}`);
   }
 }
-
-
-
-
 
 export const fetchPartidaArancelariaComputadores = async () => {
   const partidasArancelariasRef = collection(db, "partidas-arancelarias");
@@ -522,8 +520,6 @@ export const fetchPartidaArancelariaComputadores = async () => {
   }
 };
 
-
-
 export const fetchPartidaArancelariaCelulares = async () => {
   const partidasArancelariasRef = collection(db, "partidas-arancelarias");
   const q = query(
@@ -546,3 +542,128 @@ export const fetchPartidaArancelariaCelulares = async () => {
     throw new Error("Error fetching document");
   }
 };
+
+export async function savePaymentConsolidated(
+  totalValue,
+  uid,
+  newShipmentNumber,
+  paymentState,
+  shipmentNumbers
+) {
+  const data = {
+    totalPaid: totalValue,
+    uidClient: uid,
+    shipmentNumber: newShipmentNumber,
+    paymentState: paymentState,
+    shipmentNumbers: shipmentNumbers,
+    createdAt: new Date(),
+    currentState: "Pagado",
+    serviceName: "Consolidacion",
+    show: true,
+  };
+  // console.log(data, uid);
+
+  try {
+    await addDoc(collection(db, `services`), data);
+  } catch (e) {
+    console.error("Error al agregar el documento: ", e);
+  }
+}
+
+export async function changeShipmentdateConsolidated(
+  shipment,
+  newShipmentNumber
+) {
+  // Query to find the document with the specific shipmentNumber
+  const shipmentsRef = collection(db, "shipments");
+  const q = query(shipmentsRef, where("shipmentNumber", "==", shipment));
+  const querySnapshot = await getDocs(q);
+
+  // If a document with the specified shipmentNumber is found
+  if (!querySnapshot.empty) {
+    querySnapshot.forEach(async (document) => {
+      const docRef = doc(db, "shipments", document.id);
+
+      // Retrieve the current data of the document
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const currentData = docSnap.data();
+
+        // Update the fields "show" and "consolidatedAt"
+        if (currentData.show === true) {
+          await updateDoc(docRef, {
+            show: false,
+            consolidatedAt: newShipmentNumber,
+          });
+          // console.log(`Document ${document.id} updated successfully.`);
+        } else {
+          console.log(`The field "show" is already false or not found.`);
+          await updateDoc(docRef, {
+            consolidatedAt: newShipmentNumber,
+          });
+          console.log(
+            `Document ${document.id} updated successfully with consolidatedAt.`
+          );
+        }
+      } else {
+        console.log("No such document!");
+      }
+    });
+  } else {
+    console.log("No document found with the specified shipmentNumber.");
+  }
+}
+
+
+//FETCH PARTIDA ARANCELARIA GENERAL
+export async function fetchPartidaArancelariaGeneral() {
+  // Referencia al documento específico
+  const partidaDocRef = doc(db, "partidas-arancelarias", "ttL9uCwJxURuyoRd1pcZ");
+
+  try {
+    // Obtiene el documento
+    const partidaDoc = await getDoc(partidaDocRef);
+
+    // Verifica si el documento existe
+    if (partidaDoc.exists()) {
+      // Obtiene el campo 'trm' del documento
+      const trmValue = partidaDoc.data().partidaArancelaria;
+      return trmValue;
+    } else {
+      console.log("El documento no existe.");
+    }
+  } catch (error) {
+    console.error("Error al obtener el documento:", error);
+  }
+}
+
+
+
+
+export async function savePaymentDivided(
+  totalValue,
+  uid,
+  shipmentNumber,
+  paymentState,
+  divideNumber,
+  divideInstructions,
+) {
+  const data = {
+    totalPaid: totalValue,
+    uidClient: uid,
+    shipmentNumber: shipmentNumber,
+    paymentState: paymentState,
+    divideIn: divideNumber,
+    instructions: divideInstructions,
+    createdAt: new Date(),
+    currentState: "Pagado",
+    serviceName: "Division",
+    show: true,
+  };
+
+  try {
+    await addDoc(collection(db, `services`), data);
+  } catch (e) {
+    console.error("Error al agregar el documento: ", e);
+  }
+}

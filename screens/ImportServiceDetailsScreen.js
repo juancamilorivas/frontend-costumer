@@ -96,7 +96,7 @@ const ImportServiceDetailsScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.fromToContainer}>
-              <Text style={styles.titleFromTo}>De</Text>
+              <Text style={styles.titleFromTo}>Remitente</Text>
               <Text>Juan Camilo Rivas Molina</Text>
             </View>
 
@@ -124,7 +124,7 @@ const ImportServiceDetailsScreen = ({ navigation }) => {
 
             <TouchableOpacity
               style={styles.fobContainer}
-              onPress={() => navigation.navigate("ViewDetailsHistory")}
+              // onPress={() => navigation.navigate("ViewDetailsHistory")}
               onPress={() => navigation.navigate("ViewDetailsHistory", { shipmentNumber: serviceData.shipmentNumber })}
 
             >

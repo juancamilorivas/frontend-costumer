@@ -1,3 +1,5 @@
+
+
 import { StripeProvider, usePaymentSheet } from "@stripe/stripe-react-native";
 import React, { useEffect, useState } from "react";
 import {
@@ -28,12 +30,6 @@ import {
 } from "@env";
 // import { useFocusEffect } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
-import { runTransaction, doc } from "firebase/firestore";
-
-import { db } from "../firebase";
-
-const sfDocRef = doc(db, "/shipmentNumberCount", "config");
-
 
 const PaymentResumeScreen = () => {
   const [ready, setReady] = useState(false);
@@ -80,8 +76,6 @@ const PaymentResumeScreen = () => {
     locationName,
     destinationAddress,
     cellPhone,
-    consolidated,
-    shipmentNumbers,
   } = useSelector((state) => state.receiver);
 
   // INTIALIZATION OF PAYMENTSHEET
@@ -336,6 +330,23 @@ const PaymentResumeScreen = () => {
     }
   }
 
+  // //ABRIR STRIPE SHEET PARA HACER EL PAGO
+  // async function payWithOutCreditCard() {
+  //   Alert.alert(
+  //     "Confirmar",
+  //     "¿Desea iniciar la importacion de este item a Colombia",
+  //     [
+  //       {
+  //         text: "Cancel",
+  //         style: "cancel",
+  //       },
+  //       {
+  //         text: "Si",
+  //       },
+  //     ],
+  //     { cancelable: false }
+  //   );
+  // }
 
   //ABRIR STRIPE SHEET PARA HACER EL PAGO
   async function payWithOutCreditCard() {
@@ -351,132 +362,6 @@ const PaymentResumeScreen = () => {
           text: "Si",
           onPress: async () => {
             setIsLoading(true);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (consolidated === true) {
-
-  const MAX_RETRIES = 3;
-   let retries = 0;
-  //CREATE SHIPMENT NUMBER
-  const incrementNumber = async () => {
-    setIsLoading(true);
-
-    // funcion creadora
-    const transactionFunction = async (transaction) => {
-      const sfDoc = await transaction.get(sfDocRef);
-      if (!sfDoc.exists()) {
-        setIsLoading(false);
-        throw new Error("Document does not exist!");
-      }
-      const isUpdating = sfDoc.data().isUpdating;
-      if (!isUpdating) {
-        transaction.update(sfDocRef, { isUpdating: true });
-        const currentNumber = parseInt(sfDoc.data().guiaActual, 10);
-        const newNumber = currentNumber + 1;
-        transaction.update(sfDocRef, { guiaActual: newNumber.toString() });
-        transaction.update(sfDocRef, { isUpdating: false });
-        return newNumber;
-      } else {
-        setIsLoading(false);
-        return null;
-      }
-    };
-
-
-    try {
-      const newNumber = await runTransaction(db, async (transaction) => {
-        return await transactionFunction(transaction);
-      });
-
-      if (newNumber !== null) {
-        let locker = newNumber.toString();
-        return locker; // Devuelve el valor de locker
-
-      }
-    } catch {
-      if (error.code === "failed-precondition" && retries < MAX_RETRIES) {
-        retries++;
-        setIsLoading(false);
-        await incrementNumber(); // Reintentar la transacción
-      } else {
-        setIsLoading(false);
-        await incrementNumber(); // Reintentar la transacción
-      }
-    }
-  };
-
-  const locker = await incrementNumber();
-
-  console.log(locker)
-
-  await changeShipmentStatus(shipmentNumber);
-  let paymentState = "Pendiente";
-   savePayment(
-    totalValue,
-    uid,
-    declaredValue,
-    airCostValue,
-    envioNacionaldollars,
-    trm,
-    iva,
-    arancel,
-    locker,
-    shipmentNumber,
-    name,
-    surname,
-    declaredValueDian,
-    destinyDaneCode,
-    recogeEnBodega,
-    locationName,
-    destinationAddress,
-    cellPhone,
-    paymentState,
-    partidaArancelaria,
-    consolidated,
-    shipmentNumbers
-  );
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             await changeShipmentStatus(shipmentNumber);
             let paymentState = "Pendiente";
              savePayment(
@@ -499,9 +384,7 @@ if (consolidated === true) {
               destinationAddress,
               cellPhone,
               paymentState,
-              partidaArancelaria,
-              consolidated,
-              shipmentNumbers,
+              partidaArancelaria
             );
             setIsLoading(false);
             // navigation.navigate("Bodega", { screen: "Warehouse" });
@@ -824,3 +707,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 });
+
+
+
+

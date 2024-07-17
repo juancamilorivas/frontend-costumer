@@ -2,14 +2,14 @@ import React from "react";
 import { TouchableOpacity, Alert } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // import ConsolidateScreen from "../screens/ConsolidateScreen";
-import PaymentResumeConsolidationScreen from "../screens/PaymentResumeConsolidationScreen";
+import PaymentResumeDivideScreen from "../screens/PaymentResumeDivideScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 // import { faX } from "@fortawesome/free-solid-svg-icons/faX";
 // import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { useDispatch } from "react-redux";
-import { unsetConsolidation } from "../reducers/consolidation/consolidationSlice";
+import { unsetDivide } from "../reducers/divide/divideSlice";
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +29,7 @@ const StartTransportNavigation = ({ navigation }) => {
           text: "OK",
           onPress: () => {
             // Ejecutar las funciones después de presionar OK en el alert
-            dispatch(unsetConsolidation());
+            dispatch(unsetDivide());
             navigation.navigate("Bodega", { screen: "Warehouse" });
           },
         },
@@ -42,8 +42,8 @@ const StartTransportNavigation = ({ navigation }) => {
     <Stack.Navigator>
 
       <Stack.Screen
-        name="PaymentResumeConsolidation"
-        component={PaymentResumeConsolidationScreen}
+        name="PaymentResumeDivide"
+        component={PaymentResumeDivideScreen}
         options={{
           title: "Resumen del servicio",
           headerShown: true,

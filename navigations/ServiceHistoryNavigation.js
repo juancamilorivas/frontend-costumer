@@ -8,19 +8,32 @@ import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQues
 import ImportServiceDetailsScreen from "../screens/ImportServiceDetailsScreen";
 import DivisionServiceDetailsScreen from "../screens/DivisionServiceDetailsScreen";
 import ImportConsolidatedServiceDetailsScreen from "../screens/ImportConsolidatedServiceDetailsScreen";
-import ToDataScreen from "../screens/ToDataScreen";
 import ImportReceiverHistoryScreen from "../screens/ImportReceiverHistoryScreen";
 import ViewDetailsHistoryScreen from "../screens/ViewDetailsHistoryScreen"
+import ViewDetailsConsolidatedScreen from "../screens/ViewDetailsConsolidatedScreen"
 const Stack = createNativeStackNavigator();
 
 const ServiceHistoryNavigation = ({ navigation }) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="ServiceHistoryy"
+        name="ServiceHistory"
         component={ServiceHistoryScreen}
-        options={{ headerShown: false }}
+        options={{
+          title: "Historial de servicios",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+    
+        }}
       />
+
+
       <Stack.Screen
         name="ImportServiceDetails"
         component={ImportServiceDetailsScreen}
@@ -37,7 +50,7 @@ const ServiceHistoryNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("ServiceHistoryy");
+                navigation.navigate("ServiceHistory");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -71,7 +84,7 @@ const ServiceHistoryNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("ServiceHistoryy");
+                navigation.navigate("ServiceHistory");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -105,7 +118,7 @@ const ServiceHistoryNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("ServiceHistoryy");
+                navigation.navigate("ServiceHistory");
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -160,10 +173,9 @@ const ServiceHistoryNavigation = ({ navigation }) => {
 
 
 
-<Stack.Screen
+        <Stack.Screen
         name="ViewDetailsHistory"
         component={ViewDetailsHistoryScreen}
-        // options={{ headerShown: false }}
         options={{
           title: "Detalle del envio",
           headerShown: true,
@@ -177,7 +189,7 @@ const ServiceHistoryNavigation = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('ImportServiceDetails');
+                navigation.navigate('ServiceHistory');
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -194,6 +206,55 @@ const ServiceHistoryNavigation = ({ navigation }) => {
           ),
         }}
       />
+
+
+
+
+
+
+
+
+
+
+      <Stack.Screen
+        name="ViewDetailsConsolidated"
+        component={ViewDetailsConsolidatedScreen}
+        options={{
+          title: "Detalle del envio",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('ImportConsolidatedServiceDetails');
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+
+
+
+
+
     </Stack.Navigator>
   );
 };
