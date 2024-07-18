@@ -81,7 +81,7 @@ const PaymentResumeScreen = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customer: userDataa.customerId,
+          customer: userDataa.stripeCustomerId,
           amount: 500,
         }),
       }

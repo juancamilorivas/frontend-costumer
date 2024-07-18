@@ -36,12 +36,12 @@ const WarehouseScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const [uid, setUid] = React.useState(null);
   const [partidaItem, setPartidaItem] = React.useState("");
   const [shipmentNumberSelected, setShipmentNumberSelected] = React.useState("");
+  const [locker, setLocker] = React.useState("");
 
   //modal breakpoints
-  const snapPoints = React.useMemo(() => ["65%"], []);
+  const snapPoints = React.useMemo(() => ["72%"], []);
 
   //modal state with ref
   const bottomSheetRef = React.useRef(null);
@@ -66,31 +66,31 @@ const WarehouseScreen = ({ navigation }) => {
     () => [
       {
         id: 1,
+        titulo: "Ver guía",
+        descripcion: "Ver detalles de la guia.",
+        imagen: require("../assets/details.png"),
+        navigationPath: "ViewDetails",
+      },
+      {
+        id: 2,
         titulo: "Consolidar",
         descripcion: "Unir diferentes guias en una sola",
         imagen: require("../assets/consolidar.png"),
         navigationPath: "Consolidate",
       },
       {
-        id: 2,
+        id: 3,
         titulo: "Dividir",
         descripcion: "Dividir contenido en varias guias",
         imagen: require("../assets/divide.png"),
         navigationPath: "Divide",
       },
       {
-        id: 3,
+        id: 4,
         titulo: "Pagar",
         descripcion: "Pagar importacion",
         imagen: require("../assets/payment.png"),
         navigationPath: "StartTransport",
-      },
-      {
-        id: 4,
-        titulo: "Ver guía",
-        descripcion: "Ver detalles de la guia.",
-        imagen: require("../assets/details.png"),
-        navigationPath: "ViewDetails",
       },
     ],
     []
@@ -101,9 +101,10 @@ const WarehouseScreen = ({ navigation }) => {
     React.useCallback(() => {
       const getMyStringValue = async () => {
         try {
-          const value = await AsyncStorage.getItem("key");
-          if (value) {
-            setUid(value);
+          const jsonData = await AsyncStorage.getItem("userData");
+          if ( jsonData) {
+            const userData = JSON.parse(jsonData);
+            setLocker(userData.locker);
           } else {
             navigation.navigate("LoginCreate");
           }
@@ -149,7 +150,7 @@ const WarehouseScreen = ({ navigation }) => {
           }
 
           await handleClosePress();
-          navigation.navigate(item.navigationPath, { uid: uid });
+          navigation.navigate(item.navigationPath);
         }}
       >
         <Image source={item.imagen} style={styles.itemImage} />
@@ -181,12 +182,12 @@ const WarehouseScreen = ({ navigation }) => {
         (error) => {
           unsubscribe();
         },
-        uid
+        locker
       );
     } catch (error) {
       console.error(error);
     }
-  }, [isRefreshing, uid]);
+  }, [isRefreshing, locker]);
 
   const onRefresh = () => {
     setIsRefreshing(true);
@@ -212,7 +213,7 @@ const WarehouseScreen = ({ navigation }) => {
           console.error("Error fetching more posts:", error);
           setIsLoading(false);
         },
-        uid
+        locker
       );
     } else {
       setIsLoading(false);
@@ -243,7 +244,7 @@ const WarehouseScreen = ({ navigation }) => {
               {formattedDate}
             </ListItem.Subtitle>
             <View style={styles.descriptionAndWeight}>
-              <Text style={styles.descriptionText}>
+              <Text style={styles.descriptionText} numberOfLines={1} ellipsizeMode="tail">
                 {descriptionInUpperCase}
               </Text>
               <Text style={styles.weightText}>{item.weight} LB</Text>
@@ -399,6 +400,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontWeight: "bold",
     fontSize: 13,
+    width: "70%"
   },
   weightText: {
     fontWeight: "bold",

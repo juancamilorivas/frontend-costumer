@@ -143,17 +143,18 @@ const CreateScreen = ({ navigation }) => {
         const userData = {
           email: userCredential.user.email,
           createdAt: new Date(),
-          casillero: "box" + locker,
+          locker: "box" + locker,
           name: nombre,
           surname: apellidos,
           country: "Colombia",
           nit: cedula,
           cellPhone: celular,
-          customerId: customer.id,
+          stripeCustomerId: customer.id,
           destinationAddress: "",
           destinyDaneCode: "",
           locationName: "",
           prefix: "+057",
+          nitType: "CC",
         };
         const uid = userCredential.user.uid;
         storeData(uid, userData);
@@ -177,27 +178,6 @@ const CreateScreen = ({ navigation }) => {
 
   //CREATE ACCOUNT
   const handleCreateAccount = async (locker) => {
-    // if ((nombre, apellidos, cedula, celular == "")) {
-    //   setIsLoading(false);
-    //   Alert.alert("Todos los campos son obligatorios");
-    //   return;
-    // }
-    // if (!validator.isEmail(email)) {
-    //   setIsLoading(false);
-    //   Alert.alert("El correo electrónico proposionado no es valido.");
-    //   return;
-    // }
-    // if (password == "") {
-    //   setIsLoading(false);
-    //   Alert.alert("Escribe una contrasena");
-    //   return;
-    // }
-    // if (email !== lowerCaseEmail) {
-    //   setIsLoading(false);
-    //   Alert.alert("El correo electrónico contiene mayusculas");
-    //   return;
-    // }
-
     try {
       const userCredential = await createUserWithEmailAndPassword(
         initialAuth,

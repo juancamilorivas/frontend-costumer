@@ -16,7 +16,6 @@ const ViewDetailsScreen = ({route}) => {
     weight: "",
     width: "",
     trackingNumber: "",
-    declaredValueDian: "",
     localTransporterName: "",
     shipmentNumberTransportadora: "",
   });
@@ -47,7 +46,6 @@ const ViewDetailsScreen = ({route}) => {
             weight: shipmentDetails.weight,
             width: shipmentDetails.width,
             trackingNumber: shipmentDetails.trackingNumber,
-            declaredValueDian: shipmentDetails.declaredValueDian,
             localTransporterName: shipmentDetails.localTransporterName,
             shipmentNumberTransportadora:
               shipmentDetails.shipmentNumberTransportadora,
@@ -109,10 +107,6 @@ const ViewDetailsScreen = ({route}) => {
             <Text style={styles.textSection}>{form.lenghtValue}</Text>
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.titleSection}>Valor declarado</Text>
-            <Text style={styles.textSection}>{form.declaredValueDian}</Text>
-          </View>
           <View style={styles.section}>
             <Text style={styles.titleSection}>Transportadora en Colombia</Text>
             <Text style={styles.textSection}>{form.localTransporterName}</Text>

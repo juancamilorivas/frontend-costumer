@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchPersonalData } from "../apiServices";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { Dropdown } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -80,9 +80,10 @@ const PersonalDataScreen = () => {
         console.error(error);
       }
     };
-
     fetchData();
   }, []);
+
+  
 
   // LLAMADO INCIAL PARA TRAER LA DATA DEL CLIENTE, SE CARGA AL ABRIR LA SCREEN
   React.useEffect(() => {
@@ -103,7 +104,7 @@ const PersonalDataScreen = () => {
               ciudad: userData.locationName || "",
               email: userData.email || "",
               destinyDaneCode: userData.destinyDaneCode || "",
-              casillero: userData.casillero.toUpperCase() || "",
+              casillero: userData.locker.toUpperCase() || "",
             });
           }
         }
@@ -145,18 +146,14 @@ const PersonalDataScreen = () => {
     const userDataForm = {
       name: nombre,
       surname: apellido,
-      nit: cedula,
       cellPhone: celular,
-      prefix: "+57",
-      nitType: "CC",
-      email: email,
       locationName: ciudad,
       destinyDaneCode: destinyDaneCode,
       destinationAddress: direccion,
     };
     try {
       const userDocRef = doc(db, "users", uid);
-      await setDoc(userDocRef, userDataForm);
+      await updateDoc(userDocRef, userDataForm);
     } catch (error) {
       console.error("Error saving user data:", error);
     } finally {

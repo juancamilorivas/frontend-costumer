@@ -10,10 +10,13 @@ import {
   RefreshControl,
 } from "react-native";
 import React from "react";
-
 import { ListItem } from "@rneui/themed";
-import { fetchMorePostsOnSnapshot } from "../apiServices";
-import { fetchPostsOnSnapshot, fetchPartidaArancelariaComputadores, fetchPartidaArancelariaCelulares } from "../apiServices";
+import {
+  fetchPostsOnSnapshot,
+  fetchPartidaArancelariaComputadores,
+  fetchPartidaArancelariaCelulares,
+  fetchMorePostsOnSnapshot,
+} from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -21,7 +24,6 @@ import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { useFocusEffect } from "@react-navigation/native";
 import { CheckBox } from "@rneui/themed";
 import { setConsolidation } from "../reducers/consolidation/consolidationSlice";
-
 
 const ConsolidateScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -33,201 +35,131 @@ const ConsolidateScreen = ({ navigation }) => {
   const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [uid, setUid] = React.useState(null);
+  const [locker, setLocker] = React.useState("");
   const [selectedItems, setSelectedItems] = React.useState([]);
 
-
-
   React.useEffect(() => {
-    dispatch(setConsolidation({shipmentNumbers: selectedItems}));
+    dispatch(setConsolidation({ shipmentNumbers: selectedItems }));
   }, [selectedItems, dispatch]);
 
-
-
-
-
   // // Effect to reset data when screen gets focus
-    React.useEffect(() => {
-      const getMyStringValue = async () => {
-        try {
-          const value = await AsyncStorage.getItem("key");
-          if (value) {
-            setUid(value);
-          } else {
-            navigation.navigate("LoginCreate");
-          }
-        } catch (e) {
-          console.log("Something went wrong identifying user storage", e);
+  React.useEffect(() => {
+    const getMyStringValue = async () => {
+      try {
+        const value = await AsyncStorage.getItem("key");
+        setUid(value);
+        const jsonData = await AsyncStorage.getItem("userData");
+        if (jsonData !== null) {
+          const userData = JSON.parse(jsonData);
+          setLocker(userData.locker);
+        } else {
+          console.log("No se encontró ningún userData en el storage");
         }
-      };
-      getMyStringValue();
-    }, [])
+      } catch (e) {
+        console.log("Something went wrong identifying user storage", e);
+      }
+    };
+    getMyStringValue();
+  }, []);
 
-
-    // //aqui
-    // React.useEffect(() => {
-    //   const getMyPartida = async () => {
-    //     try {
-    //       const valueCompu = await fetchPartidaArancelariaComputadores();
-    //       const valueCelu = await fetchPartidaArancelariaCelulares();
-    //       const partidaArancelariaCompu = valueCompu.partidaArancelaria
-    //       const partidaArancelariaCelu = valueCelu.partidaArancelaria
-    //       setPartidaArancelariaComputadores(partidaArancelariaCompu)
-    //       setPartidaArancelariaCelulares(partidaArancelariaCelu)
-    //     } catch (e) {
-    //       console.log("Something went wrong identifying user storage", e);
-    //     }
-    //   };
-    //   getMyPartida();
-    // }, [])
-
-
-  // //GET POSTS
   // React.useEffect(() => {
-  //   try {
-  //     const unsubscribe = fetchPostsOnSnapshot(
-  //       postsPerLoad,
-  //       (data) => {
-  //         setIsLoading(false);
-  //         setIsLoading2(false);
-  //         if (data.posts.length == 0) {
-  //           setLastPost(true);
-  //         }
-  //         setPosts([...data.posts]);
-  //         setStartAfter(data.lastVisible);
-  //         setIsRefreshing(false); // Importante para detener el RefreshControl
-  //         setLastPost(false);
-  //       },
-  //       (error) => {
-  //         unsubscribe();
-  //       },
-  //       uid
-  //     );
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, [isRefreshing, uid]);
-
-  // const onRefresh = () => {
-  //   setIsRefreshing(true);
-  // };
-
-  
-  // //GET MORE POSTS
-  // const getMorePosts = () => {
-  //   if (!lastPost && startAfter) {
-  //     setIsLoading(true);
-  //     fetchMorePostsOnSnapshot(
-  //       postsPerLoad,
-  //       startAfter,
-  //       (dataa) => {
-  //         setIsLoading(false);
-  //         if (dataa.posts.length === 0) {
-  //           setLastPost(true);
-  //           return;
-  //         }
-  //         setPosts([...posts, ...dataa.posts]);
-  //         setStartAfter(dataa.lastVisible);
-  //       },
-  //       (error) => {
-  //         console.error("Error fetching more posts:", error);
-  //         setIsLoading(false);
-  //       },
-  //       uid
-  //     );
-  //   } else {
-  //     setIsLoading(false);
-  //   }
-  // };
-
+  //   const getMyStringValue = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem("key");
+  //       if (value) {
+  //         setUid(value);
+  //       } else {
+  //         navigation.navigate("LoginCreate");
+  //       }
+  //     } catch (e) {
+  //       console.log("Something went wrong identifying user storage", e);
+  //     }
+  //   };
+  //   getMyStringValue();
+  // }, []);
 
   //GET POSTS
-React.useEffect(() => {
-  const fetchPosts = async () => {
+  React.useEffect(() => {
+    const fetchPosts = async () => {
+      const valueCompu = await fetchPartidaArancelariaComputadores();
+      const valueCelu = await fetchPartidaArancelariaCelulares();
+      const partidaArancelariaCompu = valueCompu.partidaArancelaria;
+      const partidaArancelariaCelu = valueCelu.partidaArancelaria;
+      try {
+        const unsubscribe = fetchPostsOnSnapshot(
+          postsPerLoad,
+          (data) => {
+            setIsLoading(false);
+            setIsLoading2(false);
+            if (data.posts.length == 0) {
+              setLastPost(true);
+            }
+            const filteredPosts = data.posts.filter((post) => {
+              return (
+                post.partidaArancelariaImpuestos !== partidaArancelariaCompu &&
+                post.partidaArancelariaImpuestos !== partidaArancelariaCelu
+              );
+            });
+            setPosts(filteredPosts);
+            setStartAfter(data.lastVisible);
+            setIsRefreshing(false); // Importante para detener el RefreshControl
+            setLastPost(false);
+          },
+          (error) => {
+            unsubscribe();
+          },
+          locker
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (locker) {
+      fetchPosts();
+    }
+  }, [isRefreshing, locker]);
+
+  const onRefresh = () => {
+    setIsRefreshing(true);
+  };
+
+  //GET MORE POSTS
+  const getMorePosts = async () => {
     const valueCompu = await fetchPartidaArancelariaComputadores();
     const valueCelu = await fetchPartidaArancelariaCelulares();
-    const partidaArancelariaCompu = valueCompu.partidaArancelaria
-    const partidaArancelariaCelu = valueCelu.partidaArancelaria
-    try {
-      const unsubscribe = fetchPostsOnSnapshot(
+    const partidaArancelariaCompu = valueCompu.partidaArancelaria;
+    const partidaArancelariaCelu = valueCelu.partidaArancelaria;
+    if (!lastPost && startAfter) {
+      setIsLoading(true);
+      fetchMorePostsOnSnapshot(
         postsPerLoad,
-        (data) => {
+        startAfter,
+        (dataa) => {
           setIsLoading(false);
-          setIsLoading2(false);
-          if (data.posts.length == 0) {
+          if (dataa.posts.length === 0) {
             setLastPost(true);
+            return;
           }
-          const filteredPosts = data.posts.filter(post => {
+          const filteredPosts = dataa.posts.filter((post) => {
             return (
               post.partidaArancelariaImpuestos !== partidaArancelariaCompu &&
               post.partidaArancelariaImpuestos !== partidaArancelariaCelu
             );
           });
-          setPosts(filteredPosts);
-          setStartAfter(data.lastVisible);
-          setIsRefreshing(false); // Importante para detener el RefreshControl
-          setLastPost(false);
+          setPosts([...posts, ...filteredPosts]);
+          setStartAfter(dataa.lastVisible);
         },
         (error) => {
-          unsubscribe();
+          console.error("Error fetching more posts:", error);
+          setIsLoading(false);
         },
-        uid
+        locker
       );
-    } catch (error) {
-      console.error(error);
+    } else {
+      setIsLoading(false);
     }
   };
-
-  if (uid) {
-    fetchPosts();
-  }
-}, [isRefreshing, uid]);
-
-const onRefresh = () => {
-  setIsRefreshing(true);
-};
-
-//GET MORE POSTS
-const getMorePosts = async () => {
-  const valueCompu = await fetchPartidaArancelariaComputadores();
-  const valueCelu = await fetchPartidaArancelariaCelulares();
-  const partidaArancelariaCompu = valueCompu.partidaArancelaria
-  const partidaArancelariaCelu = valueCelu.partidaArancelaria
-  if (!lastPost && startAfter) {
-    setIsLoading(true);
-    fetchMorePostsOnSnapshot(
-      postsPerLoad,
-      startAfter,
-      (dataa) => {
-        setIsLoading(false);
-        if (dataa.posts.length === 0) {
-          setLastPost(true);
-          return;
-        }
-        const filteredPosts = dataa.posts.filter(post => {
-          return (
-            post.partidaArancelariaImpuestos !== partidaArancelariaCompu &&
-            post.partidaArancelariaImpuestos !== partidaArancelariaCelu
-          );
-        });
-        setPosts([...posts, ...filteredPosts]);
-        setStartAfter(dataa.lastVisible);
-      },
-      (error) => {
-        console.error("Error fetching more posts:", error);
-        setIsLoading(false);
-      },
-      uid
-    );
-  } else {
-    setIsLoading(false);
-  }
-};
-
-
-
-
-
-
 
   const toggleSelection = (item) => {
     setSelectedItems((prevSelectedItems) => {
@@ -247,8 +179,8 @@ const getMorePosts = async () => {
     const isSelected = selectedItems.includes(item.shipmentNumber);
     return (
       <CheckBox
-      checkedIcon="dot-circle-o"
-      uncheckedIcon="circle-o"
+        checkedIcon="dot-circle-o"
+        uncheckedIcon="circle-o"
         title={
           <View style={{ flex: 1 }}>
             <ListItem key={item.postId} containerStyle={{ padding: 0 }}>
@@ -260,10 +192,10 @@ const getMorePosts = async () => {
                   {formattedDate}
                 </ListItem.Subtitle>
                 <View style={styles.descriptionAndWeight}>
-                  <Text style={styles.descriptionText}>
+                  <Text style={styles.descriptionText} numberOfLines={1} ellipsizeMode="tail">
                     {descriptionInUpperCase}
                   </Text>
-                  <Text style={styles.weightText}>{item.weight} LB</Text>
+                  <Text style={styles.weightText} >{item.weight} LB</Text>
                 </View>
               </ListItem.Content>
             </ListItem>
@@ -282,8 +214,6 @@ const getMorePosts = async () => {
       </View>
     ) : null;
   };
-
-  
 
   return (
     <>
@@ -400,6 +330,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontWeight: "bold",
     fontSize: 13,
+    width: "70%",
   },
   weightText: {
     fontWeight: "bold",

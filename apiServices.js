@@ -16,11 +16,11 @@ import {
 } from "firebase/firestore";
 
 // FETCH POSTS ON SNAPSHOT
-export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, uid) => {
+export const fetchPostsOnSnapshot = (postsPerLoad, onData, onError, locker) => {
   const q = query(
     collection(db, "shipments"),
     where("show", "==", true),
-    where("uidClient", "==", uid),
+    where("locker", "==", locker),
     orderBy("createdAt", "desc"),
     limit(postsPerLoad)
   );
@@ -49,12 +49,12 @@ export const fetchMorePostsOnSnapshot = (
   lastVisible,
   onData,
   onError,
-  uid
+  locker
 ) => {
   const q = query(
     collection(db, "shipments"),
     where("show", "==", true),
-    where("uidClient", "==", uid),
+    where("locker", "==", locker),
     orderBy("createdAt", "desc"),
     limit(postsPerLoad),
     startAfter(lastVisible) // Fetch posts after the last visible one

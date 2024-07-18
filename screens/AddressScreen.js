@@ -11,7 +11,7 @@ const AddressScreen = () => {
       const jsonData = await AsyncStorage.getItem("userData");
       if (jsonData !== null) {
         const userData = JSON.parse(jsonData);
-        setCasillero(userData.casillero.toUpperCase());
+        setCasillero(userData.locker.toUpperCase());
       } else {
         console.log("No se encontró ningún userData en el storage");
       }
@@ -27,8 +27,6 @@ const AddressScreen = () => {
 
   return (
     <View style={styles.mainContainer}>
-      <Text style={styles.title}>Direccion</Text>
-
       <View style={styles.inputAndTextContainer}>
         <Text style={styles.subTitle}>Address Line 1</Text>
         <View style={styles.dianTextContainer}>
@@ -136,11 +134,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     paddingTop: 20,
-  },
-  title: {
-    fontSize: 25,
-    fontWeight: "bold",
-    paddingVertical: 30,
   },
   subTitle: {
     fontSize: 18,

@@ -28,7 +28,7 @@ const TabNavigation = () => {
             );
           } else if (route.name === "Servicios") {
             icon = <FontAwesomeIcon icon={faBolt} size={34} color={color} />;
-          } else if (route.name === "Options") {
+          } else if (route.name === "Opciones") {
             icon = <FontAwesomeIcon icon={faBars} size={34} color={color} />;
           }
 
@@ -64,7 +64,7 @@ const TabNavigation = () => {
       />
 
       <Tab.Screen
-        name="Options"
+        name="Opciones"
         component={ProfileNavigation}
             options={{
           headerShown: false,

@@ -13,13 +13,10 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import {
   savePaymentConsolidated,
-  changeShipmentStatus,
   fetchPartidaArancelariaGeneral,
   changeShipmentdateConsolidated,
 } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
 
 import { db } from "../firebase";
 
@@ -34,7 +31,7 @@ const PaymentResumeConsolidationScreen = () => {
   const [totalValue] = useState(0.0);
   const [uid, setUid] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
-  const [partidaArancelaria, setPartidaArancelaria] = React.useState("");
+  const [lockerNumber, setLockerNumber] = React.useState("");
 
   //recuera el valor shipping number de redux
   const { shipmentNumbers } = useSelector((state) => state.consolidation);
@@ -45,6 +42,13 @@ const PaymentResumeConsolidationScreen = () => {
       try {
         const value = await AsyncStorage.getItem("key");
         setUid(value);
+        const jsonData = await AsyncStorage.getItem("userData");
+        if (jsonData !== null) {
+          const userData = JSON.parse(jsonData);
+          setLockerNumber(userData.locker);
+        } else {
+          console.log("No se encontró ningún userData en el storage");
+        }
       } catch (error) {
         console.log("Error fetching user data from AsyncStorage", error);
       }
@@ -52,6 +56,8 @@ const PaymentResumeConsolidationScreen = () => {
     fetchUserData();
   }, []);
 
+
+  
   //ALERT PARA INCIAR CONSOLIDACION
   async function payWithOutCreditCard() {
     Alert.alert(
@@ -143,7 +149,6 @@ const PaymentResumeConsolidationScreen = () => {
             //crear guia nueva con valores no asignados
             await addDoc(collection(db, "shipments"), {
               createdAt: new Date(),
-              declaredValueDian: "n/a",
               description: "n/a",
               height: "n/a",
               lenghtValue: "n/a",
@@ -152,7 +157,7 @@ const PaymentResumeConsolidationScreen = () => {
               shipmentNumber: newShipmentNumber,
               shipmentNumberTransportadora: "n/a",
               show: false,
-              uidClient: uid,
+              locker: lockerNumber,
               trackingNumber: "n/a",
               weight: "n/a",
               width: "n/a",
@@ -247,7 +252,7 @@ const PaymentResumeConsolidationScreen = () => {
             {isLoading ? (
               <ActivityIndicator size="large" color="#fff" />
             ) : (
-              <Text style={styles.textButtonStyles}>Continuar</Text>
+              <Text style={styles.textButtonStyles}>Pagar</Text>
             )}
           </TouchableOpacity>
         </View>

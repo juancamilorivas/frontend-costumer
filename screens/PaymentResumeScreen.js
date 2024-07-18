@@ -96,7 +96,7 @@ const PaymentResumeScreen = () => {
             name: userData.name,
             surname: userData.surname,
           });
-          setLocker(userData.casillero);
+          setLocker(userData.locker);
         } else {
           console.log("No se encontró ningún userData en el storage");
         }
@@ -230,7 +230,7 @@ const PaymentResumeScreen = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              customer: userDataa.customerId,
+              customer: userDataa.stripeCustomerId,
               amount: amount,
             }),
           }
@@ -273,7 +273,7 @@ const PaymentResumeScreen = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            customer: userDataa.customerId,
+            customer: userDataa.stripeCustomerId,
             amount: amount,
           }),
         }
