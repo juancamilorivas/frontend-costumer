@@ -320,7 +320,7 @@ const WarehouseScreen = ({ navigation }) => {
 
           {posts.length === 0 && (
             <View style={styles.noDataContainer}>
-              <FontAwesomeIcon icon={faWarehouse} size={54} color={"#212020"} />
+              <FontAwesomeIcon icon={faWarehouse} size={54} color={"#9e9e9e"} />
               <Text style={styles.noDataText}>
                 No hay paquetes en tu casillero
               </Text>
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   noDataText: {
     paddingTop: 10,
     fontSize: 16,
-    color: "#565555",
+    color: "#9e9e9e",
   },
   loaderContainer: {
     flex: 1,

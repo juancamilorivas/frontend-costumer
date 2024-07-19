@@ -245,7 +245,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
           )}
           {posts.length === 0 && (
             <View style={styles.noDataContainer}>
-              <FontAwesomeIcon icon={faBolt} size={54} color={"#212020"} />
+              <FontAwesomeIcon icon={faBolt} size={54} color={"#9e9e9e"} />
               <Text style={styles.noDataText}>
                 Aun no tienes servicios para mostrar
               </Text>
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
   },
   orderNumber: {
     width: "60%",
+    fontWeight: "bold",
   },
   currentText: {
     color: "#ffffff",
@@ -329,7 +330,7 @@ const styles = StyleSheet.create({
   noDataText: {
     paddingTop: 10,
     fontSize: 16,
-    color: "#565555",
+    color: "#9e9e9e",
   },
 
   loaderContainer: {
