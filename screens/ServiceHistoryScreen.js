@@ -19,7 +19,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { setImportServiceHistory } from "../reducers/importServiceHistory/importServiceHistorySlice";
 import { setConsolidatedServiceHistory } from "../reducers/consolidatedServiceHistory/consolidatedServiceHistorySlice";
-
+import { setDividedServiceHistory } from "../reducers/dividedServiceHistory/dividedServiceHistorySlice";
 
 const ServiceHistoryScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -113,12 +113,22 @@ const ServiceHistoryScreen = ({ navigation }) => {
   // Function to determine the background color based on currentState
   const getCurrentStateStyle = (currentState) => {
     switch (currentState) {
+      //primer estado que se pone cuando pagan
       case "Pagado":
         return { backgroundColor: "#F9B857" };
+      //segundo estado que se pone cuando el operador de bodega elige el servicio para hcerlo
       case "En proceso":
         return { backgroundColor: "#25BD50" };
+       //tercer estado que se asigna a una AWB
       case "Asignado":
+        return { backgroundColor: "#C56749" };
+      //cuarto estado que se pone cuando se cierra el correo
+      case "Aerolinea":
+        return { backgroundColor: "#c4c4c4" };
+      //quinto estado que llega a bodega
+      case "En bodega":
         return { backgroundColor: "#18A0FB" };
+      //sexto y ultimo cuando se envia por transportador mipaquete.com o se entrega al cliente
       case "Finalizado":
         return { backgroundColor: "#000000" };
       case "Cancelado":
@@ -135,10 +145,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
     const createdAtDate = new Date(item.createdAt.seconds * 1000);
     const formattedDate = createdAtDate.toLocaleString("es-ES");
 
-    
     const navigateToDetailScreen = () => {
-     
-
       switch (item.serviceName) {
         case "Importacion":
           dispatch(setImportServiceHistory({ docId: item.postId }));
@@ -147,6 +154,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
           });
           break;
         case "Division":
+          dispatch(setDividedServiceHistory({ docId: item.postId }));
           navigation.navigate("DivisionServiceDetails", {
             docId: item.postId,
           });

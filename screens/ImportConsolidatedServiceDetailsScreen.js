@@ -62,7 +62,7 @@ const PaymentResumeConsolidationScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
         <View style={styles.mainContainer}>
-          <Text style={styles.title}>Resumen del Servicio</Text>
+          <Text style={styles.title}>Consolidacion</Text>
 
           <View style={styles.inputAndTextContainer}>
             <Text style={styles.titleFromTo}>Fecha del pago</Text>

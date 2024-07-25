@@ -284,7 +284,14 @@ const RecipientScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    
+ <>
+      {(nameDefault === "" || surNameDefault === "") ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+      ) : (
+    <SafeAreaView style={styles.container}>
       <View>
         {/* enviar a otra persona */}
         <TouchableOpacity
@@ -394,7 +401,9 @@ const RecipientScreen = ({ navigation }) => {
       )}
     </>
       {speedDialComponent()}
-    </View>
+    </SafeAreaView>
+  )}
+ </>
   );
 };
 
@@ -525,5 +534,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000000",
   },
 });

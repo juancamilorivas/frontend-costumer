@@ -1,4 +1,4 @@
-import React, { useState }from "react";
+import React, { useState } from "react";
 import {
   Image,
   Text,
@@ -9,12 +9,9 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-
 } from "react-native";
 
-import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { setUser } from "../reducers/user/userSlice";
@@ -24,124 +21,35 @@ import { fetchPersonalData } from "../apiServices";
 const logo =
   "https://qixeul.stripocdn.email/content/guids/CABINET_a5efd8f79280f89c49f5b6e4eb48877f95c5996885e4077eadd41ecc90a9c33a/images/postman_2.png";
 
-
-
 const LoginScreen = ({ navigation }) => {
-
   //STATES
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = React.useState(false);
 
-  // const [form, setForm] = React.useState({
-  //   nombre: "",
-  //   apellido: "",
-  //   celular: "",
-  //   cedula: "",
-  //   direccion: "",
-  //   pais: "Colombia",
-  //   ciudad: "",
-  //   email: "",
-  //   destinyDaneCode: "",
-  // });
-
-
-
   //CONSTS
   const dispatch = useDispatch();
 
-
-//VERIFY EMAIL
+  //VERIFY EMAIL
   const isValidEmail = (email) => {
     const emailRegex =
       /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     return emailRegex.test(String(email).toLowerCase());
   };
 
+  //GUARDAR EN EL STORAGE
+  const storeData = async (id, userData) => {
+    try {
+      await AsyncStorage.setItem("key", id);
+      console.log("User guardado en storage", id);
 
-
-
-
-
-
-// //GUARDAR EN EL STORAGE
-// const storeData = async (id) => {
-//   try {
-//     const value = await AsyncStorage.setItem('key', id)
-//     console.log('User guardado en storage', value)
-//   } catch(e) {
-//     console.log('error al guardar', e);
-//   }
-// }
-
-
- //GUARDAR EN EL STORAGE
- const storeData = async (id, userData) => {
-  try {
-    await AsyncStorage.setItem("key", id);
-    console.log("User guardado en storage", id);
-
-    const jsonData = JSON.stringify(userData);
-    await AsyncStorage.setItem("userData", jsonData);
-    console.log("User data guardado en storage", jsonData);
-  } catch  {
-    Alert.alert("error al guardar");
-  }
-};
-
-
-
-
-
-
-
-  // //SIGN IN
-  // const handleSignIn = () => {
-
-  //   if(email == "") {
-  //     Alert.alert("Escribe un correo electronico");
-  //     return;
-  //   }
-  //   if(password == "") {
-  //     Alert.alert("Escribe una contrasena");
-  //     return;
-  //   }
-  //   if (!isValidEmail) {
-  //     Alert.alert("El correo electrónico proposionado no es valido.");
-  //     return;
-  //   }
-   
-  //   const auth = getAuth();
-  //   signInWithEmailAndPassword(auth, email, password)
-  //     .then((userCredential) => {
-  //       dispatch(
-  //         setUser({
-  //           authentication: true,
-  //           email: userCredential.user.email,
-  //           accessToken: userCredential.user.accessToken,
-  //           uid: userCredential.user.uid,
-  //         })
-  //       );
-  //       // console.log("Signed In!!", userCredential.user.uid);
-
-  //       storeData(userCredential.user.uid)
-  //       dispatch(
-  //         setUser({
-  //           authentication: true,
-  //           email: userCredential.user.email,
-  //           accessToken: userCredential.user.accessToken,
-  //           uid: userCredential.user.uid,
-  //         })
-  //       );
-  //       navigation.navigate("TabsNavigation");
-  //     })
-  //     .catch((error) => {
-  //       Alert.alert("El correo no existe en la base de datos o es inválido.");
-  //     });
-  // };
-
-
-
+      const jsonData = JSON.stringify(userData);
+      await AsyncStorage.setItem("userData", jsonData);
+      console.log("User data guardado en storage", jsonData);
+    } catch {
+      Alert.alert("error al guardar");
+    }
+  };
 
   const handleSignIn = async () => {
     setIsLoading(true);
@@ -160,10 +68,14 @@ const LoginScreen = ({ navigation }) => {
       setIsLoading(false);
       return;
     }
-  
+
     const auth = getAuth();
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       dispatch(
         setUser({
           authentication: true,
@@ -172,29 +84,23 @@ const LoginScreen = ({ navigation }) => {
           uid: userCredential.user.uid,
         })
       );
-  
-      const value = userCredential.user.uid
+
+      const value = userCredential.user.uid;
       if (value) {
         const userData = await fetchPersonalData(value);
         if (userData) {
+
           storeData(value, userData);
         }
       }
-      
+
       navigation.navigate("TabsNavigation");
     } catch (error) {
       Alert.alert("El correo no existe en la base de datos o es inválido.");
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   };
-  
-
-
-
-
-
 
   return (
     <View style={styles.container}>
@@ -226,7 +132,6 @@ const LoginScreen = ({ navigation }) => {
               E-mail
             </Text>
             <TextInput
-              // onChangeText={(text) => setEmail(text.trim())}
               onChangeText={(text) => setEmail(text.trim().toLowerCase())}
               style={styles.input}
               value={email}
@@ -247,32 +152,7 @@ const LoginScreen = ({ navigation }) => {
             />
           </View>
 
-
-          {/* <TouchableOpacity
-            onPress={handleSignIn}
-            style={[styles.button, { backgroundColor: "#00cfeb90" }]}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "400", color: "white" }}>
-              Iniciar sesion
-            </Text>
-          </TouchableOpacity> */}
-
-
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate("CreateAccountScreen")}
-          >
-            <Text style={{ fontSize: 17, fontWeight: "400", color: "white", paddingTop: 30 }}>
-              Crear cuenta
-            </Text>
-          </TouchableOpacity> */}
-
-
-
-    
-
-
-
-        <TouchableOpacity
+          <TouchableOpacity
             style={[styles.button, { backgroundColor: "#00cfeb90" }]}
             onPress={handleSignIn}
             disabled={isLoading}
@@ -280,21 +160,26 @@ const LoginScreen = ({ navigation }) => {
             {isLoading ? (
               <ActivityIndicator size="large" color="#fff" />
             ) : (
-             <Text style={{ fontSize: 17, fontWeight: "400", color: "white" }}>
-              Iniciar sesion
-            </Text>         )}
+              <Text style={{ fontSize: 17, fontWeight: "400", color: "white" }}>
+                Iniciar sesion
+              </Text>
+            )}
           </TouchableOpacity>
-
-
 
           <TouchableOpacity
             onPress={() => navigation.navigate("CreateAccountScreen")}
           >
-            <Text style={{ fontSize: 17, fontWeight: "400", color: "white", paddingTop: 30 }}>
+            <Text
+              style={{
+                fontSize: 17,
+                fontWeight: "400",
+                color: "white",
+                paddingTop: 30,
+              }}
+            >
               Crear cuenta
             </Text>
           </TouchableOpacity>
-
         </View>
       </ScrollView>
     </View>
@@ -354,6 +239,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 });
-
 
 export default LoginScreen;

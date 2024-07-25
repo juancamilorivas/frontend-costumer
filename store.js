@@ -7,6 +7,7 @@ import createReceiverReducer from './reducers/receiver/receiverSlice'
 import importServiceHistoryReducer from './reducers/importServiceHistory/importServiceHistorySlice';
 import createConsolidationReducer from './reducers/consolidation/consolidationSlice'
 import consolidatedServiceHistoryReducer from './reducers/consolidatedServiceHistory/consolidatedServiceHistorySlice';
+import dividedServiceHistoryReducer from './reducers/dividedServiceHistory/dividedServiceHistorySlice';
 import createDivideReducer from './reducers/divide/divideSlice';
 
 export const store = configureStore({
@@ -16,6 +17,7 @@ export const store = configureStore({
     receiver: createReceiverReducer,
     importServiceHistory: importServiceHistoryReducer,
     consolidatedServiceHistory: consolidatedServiceHistoryReducer,
+    dividedServiceHistory: dividedServiceHistoryReducer,
     consolidation: createConsolidationReducer,
     divide: createDivideReducer,
   },

@@ -16,7 +16,6 @@ const ProfileNavigation = ({navigation}) => {
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
-        // options={{ headerShown: true}}
         options={{
           title: "Opciones",
           headerShown: true,
@@ -27,8 +26,6 @@ const ProfileNavigation = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: "bold",
           },
-         
-       
         }}
       />
 

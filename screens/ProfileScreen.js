@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   View,
+  Alert,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
@@ -24,14 +25,35 @@ const ProfileScreen = ({ navigation }) => {
     try {
       await signOut(initialAuth);
       await AsyncStorage.clear();
-      console.log("Signed out successfully!");
       navigation.navigate("LoginCreate");
-      // Perform any additional actions after sign out
     } catch (error) {
       console.error("Error signing out:", error);
-      // Handle sign-out error
     }
   };
+
+
+
+  const confirmSignOut = () => {
+    Alert.alert(
+      "Confirmar",
+      "Por favor confirme que desea cerrar su sesion",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Sign out canceled"),
+          style: "cancel"
+        },
+        {
+          text: "Si",
+          onPress: handleSignOut
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+
+
 
   //OBTENER DATA
   const getMyStringValue = async () => {
@@ -82,7 +104,7 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
         
 
-        <TouchableOpacity style={styles.options} onPress={handleSignOut}>
+        <TouchableOpacity style={styles.options} onPress={confirmSignOut}>
           <FontAwesomeIcon
             icon={faArrowRightFromBracket}
             size={25}

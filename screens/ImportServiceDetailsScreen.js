@@ -82,7 +82,7 @@ const ImportServiceDetailsScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView>
         <View style={styles.mainContainer}>
-          <Text style={styles.title}>Resumen del Servicio</Text>
+          <Text style={styles.title}>Importacion</Text>
 
           <View style={styles.inputAndTextContainer}>
             <View style={styles.fromToContainer}>

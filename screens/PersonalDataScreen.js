@@ -161,9 +161,20 @@ const PersonalDataScreen = () => {
     }
   };
 
+
+
+  
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView>
+    
+    {form.email == "" ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      ) : (
+
+        <ScrollView>
         <View style={styles.container}>
           <Text style={styles.title}>Mis datos personales</Text>
 
@@ -293,6 +304,9 @@ const PersonalDataScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+
+  )}
     </SafeAreaView>
   );
 };
@@ -440,5 +454,11 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#000",
   },
 });

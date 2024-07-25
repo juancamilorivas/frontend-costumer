@@ -11,6 +11,7 @@ import ImportConsolidatedServiceDetailsScreen from "../screens/ImportConsolidate
 import ImportReceiverHistoryScreen from "../screens/ImportReceiverHistoryScreen";
 import ViewDetailsHistoryScreen from "../screens/ViewDetailsHistoryScreen"
 import ViewDetailsConsolidatedScreen from "../screens/ViewDetailsConsolidatedScreen"
+import ViewDetailsDividedScreen from "../screens/ViewDetailsDividedScreen"
 const Stack = createNativeStackNavigator();
 
 const ServiceHistoryNavigation = ({ navigation }) => {
@@ -233,6 +234,44 @@ const ServiceHistoryNavigation = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('ImportConsolidatedServiceDetails');
+              }}
+            >
+              <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
+            </TouchableOpacity>
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
+              <FontAwesomeIcon
+                icon={faCircleQuestion}
+                size={25}
+                color="#ffffff"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+
+
+
+
+
+      <Stack.Screen
+        name="ViewDetailsDivided"
+        component={ViewDetailsDividedScreen}
+        options={{
+          title: "Detalle del envio",
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerTintColor: "#ffffff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('DivisionServiceDetails');
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />

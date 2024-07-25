@@ -320,7 +320,7 @@ const PaymentResumeScreen = () => {
         paymentState,
         partidaArancelaria
       );
-      changeShipmentStatus(shipmentNumber);
+      await changeShipmentStatus(shipmentNumber);
       Alert.alert("Success", "The payment was confirmed successfully", [
         {
           text: "OK",

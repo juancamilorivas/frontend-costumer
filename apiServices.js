@@ -659,6 +659,7 @@ export async function savePaymentDivided(
     currentState: "Pagado",
     serviceName: "Division",
     show: true,
+    shipmentNumbers: null,
   };
 
   try {
@@ -667,3 +668,8 @@ export async function savePaymentDivided(
     console.error("Error al agregar el documento: ", e);
   }
 }
+
+
+
+
+
