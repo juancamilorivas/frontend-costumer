@@ -647,6 +647,7 @@ export async function savePaymentDivided(
   paymentState,
   divideNumber,
   divideInstructions,
+  locker,
 ) {
   const data = {
     totalPaid: totalValue,
@@ -659,7 +660,8 @@ export async function savePaymentDivided(
     currentState: "Pagado",
     serviceName: "Division",
     show: true,
-    shipmentNumbers: null,
+    shipmentNumbers: [],
+    locker: locker,
   };
 
   try {
@@ -668,7 +670,6 @@ export async function savePaymentDivided(
     console.error("Error al agregar el documento: ", e);
   }
 }
-
 
 
 

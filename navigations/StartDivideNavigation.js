@@ -5,8 +5,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import PaymentResumeDivideScreen from "../screens/PaymentResumeDivideScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
-// import { faX } from "@fortawesome/free-solid-svg-icons/faX";
-// import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { useDispatch } from "react-redux";
 import { unsetDivide } from "../reducers/divide/divideSlice";
@@ -16,7 +14,7 @@ const Stack = createNativeStackNavigator();
 const StartTransportNavigation = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const handleUnsetReceiverAndGoBack = () => {
+  const handleUnsetDivideAndGoBack = () => {
     Alert.alert(
       "Confirmación",
       "¿Desea cancelar el proceso actual?",
@@ -28,7 +26,6 @@ const StartTransportNavigation = ({ navigation }) => {
         {
           text: "OK",
           onPress: () => {
-            // Ejecutar las funciones después de presionar OK en el alert
             dispatch(unsetDivide());
             navigation.navigate("Bodega", { screen: "Warehouse" });
           },
@@ -55,7 +52,7 @@ const StartTransportNavigation = ({ navigation }) => {
             fontWeight: "bold",
           },
           headerLeft: () => (
-            <TouchableOpacity onPress={handleUnsetReceiverAndGoBack}>
+            <TouchableOpacity onPress={handleUnsetDivideAndGoBack}>
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
             </TouchableOpacity>
           ),

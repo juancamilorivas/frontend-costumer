@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
+
 } from "react-native";
 import { getServiceData } from "../apiServices";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -30,6 +32,8 @@ const ImportServiceDetailsScreen = ({ navigation }) => {
     shipmentNumber: "",
     createdAt: "",
   });
+  const [loading, setLoading] = React.useState(true);
+
 
   React.useEffect(() => {
     if (!docId) {
@@ -38,6 +42,8 @@ const ImportServiceDetailsScreen = ({ navigation }) => {
     }
 
     const fetchData = async () => {
+      setLoading(true);
+
       try {
         const data = await getServiceData(docId);
         if (data) {
@@ -69,14 +75,32 @@ const ImportServiceDetailsScreen = ({ navigation }) => {
           );
         } else {
           console.log("No se encontraron datos para el documento:", docId);
+          setLoading(false);
+
         }
       } catch (error) {
         console.error("Error al obtener los datos del servicio:", error);
+      } finally {
+        setLoading(false);
+
       }
-    };
+    }; 
 
     fetchData();
   }, [docId]);
+
+
+
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -352,5 +376,11 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginLeft: 10,
     fontWeight: "bold",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
 });

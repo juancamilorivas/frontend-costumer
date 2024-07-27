@@ -121,7 +121,7 @@ const ServiceHistoryScreen = ({ navigation }) => {
         return { backgroundColor: "#25BD50" };
        //tercer estado que se asigna a una AWB
       case "Asignado":
-        return { backgroundColor: "#C56749" };
+        return { backgroundColor: "#25BD50" };
       //cuarto estado que se pone cuando se cierra el correo
       case "Aerolinea":
         return { backgroundColor: "#c4c4c4" };

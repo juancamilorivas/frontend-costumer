@@ -19,7 +19,6 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { db } from "../firebase";
-
 import { collection, addDoc, doc, runTransaction } from "firebase/firestore";
 
 const sfDocRef = doc(db, "/shipmentNumberCount", "config");
@@ -151,7 +150,7 @@ const PaymentResumeConsolidationScreen = () => {
               createdAt: new Date(),
               description: "n/a",
               height: "n/a",
-              lenghtValue: "n/a",
+              lengthValue: "n/a",
               localTransporterName: "n/a",
               partidaArancelariaImpuestos: partidaArancelariaGeneral,
               shipmentNumber: newShipmentNumber,

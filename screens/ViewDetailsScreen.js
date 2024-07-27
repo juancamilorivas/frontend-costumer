@@ -10,7 +10,7 @@ const ViewDetailsScreen = ({route}) => {
     createdAt: "",
     description: "",
     height: "",
-    lenghtValue: "",
+    lengthValue: "",
     partidaArancelariaImpuestos: "",
     shipmentNumber: "",
     weight: "",
@@ -39,7 +39,7 @@ const ViewDetailsScreen = ({route}) => {
             createdAt: createdAt,
             description: shipmentDetails.description,
             height: shipmentDetails.height,
-            lenghtValue: shipmentDetails.lenghtValue,
+            lengthValue: shipmentDetails.lengthValue,
             partidaArancelariaImpuestos:
               shipmentDetails.partidaArancelariaImpuestos,
             shipmentNumber: shipmentDetails.shipmentNumber,
@@ -104,7 +104,7 @@ const ViewDetailsScreen = ({route}) => {
           </View>
           <View style={styles.section}>
             <Text style={styles.titleSection}>Largo</Text>
-            <Text style={styles.textSection}>{form.lenghtValue}</Text>
+            <Text style={styles.textSection}>{form.lengthValue}</Text>
           </View>
 
           <View style={styles.section}>

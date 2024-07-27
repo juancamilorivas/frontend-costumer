@@ -19,12 +19,16 @@ import { ListItem } from "@rneui/themed";
 import { fetchMorePostsOnSnapshot } from "../apiServices";
 import { fetchPostsOnSnapshot } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
-import { setReceiver } from "../reducers/receiver/receiverSlice";
-import { setDivide } from "../reducers/divide/divideSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faWarehouse } from "@fortawesome/free-solid-svg-icons/faWarehouse";
 import { useFocusEffect } from "@react-navigation/native";
+//Redux
+import { useDispatch } from "react-redux";
+import { setReceiver } from "../reducers/receiver/receiverSlice";
+import { setDivide } from "../reducers/divide/divideSlice";
+import { unsetDivide } from "../reducers/divide/divideSlice";
+import { unsetConsolidation } from "../reducers/consolidation/consolidationSlice";
+import { unsetReceiver } from "../reducers/receiver/receiverSlice";
 
 const WarehouseScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -37,7 +41,8 @@ const WarehouseScreen = ({ navigation }) => {
   const [isLoading2, setIsLoading2] = React.useState(true);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [partidaItem, setPartidaItem] = React.useState("");
-  const [shipmentNumberSelected, setShipmentNumberSelected] = React.useState("");
+  const [shipmentNumberSelected, setShipmentNumberSelected] =
+    React.useState("");
   const [locker, setLocker] = React.useState("");
 
   //modal breakpoints
@@ -99,10 +104,13 @@ const WarehouseScreen = ({ navigation }) => {
   // // Effect to reset data when screen gets focus
   useFocusEffect(
     React.useCallback(() => {
+      dispatch(unsetReceiver());
+      dispatch(unsetConsolidation());
+      dispatch(unsetDivide());
       const getMyStringValue = async () => {
         try {
           const jsonData = await AsyncStorage.getItem("userData");
-          if ( jsonData) {
+          if (jsonData) {
             const userData = JSON.parse(jsonData);
             setLocker(userData.locker);
           } else {
@@ -122,7 +130,6 @@ const WarehouseScreen = ({ navigation }) => {
       <TouchableOpacity
         style={styles.itemContainer}
         onPress={async () => {
-
           const closeAndAlert = async (message) => {
             await handleClosePress();
             Alert.alert(message);
@@ -160,7 +167,7 @@ const WarehouseScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
     ),
-    [posts, partidaItem]
+    [posts, partidaItem, shipmentNumberSelected]
   );
 
   //GET POSTS
@@ -244,7 +251,11 @@ const WarehouseScreen = ({ navigation }) => {
               {formattedDate}
             </ListItem.Subtitle>
             <View style={styles.descriptionAndWeight}>
-              <Text style={styles.descriptionText} numberOfLines={1} ellipsizeMode="tail">
+              <Text
+                style={styles.descriptionText}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
                 {descriptionInUpperCase}
               </Text>
               <Text style={styles.weightText}>{item.weight} LB</Text>
@@ -262,12 +273,6 @@ const WarehouseScreen = ({ navigation }) => {
       </View>
     ) : null;
   };
-
-  // const checkConsolidation = () => {
-
-  //   Alert.alert("funciona")
-  //   console.log("intento desde la funcion ---->", postsLenght)
-  // }
 
   return (
     <>
@@ -400,7 +405,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontWeight: "bold",
     fontSize: 13,
-    width: "70%"
+    width: "70%",
   },
   weightText: {
     fontWeight: "bold",

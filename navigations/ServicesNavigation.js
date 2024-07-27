@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ConsolidateScreen from "../screens/ConsolidateScreen";
 import DivideScreen from "../screens/DivideScreen";
 import WarehouseScreen from "../screens/WarehouseScreen";
-import RepackScreen from "../screens/RepackScreen";
 import DeleteTrackingScreen from "../screens/DeleteTrackingScreen";
 import ViewDetailsScreen from "../screens/ViewDetailsScreen";
 import InAndOutScreen from "../screens/InAndOutScreen";
@@ -18,39 +17,32 @@ import { faCircleArrowRight } from "@fortawesome/free-solid-svg-icons/faCircleAr
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { unsetConsolidation } from "../reducers/consolidation/consolidationSlice";
-
+import { unsetDivide } from "../reducers/divide/divideSlice";
 
 const Stack = createNativeStackNavigator();
 
-const ServicesNavigation = ({navigation}) => {
-
-  const {
-    shipmentNumbers,
-  } = useSelector((state) => state.consolidation);
-
-
-
-  
-  const checkConsolidation = () => {
-      if(shipmentNumbers.length <= 1) {
-        Alert.alert("Debes seleccionar almenos 2 items")
-      } else {
-        navigation.navigate("StartTransportConsolidated")
-      }
-  }
-
-
-
-
+const ServicesNavigation = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const handleUnsetReceiverAndGoBack = () => {
+  const { shipmentNumbers } = useSelector((state) => state.consolidation);
+
+  const checkConsolidation = () => {
+    if (shipmentNumbers.length <= 1) {
+      Alert.alert("Debes seleccionar almenos 2 items");
+    } else {
+      navigation.navigate("StartTransportConsolidated");
+    }
+  };
+
+  const handleUnsetConsolidatedAndGoBack = () => {
     dispatch(unsetConsolidation());
     navigation.navigate("Bodega", { screen: "Warehouse" });
   };
 
-
-
+  const handleUnsetDivideAndGoBack = () => {
+    dispatch(unsetDivide());
+    navigation.navigate("Bodega", { screen: "Warehouse" });
+  };
 
   return (
     <Stack.Navigator>
@@ -70,10 +62,6 @@ const ServicesNavigation = ({navigation}) => {
         }}
       />
 
-
-
-
-
       <Stack.Screen
         name="Consolidate"
         component={ConsolidateScreen}
@@ -88,9 +76,7 @@ const ServicesNavigation = ({navigation}) => {
             fontWeight: "bold",
           },
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={handleUnsetReceiverAndGoBack}
-            >
+            <TouchableOpacity onPress={handleUnsetConsolidatedAndGoBack}>
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
             </TouchableOpacity>
           ),
@@ -106,29 +92,18 @@ const ServicesNavigation = ({navigation}) => {
         }}
       />
 
-      
-
-
-
       <Stack.Screen
         name="StartTransportConsolidated"
         component={StartTransportConsolidatedNavigation}
         options={{ headerShown: false }}
       />
 
-
-
-<Stack.Screen
+      <Stack.Screen
         name="StartDivide"
         component={StartDivideNavigation}
         options={{ headerShown: false }}
       />
 
-
-
-
-
-      
       <Stack.Screen
         name="Divide"
         component={DivideScreen}
@@ -143,14 +118,12 @@ const ServicesNavigation = ({navigation}) => {
             fontWeight: "bold",
           },
           headerLeft: () => (
-            <TouchableOpacity
-              onPress={handleUnsetReceiverAndGoBack}
-            >
+            <TouchableOpacity onPress={handleUnsetDivideAndGoBack}>
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
             </TouchableOpacity>
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={checkConsolidation}>
+            <TouchableOpacity onPress={() => alert("Botón presionado!")}>
               <FontAwesomeIcon
                 icon={faCircleQuestion}
                 size={25}
@@ -180,7 +153,6 @@ const ServicesNavigation = ({navigation}) => {
       <Stack.Screen
         name="ViewDetails"
         component={ViewDetailsScreen}
-        // options={{ headerShown: false }}
         options={{
           title: "Opciones de entrega",
           headerShown: true,
@@ -194,8 +166,7 @@ const ServicesNavigation = ({navigation}) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Bodega', { screen: 'Warehouse' });
-
+                navigation.navigate("Bodega", { screen: "Warehouse" });
               }}
             >
               <FontAwesomeIcon icon={faChevronLeft} size={25} color="#ffffff" />
@@ -212,13 +183,8 @@ const ServicesNavigation = ({navigation}) => {
           ),
         }}
       />
- 
     </Stack.Navigator>
   );
 };
 
 export default ServicesNavigation;
-
-
-
-

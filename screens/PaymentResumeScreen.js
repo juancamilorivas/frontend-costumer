@@ -159,7 +159,7 @@ const PaymentResumeScreen = () => {
           destinyLocationCode: destinyDaneCode,
           quantity: 1,
           width: data.width,
-          length: data.lenghtValue,
+          length: data.lengthValue,
           height: data.height,
           weight: data.weight,
           declaredValue: declaredValue,

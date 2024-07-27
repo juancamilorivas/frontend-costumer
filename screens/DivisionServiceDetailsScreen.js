@@ -234,6 +234,7 @@ const DivisionServiceDetailsScreen = () => {
     shipmentNumbers: [],
     totalPaid: "",
   });
+  const [loading, setLoading] = React.useState(true);
 
 
   const { docId } = useSelector((state) => state.dividedServiceHistory);
@@ -245,6 +246,8 @@ const DivisionServiceDetailsScreen = () => {
     }
 
     const fetchData = async () => {
+      setLoading(true);
+
       try {
         const data = await getServiceData(docId);
         if (data) {
@@ -259,14 +262,29 @@ const DivisionServiceDetailsScreen = () => {
           });
         } else {
           console.log("No se encontraron datos para el documento:", docId);
+          setLoading(false);
+
         }
       } catch (error) {
         console.error("Error al obtener los datos del servicio:", error);
-      } 
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, [docId]);
+
+
+
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -316,10 +334,11 @@ const DivisionServiceDetailsScreen = () => {
             </TouchableOpacity>
           ))} */}
 
-          {serviceData.shipmentNumbers !== null
+          <Text style={styles.titleTable}>Guias nuevas</Text>
+
+          {serviceData.shipmentNumbers.length > 0
             ? serviceData.shipmentNumbers.map((numero, index) => (
                 <View key={index}>
-                  <Text style={styles.titleTable}>Guias nuevas</Text>
                   <TouchableOpacity
                     style={styles.shipmentNumberContainer}
                     onPress={() =>
@@ -334,7 +353,9 @@ const DivisionServiceDetailsScreen = () => {
                   </TouchableOpacity>
                 </View>
               ))
-            : null}
+            : (
+              <Text style={styles.titleAlternative}>Pronto veras las guias nuevas aqui</Text>
+            )}
 
           <Text style={styles.titleTable}>Costos de importacion</Text>
 
@@ -448,6 +469,10 @@ const styles = StyleSheet.create({
   titleTable: {
     fontWeight: "bold",
     marginVertical: 10,
+  },
+  titleAlternative: {
+    marginVertical: 10,
+    marginBottom: 10
   },
   mainContainerTable: {
     backgroundColor: "white",
@@ -565,5 +590,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#0038FF",
     fontWeight: "bold",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
 });

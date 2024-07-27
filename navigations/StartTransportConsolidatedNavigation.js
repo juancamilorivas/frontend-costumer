@@ -1,12 +1,9 @@
 import React from "react";
 import { TouchableOpacity, Alert } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-// import ConsolidateScreen from "../screens/ConsolidateScreen";
 import PaymentResumeConsolidationScreen from "../screens/PaymentResumeConsolidationScreen";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
-// import { faX } from "@fortawesome/free-solid-svg-icons/faX";
-// import { faCircleCheck } from "@fortawesome/free-solid-svg-icons/faCircleCheck";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons/faCircleQuestion";
 import { useDispatch } from "react-redux";
 import { unsetConsolidation } from "../reducers/consolidation/consolidationSlice";

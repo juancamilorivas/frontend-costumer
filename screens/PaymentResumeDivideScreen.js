@@ -11,41 +11,68 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
 import { savePaymentDivided, changeShipmentStatus } from "../apiServices";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { EXPO_PUBLIC_API_STRIPE_PUBLISHABLE } from "@env";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { unsetDivide } from "../reducers/divide/divideSlice";
 
 const PaymentResumeScreen = () => {
+  const dispatch = useDispatch();
+
   const [ready, setReady] = useState(false);
   const { initPaymentSheet, presentPaymentSheet, loading } = usePaymentSheet();
   const navigation = useNavigation();
   const [totalValue] = useState("5.00");
   const [uid, setUid] = React.useState("");
+  const [locker, setLocker] = React.useState("");
+
 
   //recuera el valor shipping number de redux
   const { divideNumber, divideInstructions, shipmentNumber } = useSelector(
     (state) => state.divide
   );
 
+
   // INTIALIZATION OF PAYMENTSHEET
   useEffect(() => {
     initialisePaymentSheet();
   }, []);
 
-  // Initialization of PaymentSheet
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const value = await AsyncStorage.getItem("key");
-        setUid(value);
-      } catch (error) {
-        console.log("Error fetching user data from AsyncStorage", error);
-      }
-    };
 
-    fetchUserData();
-  }, []);
+
+
+
+
+// Initialization of PaymentSheet
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("key");
+      setUid(value);
+      const jsonData = await AsyncStorage.getItem("userData");
+      if (jsonData !== null) {
+        const userData = JSON.parse(jsonData);
+        setLocker(userData.locker);
+      } else {
+        console.log("No se encontró ningún userData en el storage");
+      }
+    } catch (error) {
+      console.log("Error fetching user data from AsyncStorage", error);
+    }
+  };
+  fetchUserData();
+}, []);
+
+
+
+
+
+
+
+
+  
 
   // PAYMENT SHEET STRIPE
   const initialisePaymentSheet = async () => {
@@ -68,11 +95,8 @@ const PaymentResumeScreen = () => {
   };
 
   const fetchPaymentSheetParams = async () => {
-    // nombre y apelido remitente del storage
     const jsonData = await AsyncStorage.getItem("userData");
     const userDataa = JSON.parse(jsonData);
-
-    // llamar a la cloud function con el valor total
     const responseCall = await fetch(
       "https://app-zrcl5qd7da-uc.a.run.app/payment-sheet",
       {
@@ -110,13 +134,17 @@ const PaymentResumeScreen = () => {
         shipmentNumber,
         paymentState,
         divideNumber,
-        divideInstructions
+        divideInstructions,
+        locker,
       );
       changeShipmentStatus(shipmentNumber);
       Alert.alert("Success", "The payment was confirmed successfully", [
         {
           text: "OK",
-          onPress: () => navigation.navigate("Bodega", { screen: "Warehouse" }),
+          onPress: () => {
+            dispatch(unsetDivide());
+            navigation.navigate("Bodega", { screen: "Warehouse" });
+          },
         },
       ]);
     }

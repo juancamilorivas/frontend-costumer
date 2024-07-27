@@ -21,8 +21,8 @@ const PaymentResumeConsolidationScreen = () => {
     totalPaid: "",
   });
 
-  const [loadingShipmentNumber, setLoadingShipmentNumber] =
-    React.useState(true);
+  const [loading, setLoading] = React.useState(true);
+
 
   const { docId } = useSelector((state) => state.consolidatedServiceHistory);
 
@@ -33,6 +33,8 @@ const PaymentResumeConsolidationScreen = () => {
     }
 
     const fetchData = async () => {
+      setLoading(true);
+
       try {
         const data = await getServiceData(docId);
         if (data) {
@@ -47,16 +49,31 @@ const PaymentResumeConsolidationScreen = () => {
           });
         } else {
           console.log("No se encontraron datos para el documento:", docId);
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error al obtener los datos del servicio:", error);
       } finally {
-        setLoadingShipmentNumber(false);
+        setLoading(false);
+
       }
     };
 
     fetchData();
   }, [docId]);
+
+
+
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -339,5 +356,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#0038FF",
     fontWeight: "bold",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
   },
 });

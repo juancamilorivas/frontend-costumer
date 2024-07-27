@@ -30,6 +30,11 @@ const DivideScreen = ({ navigation }) => {
     { label: "3", value: "3" },
     { label: "4", value: "4" },
     { label: "5", value: "5" },
+    { label: "6", value: "6" },
+    { label: "7", value: "7" },
+    { label: "8", value: "8" },
+    { label: "9", value: "9" },
+    { label: "10", value: "10" },
   ];
 
   // Función para contar palabras
@@ -46,19 +51,18 @@ const DivideScreen = ({ navigation }) => {
     }
   };
 
-
   const dispatchValues = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (!value) {
       Alert.alert("Alerta", "Debes seleccionar un valor");
-      setIsLoading(false)
+      setIsLoading(false);
 
       return;
     }
 
     if (!instrucciones) {
       Alert.alert("Alerta", "Debes proporciona instrucciones");
-      setIsLoading(false)
+      setIsLoading(false);
       return;
     }
 
@@ -68,7 +72,7 @@ const DivideScreen = ({ navigation }) => {
         divideInstructions: instrucciones,
       })
     );
-    setIsLoading(false)
+    setIsLoading(false);
     navigation.navigate("StartDivide");
   };
 
@@ -120,6 +124,14 @@ const DivideScreen = ({ navigation }) => {
             maxLength={500}
             value={instrucciones}
           />
+
+        <View>
+        <Text>
+            En caso de que tu paquete no pueda ser dividido en el número exacto
+            de cajas que necesitas, se dividirá en el número de unidades más
+            cercano a lo solicitado.
+          </Text>
+        </View>
 
           <TouchableOpacity
             style={styles.buttonStyles}
