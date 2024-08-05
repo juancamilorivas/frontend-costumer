@@ -412,6 +412,9 @@ export async function savePayment(
     cellPhone: cellPhone,
     partidaArancelaria: partidaArancelaria,
     show: true,
+    reajuste: false,
+    cModality: false,
+    stopped: false,
   };
   console.log(data, uid);
 

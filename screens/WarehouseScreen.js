@@ -170,35 +170,70 @@ const WarehouseScreen = ({ navigation }) => {
     [posts, partidaItem, shipmentNumberSelected]
   );
 
-  //GET POSTS
-  React.useEffect(() => {
-    try {
-      const unsubscribe = fetchPostsOnSnapshot(
-        postsPerLoad,
-        (data) => {
-          setIsLoading(false);
-          setIsLoading2(false);
-          if (data.posts.length == 0) {
-            setLastPost(true);
-          }
-          setPosts([...data.posts]);
-          setStartAfter(data.lastVisible);
-          setIsRefreshing(false); // Importante para detener el RefreshControl
-          setLastPost(false);
-        },
-        (error) => {
-          unsubscribe();
-        },
-        locker
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  }, [isRefreshing, locker]);
+  // //GET POSTS
+  // React.useEffect(() => {
+  //   try {
+  //     const unsubscribe = fetchPostsOnSnapshot(
+  //       postsPerLoad,
+  //       (data) => {
+  //         setIsLoading(false);
+  //         setIsLoading2(false);
+  //         if (data.posts.length == 0) {
+  //           setLastPost(true);
+  //         }
+  //         setPosts([...data.posts]);
+  //         setStartAfter(data.lastVisible);
+  //         setIsRefreshing(false); // Importante para detener el RefreshControl
+  //         setLastPost(false);
+  //       },
+  //       (error) => {
+  //         unsubscribe();
+  //       },
+  //       locker
+  //     );
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [isRefreshing, locker]);
 
-  const onRefresh = () => {
-    setIsRefreshing(true);
-  };
+
+
+
+    // Effect to fetch posts when screen gets focus
+    useFocusEffect(
+      React.useCallback(() => {
+        setIsLoading(true);
+        const unsubscribe = fetchPostsOnSnapshot(
+          postsPerLoad,
+          (data) => {
+            setIsLoading(false);
+            setIsLoading2(false);
+            if (data.posts.length === 0) {
+              setLastPost(true);
+            }
+            setPosts([...data.posts]);
+            setStartAfter(data.lastVisible);
+            setIsRefreshing(false); // Importante para detener el RefreshControl
+            setLastPost(false);
+          },
+          (error) => {
+            unsubscribe();
+          },
+          locker
+        );
+        return () => unsubscribe();
+      }, [isRefreshing, locker, postsPerLoad])
+    );
+
+
+    const onRefresh = () => {
+      setIsRefreshing(true);
+    };
+  
+  
+
+
+
 
   //GET MORE POSTS
   const getMorePosts = () => {

@@ -280,13 +280,6 @@ const styles = StyleSheet.create({
     color: "blue",
     textDecorationLine: "underline",
   },
-  //   fromToContainer: {
-  //     backgroundColor: "#ffffff",
-  //     padding: 10,
-  //     borderRadius: 5,
-  //     gap: 5,
-  //     height: 60,
-  //   },
   fobContainer: {
     flexDirection: "row",
     backgroundColor: "#ffffff",
@@ -307,14 +300,11 @@ const styles = StyleSheet.create({
   inputAndTextContainer: {
     justifyContent: "center",
     width: "100%",
-    // gap: 10,
     marginBottom: 10,
     backgroundColor: "#ffffff",
-    paddingHorizontal: 10,
-    // paddingVertical: 10,
+    padding: 10,
     borderRadius: 5,
     gap: 5,
-    height: 60,
   },
   title: {
     fontSize: 25,

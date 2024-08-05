@@ -119,22 +119,26 @@ const ServiceHistoryScreen = ({ navigation }) => {
       //segundo estado que se pone cuando el operador de bodega elige el servicio para hcerlo
       case "En proceso":
         return { backgroundColor: "#25BD50" };
-       //tercer estado que se asigna a una AWB
+      //tercer estado que se asigna a una AWB
       case "Asignado":
         return { backgroundColor: "#25BD50" };
       //cuarto estado que se pone cuando se cierra el correo
-      case "Aerolinea":
-        return { backgroundColor: "#c4c4c4" };
+      case "Importando":
+        return { backgroundColor: "#5E17EB" };
       //quinto estado que llega a bodega
       case "En bodega":
-        return { backgroundColor: "#18A0FB" };
-      //sexto y ultimo cuando se envia por transportador mipaquete.com o se entrega al cliente
-      case "Finalizado":
-        return { backgroundColor: "#000000" };
+        return { backgroundColor: "#5E17EB" };
       case "Cancelado":
         return { backgroundColor: "#FF4949" };
       case "Reajuste":
-        return { backgroundColor: "#F9B857" };
+        return { backgroundColor: "#EE6B6B" };
+      case "C. Modalidad":
+        return { backgroundColor: "#EE6B6B" };
+      case "Pendiente":
+        return { backgroundColor: "#EE6B6B" };
+      //sexto y ultimo cuando se envia por transportador mipaquete.com o se entrega al cliente
+      case "Finalizado":
+        return { backgroundColor: "#000000" };
       default:
         return { backgroundColor: "gray" };
     }

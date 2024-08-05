@@ -34,7 +34,7 @@ const TabNavigation = () => {
 
           return icon;
         },
-        tabBarActiveTintColor: "white",
+        tabBarActiveTintColor: "#5E17EB",
         tabBarInactiveTintColor: "gray",
       })}
     >
